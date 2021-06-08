@@ -17,7 +17,7 @@ import java.sql.Time
     ),
         ForeignKey(
             entity = Stops::class,
-            parentColumns = arrayOf("id"),
+            parentColumns = arrayOf("stop_id"),
             childColumns = arrayOf("stop_id"),
             onDelete = ForeignKey.CASCADE,
             onUpdate = ForeignKey.CASCADE
