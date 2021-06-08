@@ -4,7 +4,6 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-//CREATING THE MODEL LAYER FOR THE APP
 
 //data class creates objects which represent different bus companies and their attributes
 @Entity(tableName = "companies")
