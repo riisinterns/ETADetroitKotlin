@@ -1,6 +1,7 @@
 package com.riis.etaDetroitkotlin
 
 import androidx.lifecycle.ViewModel
+import com.riis.etaDetroitkotlin.model.Company
 
 //TransportListViewModel is a ViewModel used to store a list of Transport objects for CompanyListFragment.kt
 class CompanyListViewModel : ViewModel() {
