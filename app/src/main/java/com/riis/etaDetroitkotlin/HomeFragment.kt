@@ -17,7 +17,7 @@ import com.riis.etaDetroitkotlin.model.Company
 //CompanyListFragment is a fragment that displays a grid-based RecyclerView
 //It provides the interface for the user to select between different bus companies
 
-class CompanyListFragment : Fragment() {
+class HomeFragment : Fragment() {
 
     //CLASS VARIABLES
     //---------------
@@ -26,8 +26,8 @@ class CompanyListFragment : Fragment() {
     
     //LINKING FRAGMENT WITH A VIEW MODEL
     //----------------------------------
-    private val companyListViewModel: CompanyListViewModel by lazy {
-        ViewModelProvider(this).get(CompanyListViewModel::class.java)
+    private val companyListViewModel: HomeFragmentViewModel by lazy {
+        ViewModelProvider(this).get(HomeFragmentViewModel::class.java)
     }
 
     //CREATING THE FRAGMENT VIEW
@@ -144,8 +144,8 @@ class CompanyListFragment : Fragment() {
     //FUNCTION THAT ACTIVITIES CAN CALL TO GET AN INSTANCE OF THE FRAGMENT
     //--------------------------------------------------------------------
     companion object {
-        fun newInstance(): CompanyListFragment {
-            return CompanyListFragment()
+        fun newInstance(): HomeFragment {
+            return HomeFragment()
         }
     }
 

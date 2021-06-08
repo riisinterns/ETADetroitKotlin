@@ -16,7 +16,7 @@ class MainActivity : AppCompatActivity() {
 
         //if there is no current fragment, create a fragment from CompanyListFragment.kt
         if (currentFragment == null) {
-            val fragment = CompanyListFragment.newInstance()
+            val fragment = HomeFragment.newInstance()
 
             //Create a new fragment transaction, include one add operation in it, and then commit it
             supportFragmentManager
