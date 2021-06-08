@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">ETA Detroit Kotlin</string>
+    <string name="home_label">Home</string>
 </resources>

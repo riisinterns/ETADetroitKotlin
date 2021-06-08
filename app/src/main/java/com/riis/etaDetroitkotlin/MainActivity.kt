@@ -2,27 +2,67 @@ package com.riis.etaDetroitkotlin
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.widget.Toolbar
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.navigation.NavController
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.navigateUp
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.navigation.NavigationView
 
 class MainActivity : AppCompatActivity() {
-    //creating a new activity using whatever data is stored in savedInstanceState
-    //...and setting the content to be displayed in activity_main.xml
+
+    //global variables
+    private lateinit var appBarConfig : AppBarConfiguration
+
+    //CREATING THE ACTIVITY
+    //---------------------
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_main) //inflating view from activity_main layout
 
-        //asking the FragmentManager for the current fragment being used in fragment_container from activity_main.xml
-        val currentFragment =
-            supportFragmentManager.findFragmentById(R.id.fragment_container)
+        //defining the navigation host and getting access to its navigation controller
+        val navHost: NavHostFragment = supportFragmentManager
+            .findFragmentById(R.id.nav_host_fragment) as NavHostFragment? ?: return
+        val navController = navHost.navController
 
-        //if there is no current fragment, create a fragment from CompanyListFragment.kt
-        if (currentFragment == null) {
-            val fragment = CompanyListFragment.newInstance()
+        //creating an app bar
+        val appBar = findViewById<Toolbar>(R.id.app_bar)
+        setSupportActionBar(appBar) //setting the ToolBar as the activity's action bar
 
-            //Create a new fragment transaction, include one add operation in it, and then commit it
-            supportFragmentManager
-                .beginTransaction()
-                .add(R.id.fragment_container, fragment)//adds the fragment to the container
-                .commit()
-        }
+        //defining app bar configurations
+        val drawerMenu : DrawerLayout? = findViewById(R.id.drawer_menu)
+        appBarConfig = AppBarConfiguration(
+            setOf(R.id.home_dest), //setting the top-level fragment destinations
+            drawerMenu) //giving the app bar a drawerLayout
+
+        //setting the app bar and side navigation view to work with the Navigation jetpack architecture
+        setActionBar(navController, appBarConfig)
+        setNavigationMenu(navController)
+
     }
+
+    //CLASS FUNCTIONS
+    //---------------
+    private fun setActionBar(navController: NavController, appBarConfig : AppBarConfiguration) {
+        setupActionBarWithNavController(navController, appBarConfig)
+    }
+
+    private fun setNavigationMenu(navController: NavController) {
+        val navView = findViewById<NavigationView>(R.id.side_nav_view)
+        //if sideNavView exists, it uses the NavController to navigate to a destination when a menu item is selected from it
+        navView?.setupWithNavController(navController)
+    }
+
+    //HANDLING "UP" and DRAWER LAYOUT BEHAVIOUR IN THE ACTION BAR
+    //===========================================================
+    override fun onSupportNavigateUp(): Boolean {
+        // tells the navController how to behave using the appBarConfiguration
+        return findNavController(R.id.nav_host_fragment).navigateUp(appBarConfig)
+    }
+
+
 }

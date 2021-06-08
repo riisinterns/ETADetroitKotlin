@@ -2,8 +2,8 @@ package com.riis.etaDetroitkotlin
 
 import androidx.lifecycle.ViewModel
 
-//TransportListViewModel is a ViewModel used to store a list of Transport objects for CompanyListFragment.kt
-class CompanyListViewModel : ViewModel() {
+//TransportListViewModel is a ViewModel used to store a list of Transport objects for HomeFragment.kt
+class HomeViewModel : ViewModel() {
 
     val companyList = mutableListOf<Company>()
     private val companyNames = ArrayList<String>(listOf("SmartBus", "DDOT", "RefleX", "People Mover", "QLine", "Route Map"))

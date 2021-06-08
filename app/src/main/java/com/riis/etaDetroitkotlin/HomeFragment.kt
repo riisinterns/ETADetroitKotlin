@@ -1,7 +1,6 @@
 package com.riis.etaDetroitkotlin
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,10 +13,10 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 
-//CompanyListFragment is a fragment that displays a grid-based RecyclerView
+//HomeFragment is a fragment that displays a grid-based RecyclerView
 //It provides the interface for the user to select between different bus companies
 
-class CompanyListFragment : Fragment() {
+class HomeFragment : Fragment() {
 
     //CLASS VARIABLES
     //---------------
@@ -26,8 +25,8 @@ class CompanyListFragment : Fragment() {
     
     //LINKING FRAGMENT WITH A VIEW MODEL
     //----------------------------------
-    private val companyListViewModel: CompanyListViewModel by lazy {
-        ViewModelProvider(this).get(CompanyListViewModel::class.java)
+    private val homeViewModel: HomeViewModel by lazy {
+        ViewModelProvider(this).get(HomeViewModel::class.java)
     }
 
     //CREATING THE FRAGMENT VIEW
@@ -38,7 +37,7 @@ class CompanyListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         //inflating the fragment_transport_list layout as the fragment view
-        val view = inflater.inflate(R.layout.fragment_transport_list, container, false)
+        val view = inflater.inflate(R.layout.fragment_home, container, false)
 
         //RecyclerView setup (Grid Layout)
         companyRecyclerView = view.findViewById(R.id.company_recycler_view) as RecyclerView
@@ -53,7 +52,7 @@ class CompanyListFragment : Fragment() {
     //--------------------------
     private fun updateUI() {
         //creating an adapter and connecting it to the model layer data
-        val companyList = companyListViewModel.companyList
+        val companyList = homeViewModel.companyList
         adapter = CompanyAdapter(companyList)
 
         //Connecting the RecyclerView to its adapter
@@ -144,8 +143,8 @@ class CompanyListFragment : Fragment() {
     //FUNCTION THAT ACTIVITIES CAN CALL TO GET AN INSTANCE OF THE FRAGMENT
     //--------------------------------------------------------------------
     companion object {
-        fun newInstance(): CompanyListFragment {
-            return CompanyListFragment()
+        fun newInstance(): HomeFragment {
+            return HomeFragment()
         }
     }
 
