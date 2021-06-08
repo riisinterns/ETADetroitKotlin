@@ -1,0 +1,2 @@
+rootProject.name = "ETA Detroit Kotlin"
+include ':app'
