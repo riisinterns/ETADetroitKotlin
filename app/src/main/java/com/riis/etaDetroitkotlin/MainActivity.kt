@@ -14,9 +14,9 @@ class MainActivity : AppCompatActivity() {
         val currentFragment =
             supportFragmentManager.findFragmentById(R.id.fragment_container)
 
-        //if there is no current fragment, create a fragment from TransportListFragment.kt
+        //if there is no current fragment, create a fragment from CompanyListFragment.kt
         if (currentFragment == null) {
-            val fragment = TransportListFragment.newInstance()
+            val fragment = CompanyListFragment.newInstance()
 
             //Create a new fragment transaction, include one add operation in it, and then commit it
             supportFragmentManager
