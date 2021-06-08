@@ -6,7 +6,7 @@ import androidx.room.*
     foreignKeys = [ForeignKey(
         entity = Company::class,
         parentColumns = arrayOf("id"),
-        childColumns = arrayOf("companyId"),
+        childColumns = arrayOf("company_id"),
         onDelete = ForeignKey.CASCADE,
         onUpdate = ForeignKey.CASCADE
     )

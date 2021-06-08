@@ -12,7 +12,7 @@ class HomeFragmentViewModel : ViewModel() {
     init{
         for (name in companyNames){
             val company = Company()
-            company.name = name
+            company.name = name //todo change back to val once database is fully implemented
             companyList += company
         }
     }

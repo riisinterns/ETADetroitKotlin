@@ -1,4 +1,8 @@
 package com.riis.etaDetroitkotlin.database
 
-class BusDao {
+import androidx.room.Dao
+
+@Dao
+interface BusDao {
+
 }

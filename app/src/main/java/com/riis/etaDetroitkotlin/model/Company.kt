@@ -11,9 +11,9 @@ import androidx.room.PrimaryKey
 
 data class Company(
     @PrimaryKey val id: Int = 0,
-    val name: String = "",
-    @ColumnInfo(name = "brand_color") val brandColor: String = "",
-    @ColumnInfo(name = "bus_image_url") val busImgUrl: String = ""
+    var name: String = "",
+    @ColumnInfo(name = "brand_color") var brandColor: String = "",
+    @ColumnInfo(name = "bus_image_url") var busImgUrl: String = ""
 )
 
 
