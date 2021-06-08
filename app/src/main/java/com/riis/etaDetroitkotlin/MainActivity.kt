@@ -22,6 +22,7 @@ class MainActivity : AppCompatActivity() {
     //---------------------
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_main) //inflating view from activity_main layout
 
         //defining the navigation host and getting access to its navigation controller

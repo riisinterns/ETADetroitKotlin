@@ -14,6 +14,10 @@ import androidx.recyclerview.widget.RecyclerView
 
 
 //HomeFragment is a fragment that displays a grid-based RecyclerView
+import com.riis.etaDetroitkotlin.model.Company
+
+
+//CompanyListFragment is a fragment that displays a grid-based RecyclerView
 //It provides the interface for the user to select between different bus companies
 
 class HomeFragment : Fragment() {
@@ -27,6 +31,7 @@ class HomeFragment : Fragment() {
     //----------------------------------
     private val homeViewModel: HomeViewModel by lazy {
         ViewModelProvider(this).get(HomeViewModel::class.java)
+
     }
 
     //CREATING THE FRAGMENT VIEW
