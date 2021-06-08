@@ -11,6 +11,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+
+
+//HomeFragment is a fragment that displays a grid-based RecyclerView
 import com.riis.etaDetroitkotlin.model.Company
 
 
@@ -26,8 +29,9 @@ class HomeFragment : Fragment() {
     
     //LINKING FRAGMENT WITH A VIEW MODEL
     //----------------------------------
-    private val companyListViewModel: HomeFragmentViewModel by lazy {
-        ViewModelProvider(this).get(HomeFragmentViewModel::class.java)
+    private val homeViewModel: HomeViewModel by lazy {
+        ViewModelProvider(this).get(HomeViewModel::class.java)
+
     }
 
     //CREATING THE FRAGMENT VIEW
@@ -38,7 +42,7 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         //inflating the fragment_transport_list layout as the fragment view
-        val view = inflater.inflate(R.layout.fragment_transport_list, container, false)
+        val view = inflater.inflate(R.layout.fragment_home, container, false)
 
         //RecyclerView setup (Grid Layout)
         companyRecyclerView = view.findViewById(R.id.company_recycler_view) as RecyclerView
@@ -53,7 +57,7 @@ class HomeFragment : Fragment() {
     //--------------------------
     private fun updateUI() {
         //creating an adapter and connecting it to the model layer data
-        val companyList = companyListViewModel.companyList
+        val companyList = homeViewModel.companyList
         adapter = CompanyAdapter(companyList)
 
         //Connecting the RecyclerView to its adapter

@@ -2,6 +2,7 @@
 
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="155dp"
     app:cardElevation="10dp"
@@ -39,7 +40,8 @@
             android:padding="10dp"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="@android:color/white"
-            android:textStyle="normal" />
+            android:textStyle="normal"
+            tools:ignore="HardcodedText" />
 
 
     </LinearLayout>
