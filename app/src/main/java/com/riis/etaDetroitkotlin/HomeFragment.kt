@@ -1,10 +1,12 @@
 package com.riis.etaDetroitkotlin
 
 
+
 //HomeFragment is a fragment that displays a grid-based RecyclerView
 import android.graphics.Color
-import android.net.Uri
-import android.net.Uri.fromFile
+
+
+
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -12,20 +14,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.content.res.TypedArrayUtils.getResourceId
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.riis.etaDetroitkotlin.model.Company
-import java.nio.channels.Selector
+
 
 
 //CompanyListFragment is a fragment that displays a grid-based RecyclerView
 //It provides the interface for the user to select between different bus companies
-
 private const val TAG = "HomeFragment"
 
 class HomeFragment : Fragment() {
@@ -34,6 +35,7 @@ class HomeFragment : Fragment() {
     //---------------
     private lateinit var companyRecyclerView: RecyclerView
     private var adapter: CompanyAdapter? = null
+
     
     //LINKING FRAGMENT WITH VIEW MODELS
     //----------------------------------
@@ -55,19 +57,32 @@ class HomeFragment : Fragment() {
 
         //RecyclerView setup (Grid Layout)
         companyRecyclerView = view.findViewById(R.id.company_recycler_view) as RecyclerView
-        companyRecyclerView.layoutManager = GridLayoutManager(context,2) //second parameter specifies number of columns in grid
+        companyRecyclerView.layoutManager =
+            GridLayoutManager(context, 2) //second parameter specifies number of columns in grid
 
         //update the RecyclerView with itemViews and their corresponding data from the model layer
-        updateUI()
         return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        homeViewModel.companyListLiveData.observe(
+            viewLifecycleOwner,
+            { companyList ->
+                companyList?.let {
+                    Log.d(TAG, "In the observer")
+
+                    updateUI(companyList)
+                }
+            }
+        )
     }
 
     //UPDATING THE FRAGMENT VIEW
     //--------------------------
-    private fun updateUI() {
+    private fun updateUI(companies: List<Company>) {
         //creating an adapter and connecting it to the model layer data
-        val companyList = homeViewModel.companyList
-        adapter = CompanyAdapter(companyList)
+        adapter = CompanyAdapter(companies)
 
         //Connecting the RecyclerView to its adapter
         companyRecyclerView.adapter = adapter
@@ -77,8 +92,8 @@ class HomeFragment : Fragment() {
     //VIEW HOLDER CLASS FOR RECYCLER VIEW
     //-----------------------------------
     private inner class CompanyHolder(view: View)
-        //When given a view, it is used as a reusable blueprint for creating itemViews
-        : RecyclerView.ViewHolder(view),View.OnClickListener {
+    //When given a view, it is used as a reusable blueprint for creating itemViews
+        : RecyclerView.ViewHolder(view), View.OnClickListener {
 
         private lateinit var companyItem: Company //instantiating a new Company object to later receive model layer data
 
@@ -132,15 +147,6 @@ class HomeFragment : Fragment() {
             holder.bind(company)
         }
     }
-
-    //FUNCTION THAT ACTIVITIES CAN CALL TO GET AN INSTANCE OF THE FRAGMENT
-    //--------------------------------------------------------------------
-    companion object {
-        fun newInstance(): HomeFragment {
-            return HomeFragment()
-        }
-    }
-
 
 
 }
