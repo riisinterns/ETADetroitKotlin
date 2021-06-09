@@ -71,7 +71,6 @@ class HomeFragment : Fragment() {
             { companyList ->
                 companyList?.let {
                     Log.d(TAG, "In the observer")
-
                     updateUI(companyList)
                 }
             }
