@@ -1,20 +1,22 @@
 package com.riis.etaDetroitkotlin
 
 import androidx.lifecycle.ViewModel
-import com.riis.etaDetroitkotlin.model.Company
+import com.riis.etaDetroitkotlin.database.BusRepository
 
 
 class HomeViewModel : ViewModel() {
 
-    val companyList = mutableListOf<Company>()
-    private val companyNames = ArrayList<String>(listOf("SmartBus", "DDOT", "RefleX", "People Mover", "QLine", "Route Map"))
+    private val busRepository = BusRepository.get()
+    val companyListLiveData = busRepository.getCompanies()
 
-    init{
-        for (name in companyNames){
-            val company = Company()
-            company.name = name
-            companyList += company
-        }
-    }
+//    private val companyNames = ArrayList<String>(listOf("SmartBus", "DDOT", "RefleX", "People Mover", "QLine", "Route Map"))
+//
+//    init{
+//        for (name in companyNames){
+//            val company = Company()
+//            company.name = name //todo change back to val once database is fully implemented
+//            companyList += company
+//        }
+//    }
 
 }

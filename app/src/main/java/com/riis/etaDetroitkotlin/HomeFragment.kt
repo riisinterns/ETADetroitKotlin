@@ -1,6 +1,8 @@
 package com.riis.etaDetroitkotlin
 
+import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +10,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,6 +22,7 @@ import com.riis.etaDetroitkotlin.model.Company
 
 //CompanyListFragment is a fragment that displays a grid-based RecyclerView
 //It provides the interface for the user to select between different bus companies
+private const val TAG = "HomeFragment"
 
 class HomeFragment : Fragment() {
 
@@ -26,7 +30,7 @@ class HomeFragment : Fragment() {
     //---------------
     private lateinit var companyRecyclerView: RecyclerView
     private var adapter: CompanyAdapter? = null
-    
+
     //LINKING FRAGMENT WITH A VIEW MODEL
     //----------------------------------
     private val homeViewModel: HomeViewModel by lazy {
@@ -46,19 +50,32 @@ class HomeFragment : Fragment() {
 
         //RecyclerView setup (Grid Layout)
         companyRecyclerView = view.findViewById(R.id.company_recycler_view) as RecyclerView
-        companyRecyclerView.layoutManager = GridLayoutManager(context,2) //second parameter specifies number of columns in grid
+        companyRecyclerView.layoutManager =
+            GridLayoutManager(context, 2) //second parameter specifies number of columns in grid
 
         //update the RecyclerView with itemViews and their corresponding data from the model layer
-        updateUI()
         return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        homeViewModel.companyListLiveData.observe(
+            viewLifecycleOwner,
+            Observer { companyList ->
+                companyList?.let {
+                    Log.d(TAG, "In the observer")
+
+                    updateUI(companyList)
+                }
+            }
+        )
     }
 
     //UPDATING THE FRAGMENT VIEW
     //--------------------------
-    private fun updateUI() {
+    private fun updateUI(companies: List<Company>) {
         //creating an adapter and connecting it to the model layer data
-        val companyList = homeViewModel.companyList
-        adapter = CompanyAdapter(companyList)
+        adapter = CompanyAdapter(companies)
 
         //Connecting the RecyclerView to its adapter
         companyRecyclerView.adapter = adapter
@@ -68,8 +85,8 @@ class HomeFragment : Fragment() {
     //VIEW HOLDER CLASS FOR RECYCLER VIEW
     //-----------------------------------
     private inner class CompanyHolder(view: View)
-        //When given a view, it is used as a reusable blueprint for creating itemViews
-        : RecyclerView.ViewHolder(view),View.OnClickListener {
+    //When given a view, it is used as a reusable blueprint for creating itemViews
+        : RecyclerView.ViewHolder(view), View.OnClickListener {
 
         private lateinit var companyItem: Company //instantiating a new Company object to later receive model layer data
 
@@ -88,7 +105,7 @@ class HomeFragment : Fragment() {
             //updating the itemView attributes using the received data
             companyNameTextView.text = companyItem.name
 
-            when (companyItem.name){
+            when (companyItem.name) {
                 "DDOT" -> {
                     companyImageView.setImageResource(R.drawable.ddot_bus)
                     companyNameTextView.setBackgroundResource(R.color.DdotGreen)
@@ -112,6 +129,10 @@ class HomeFragment : Fragment() {
                 "Route Map" -> {
                     companyImageView.setImageResource(R.drawable.route_map_card_image)
                     companyNameTextView.setBackgroundResource(R.color.PlanMyRoute)
+                }
+                "FAST" -> {
+                    companyImageView.setImageResource(R.drawable.fast)
+                    companyNameTextView.setBackgroundResource(R.color.FAST)
                 }
             }
         }
@@ -152,7 +173,6 @@ class HomeFragment : Fragment() {
             return HomeFragment()
         }
     }
-
 
 
 }

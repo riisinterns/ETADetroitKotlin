@@ -1,7 +1,7 @@
 package com.riis.etaDetroitkotlin
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
@@ -16,7 +16,7 @@ import com.google.android.material.navigation.NavigationView
 class MainActivity : AppCompatActivity() {
 
     //global variables
-    private lateinit var appBarConfig : AppBarConfiguration
+    private lateinit var appBarConfig: AppBarConfiguration
 
     //CREATING THE ACTIVITY
     //---------------------
@@ -35,10 +35,11 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(appBar) //setting the ToolBar as the activity's action bar
 
         //defining app bar configurations
-        val drawerMenu : DrawerLayout? = findViewById(R.id.drawer_menu)
+        val drawerMenu: DrawerLayout? = findViewById(R.id.drawer_menu)
         appBarConfig = AppBarConfiguration(
             setOf(R.id.home_dest), //setting the top-level fragment destinations
-            drawerMenu) //giving the app bar a drawerLayout
+            drawerMenu
+        ) //giving the app bar a drawerLayout
 
         //setting the app bar and side navigation view to work with the Navigation jetpack architecture
         setActionBar(navController, appBarConfig)
@@ -48,7 +49,7 @@ class MainActivity : AppCompatActivity() {
 
     //CLASS FUNCTIONS
     //---------------
-    private fun setActionBar(navController: NavController, appBarConfig : AppBarConfiguration) {
+    private fun setActionBar(navController: NavController, appBarConfig: AppBarConfiguration) {
         setupActionBarWithNavController(navController, appBarConfig)
     }
 

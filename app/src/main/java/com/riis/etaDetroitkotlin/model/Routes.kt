@@ -11,7 +11,11 @@ import androidx.room.*
         onUpdate = ForeignKey.CASCADE
     )
     ],
-    indices = [Index(value = ["company_id", "route_number"], unique = true)],
+    indices = [Index(
+        name = "index_routes_company_id_route_number",
+        value = ["company_id", "route_number"],
+        unique = true
+    )],
     tableName = "routes"
 )
 
@@ -20,5 +24,6 @@ data class Routes(
     @ColumnInfo(name = "route_number") val number: Int,
     @ColumnInfo(name = "company_id") val companyId: Int,
     @ColumnInfo(name = "route_name") val name: String = "",
-    @ColumnInfo(name = "route_description") val description: String = ""
+    @ColumnInfo(name = "route_description") val description: String?
 )
+

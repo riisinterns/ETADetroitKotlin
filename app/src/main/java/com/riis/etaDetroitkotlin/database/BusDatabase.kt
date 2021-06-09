@@ -20,7 +20,7 @@ import com.riis.etaDetroitkotlin.model.*
     ],
     version = 1
 )
-@TypeConverters(BusTypeConverter::class)
+//@TypeConverters(BusTypeConverter::class)
 abstract class BusDatabase : RoomDatabase() {
     abstract fun busDao(): BusDao
 }
