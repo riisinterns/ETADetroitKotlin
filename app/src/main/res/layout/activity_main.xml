@@ -17,7 +17,8 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/app_bar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="?attr/actionBarSize"
+
             android:background="@color/PlanMyRoute"
             android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar" />
 
@@ -37,7 +38,11 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        app:menu="@menu/drawer_menu" />
+        app:menu="@menu/drawer_menu"
+        android:background="@color/PlanMyRoute"
+        app:itemTextColor="@color/white"
+        app:itemIconTint="@color/white" />
+
 
 </androidx.drawerlayout.widget.DrawerLayout>
 
