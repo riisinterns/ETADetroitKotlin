@@ -9,9 +9,9 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "companies")
 
 data class Company(
-    @PrimaryKey val id: Int = 0,
+    @PrimaryKey var id: Int = 0,
     var name: String = "",
-    @ColumnInfo(name = "brand_color") var brandColor: String = "",
+    @ColumnInfo(name = "brand_color") var brandColor: String = "#BC0E29",
     @ColumnInfo(name = "bus_image_url") var busImgUrl: String = ""
 )
 
