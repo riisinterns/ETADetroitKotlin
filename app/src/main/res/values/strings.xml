@@ -1,7 +1,15 @@
 <resources>
     <string name="app_name">ETA Detroit Kotlin</string>
-    <string name="home_label">Home</string>
     <string name="routes_label">Routes</string>
+
+    <string name="navHomeString">Home</string>
+    <string name="navPlannerString">Plan My Route</string>
+    <string name="navDdot">DDOT Bus</string>
+    <string name="navSmart">Smart Bus</string>
+    <string name="navReflex">Fast Bus</string>
+    <string name="navPeopleMover">Detroit People Mover</string>
+    <string name="navQline">Qline</string>
+    <string name="navRouteMap">Route Map</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
