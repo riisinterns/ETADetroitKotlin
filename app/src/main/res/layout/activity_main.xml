@@ -18,7 +18,7 @@
             android:id="@+id/app_bar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-
+            android:elevation="4dp"
             android:background="@color/PlanMyRoute"
             android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar" />
 

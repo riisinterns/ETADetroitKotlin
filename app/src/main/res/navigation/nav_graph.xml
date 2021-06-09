@@ -19,7 +19,7 @@
 
     <fragment
         android:id="@+id/routes_dest"
-        android:name="com.riis.etaDetroitkotlin.HomeFragment"
+        android:name="com.riis.etaDetroitkotlin.RoutesFragment"
         android:label="@string/routes_label"
         tools:layout="@layout/fragment_routes">
 

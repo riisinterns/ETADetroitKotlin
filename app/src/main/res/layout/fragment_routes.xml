@@ -1,14 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".RoutesFragment">
+    tools:context=".RoutesFragment"
+    android:orientation="vertical"
+    android:layout_margin="16dp">
 
-    <!-- TODO: Update blank fragment layout -->
+
     <TextView
+        style="?android:listSeparatorTextViewStyle"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="wrap_content"
+        android:text="Id"
+        tools:ignore="HardcodedText"
+        android:background="@color/PlanMyRoute"/>
 
-</FrameLayout>
+    <TextView
+        android:id="@+id/id_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="1"
+        android:textSize="15sp"
+        tools:ignore="HardcodedText"
+        android:layout_marginBottom="10dp"/>
+
+    <TextView
+        style="?android:listSeparatorTextViewStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Name"
+        tools:ignore="HardcodedText"
+        android:background="@color/PlanMyRoute"/>
+
+    <TextView
+        android:id="@+id/name_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="SmartBus"
+        android:textSize="15sp"
+        tools:ignore="HardcodedText"
+        android:layout_marginBottom="10dp"/>
+
+    <TextView
+        style="?android:listSeparatorTextViewStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Brand Color"
+        tools:ignore="HardcodedText"
+        android:background="@color/PlanMyRoute"/>
+
+    <TextView
+        android:id="@+id/color_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="#BC0E29"
+        android:textSize="15sp"
+        tools:ignore="HardcodedText"
+        android:layout_marginBottom="10dp"/>
+
+    <TextView
+        style="?android:listSeparatorTextViewStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Bus Image URL"
+        tools:ignore="HardcodedText"
+        android:background="@color/PlanMyRoute"/>
+
+    <TextView
+        android:id="@+id/busImgUrl_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="/assets/images/Smart-Bus.png"
+        android:textSize="15sp"
+        tools:ignore="HardcodedText"
+        android:layout_marginBottom="10dp"/>
+
+</LinearLayout>

@@ -1,6 +1,12 @@
 package com.riis.etaDetroitkotlin
 
+
+
+//HomeFragment is a fragment that displays a grid-based RecyclerView
 import android.graphics.Color
+
+
+
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,16 +14,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-
-
-//HomeFragment is a fragment that displays a grid-based RecyclerView
 import com.riis.etaDetroitkotlin.model.Company
+
 
 
 //CompanyListFragment is a fragment that displays a grid-based RecyclerView
@@ -31,12 +36,14 @@ class HomeFragment : Fragment() {
     private lateinit var companyRecyclerView: RecyclerView
     private var adapter: CompanyAdapter? = null
 
-    //LINKING FRAGMENT WITH A VIEW MODEL
+    
+    //LINKING FRAGMENT WITH VIEW MODELS
     //----------------------------------
     private val homeViewModel: HomeViewModel by lazy {
         ViewModelProvider(this).get(HomeViewModel::class.java)
-
     }
+
+    private val homeToRoutesSharedViewModel: HomeToRoutesSharedViewModel by activityViewModels()
 
     //CREATING THE FRAGMENT VIEW
     //--------------------------
@@ -61,7 +68,7 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         homeViewModel.companyListLiveData.observe(
             viewLifecycleOwner,
-            Observer { companyList ->
+            { companyList ->
                 companyList?.let {
                     Log.d(TAG, "In the observer")
 
@@ -98,48 +105,23 @@ class HomeFragment : Fragment() {
             itemView.setOnClickListener(this) //setting a click listener on each itemView
         }
 
-        //binding the viewHolder's Company object to another from the model layer
+        //binding the viewHolder's Company object to date of another from the model layer
         fun bind(company: Company) {
             companyItem = company
 
             //updating the itemView attributes using the received data
             companyNameTextView.text = companyItem.name
+            companyNameTextView.setBackgroundColor(Color.parseColor(companyItem.brandColor))
 
-            when (companyItem.name) {
-                "DDOT" -> {
-                    companyImageView.setImageResource(R.drawable.ddot_bus)
-                    companyNameTextView.setBackgroundResource(R.color.DdotGreen)
-                }
-                "People Mover" -> {
-                    companyImageView.setImageResource(R.drawable.people_mover)
-                    companyNameTextView.setBackgroundResource(R.color.PeopleMoverColor)
-                }
-                "QLine" -> {
-                    companyImageView.setImageResource(R.drawable.qline)
-                    companyNameTextView.setBackgroundResource(R.color.Qline)
-                }
-                "RefleX" -> {
-                    companyImageView.setImageResource(R.drawable.reflex)
-                    companyNameTextView.setBackgroundResource(R.color.ReflexBlue)
-                }
-                "SmartBus" -> {
-                    companyImageView.setImageResource(R.drawable.smart)
-                    companyNameTextView.setBackgroundResource(R.color.SmartBusRed)
-                }
-                "Route Map" -> {
-                    companyImageView.setImageResource(R.drawable.route_map_card_image)
-                    companyNameTextView.setBackgroundResource(R.color.PlanMyRoute)
-                }
-                "FAST" -> {
-                    companyImageView.setImageResource(R.drawable.fast)
-                    companyNameTextView.setBackgroundResource(R.color.FAST)
-                }
-            }
+            val resID: Int = context?.resources!!.getIdentifier(companyItem.busImgUrl, "drawable", context!!.packageName)
+            companyImageView.setImageResource(resID)
+
         }
 
-        override fun onClick(v: View) {
-            Toast.makeText(context, "${companyItem.name} pressed!", Toast.LENGTH_SHORT)
-                .show()
+        override fun onClick(itemView: View) {
+            homeToRoutesSharedViewModel.saveCompany(companyItem)
+            val action = HomeFragmentDirections.moveToRoutesFragment()
+            itemView.findNavController().navigate(action)
         }
     }
 
@@ -163,14 +145,6 @@ class HomeFragment : Fragment() {
         override fun onBindViewHolder(holder: CompanyHolder, position: Int) {
             val company = companyList[position]
             holder.bind(company)
-        }
-    }
-
-    //FUNCTION THAT ACTIVITIES CAN CALL TO GET AN INSTANCE OF THE FRAGMENT
-    //--------------------------------------------------------------------
-    companion object {
-        fun newInstance(): HomeFragment {
-            return HomeFragment()
         }
     }
 
