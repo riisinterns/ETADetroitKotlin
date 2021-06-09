@@ -1,9 +1,6 @@
 package com.riis.etaDetroitkotlin.model
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.PrimaryKey
+import androidx.room.*
 
 @Entity(
     tableName = "route_stops",
@@ -34,7 +31,14 @@ import androidx.room.PrimaryKey
             onDelete = ForeignKey.CASCADE,
             onUpdate = ForeignKey.CASCADE
         )
-    ]
+    ],
+    indices = [Index(
+        name = "idx_route_stops_fk_route_stops_direction_id",
+        value = ["direction_id"],
+        unique = false
+    ),
+        Index(name = "idx_route_stops_fk_route_stops_day_id", value = ["day_id"], unique = false),
+        Index(name = "idx_route_stops_fk_route_stops_stop_id", value = ["stop_id"], unique = false)]
 )
 data class RouteStops(
     @PrimaryKey val id: Int,

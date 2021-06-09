@@ -1,13 +1,31 @@
 package com.riis.etaDetroitkotlin.model
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.Index
-import androidx.room.PrimaryKey
+import androidx.room.*
 
 @Entity(
-    indices = [Index(value = ["trip_id", "route_id"], unique = true)],
-    tableName = "trips"
+//    indices = [Index(value = ["trip_id", "route_id"], unique = true)],
+    foreignKeys = [ForeignKey(
+        entity = Routes::class,
+        parentColumns = arrayOf("id"),
+        childColumns = arrayOf("route_id"),
+        onDelete = ForeignKey.CASCADE,
+        onUpdate = ForeignKey.CASCADE
+    ),
+        ForeignKey(
+            entity = Directions::class,
+            parentColumns = arrayOf("id"),
+            childColumns = arrayOf("direction_id"),
+            onUpdate = ForeignKey.CASCADE
+        )
+    ],
+    tableName = "trips",
+    indices = [ Index(
+        name =
+        "idx_trips_fk_trips_directions", unique = false, value = ["direction_id"]
+    ), Index(
+        name =
+        "idx_trips_fk_trips_routes", unique = false, value = ["route_id"]
+    ), Index(value = ["trip_id", "route_id"], unique = true)]
 )
 data class Trips(
     @PrimaryKey val id: Int,

@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "8c009a01670f08befc886a7941c06824",
+    "identityHash": "23e70935f3397d70ca71956790985d20",
     "entities": [
       {
         "tableName": "companies",
@@ -96,7 +96,7 @@
       },
       {
         "tableName": "routes",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `route_number` INTEGER NOT NULL, `company_id` INTEGER NOT NULL, `route_name` TEXT NOT NULL, `route_description` TEXT NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`company_id`) REFERENCES `companies`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `route_number` INTEGER NOT NULL, `company_id` INTEGER NOT NULL, `route_name` TEXT NOT NULL, `route_description` TEXT, PRIMARY KEY(`id`), FOREIGN KEY(`company_id`) REFERENCES `companies`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -126,7 +126,7 @@
             "fieldPath": "description",
             "columnName": "route_description",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -201,7 +201,32 @@
           ],
           "autoGenerate": false
         },
-        "indices": [],
+        "indices": [
+          {
+            "name": "idx_route_stops_fk_route_stops_direction_id",
+            "unique": false,
+            "columnNames": [
+              "direction_id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `idx_route_stops_fk_route_stops_direction_id` ON `${TABLE_NAME}` (`direction_id`)"
+          },
+          {
+            "name": "idx_route_stops_fk_route_stops_day_id",
+            "unique": false,
+            "columnNames": [
+              "day_id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `idx_route_stops_fk_route_stops_day_id` ON `${TABLE_NAME}` (`day_id`)"
+          },
+          {
+            "name": "idx_route_stops_fk_route_stops_stop_id",
+            "unique": false,
+            "columnNames": [
+              "stop_id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `idx_route_stops_fk_route_stops_stop_id` ON `${TABLE_NAME}` (`stop_id`)"
+          }
+        ],
         "foreignKeys": [
           {
             "table": "routes",
@@ -321,7 +346,16 @@
           ],
           "autoGenerate": false
         },
-        "indices": [],
+        "indices": [
+          {
+            "name": "idx_trip_days_of_operation_fk_trip_days_of_operation_trip",
+            "unique": false,
+            "columnNames": [
+              "trip_id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `idx_trip_days_of_operation_fk_trip_days_of_operation_trip` ON `${TABLE_NAME}` (`trip_id`)"
+          }
+        ],
         "foreignKeys": [
           {
             "table": "days_of_operation",
@@ -349,7 +383,7 @@
       },
       {
         "tableName": "trips",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `trip_id` INTEGER NOT NULL, `route_id` INTEGER NOT NULL, `direction_id` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `trip_id` INTEGER NOT NULL, `route_id` INTEGER NOT NULL, `direction_id` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`route_id`) REFERENCES `routes`(`id`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`direction_id`) REFERENCES `directions`(`id`) ON UPDATE CASCADE ON DELETE NO ACTION )",
         "fields": [
           {
             "fieldPath": "id",
@@ -384,6 +418,22 @@
         },
         "indices": [
           {
+            "name": "idx_trips_fk_trips_directions",
+            "unique": false,
+            "columnNames": [
+              "direction_id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `idx_trips_fk_trips_directions` ON `${TABLE_NAME}` (`direction_id`)"
+          },
+          {
+            "name": "idx_trips_fk_trips_routes",
+            "unique": false,
+            "columnNames": [
+              "route_id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `idx_trips_fk_trips_routes` ON `${TABLE_NAME}` (`route_id`)"
+          },
+          {
             "name": "index_trips_trip_id_route_id",
             "unique": true,
             "columnNames": [
@@ -393,11 +443,34 @@
             "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_trips_trip_id_route_id` ON `${TABLE_NAME}` (`trip_id`, `route_id`)"
           }
         ],
-        "foreignKeys": []
+        "foreignKeys": [
+          {
+            "table": "routes",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "route_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "directions",
+            "onDelete": "NO ACTION",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "direction_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
       },
       {
         "tableName": "trip_stops",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`trip_id` INTEGER NOT NULL, `stop_id` INTEGER NOT NULL, `arrival_time` INTEGER NOT NULL, `stop_sequence` INTEGER NOT NULL, PRIMARY KEY(`trip_id`, `stop_id`, `stop_sequence`), FOREIGN KEY(`trip_id`) REFERENCES `trips`(`id`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`stop_id`) REFERENCES `stops`(`stop_id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`trip_id` INTEGER NOT NULL, `stop_id` INTEGER NOT NULL, `arrival_time` TEXT, `stop_sequence` INTEGER NOT NULL, PRIMARY KEY(`trip_id`, `stop_id`, `stop_sequence`), FOREIGN KEY(`trip_id`) REFERENCES `trips`(`id`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`stop_id`) REFERENCES `stops`(`stop_id`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "tripId",
@@ -414,8 +487,8 @@
           {
             "fieldPath": "arrivalTime",
             "columnName": "arrival_time",
-            "affinity": "INTEGER",
-            "notNull": true
+            "affinity": "TEXT",
+            "notNull": false
           },
           {
             "fieldPath": "stopSequence",
@@ -432,7 +505,16 @@
           ],
           "autoGenerate": false
         },
-        "indices": [],
+        "indices": [
+          {
+            "name": "idx_trip_stops_fk_trip_stop_stops",
+            "unique": false,
+            "columnNames": [
+              "stop_id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `idx_trip_stops_fk_trip_stop_stops` ON `${TABLE_NAME}` (`stop_id`)"
+          }
+        ],
         "foreignKeys": [
           {
             "table": "trips",
@@ -462,7 +544,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '8c009a01670f08befc886a7941c06824')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '23e70935f3397d70ca71956790985d20')"
     ]
   }
 }
