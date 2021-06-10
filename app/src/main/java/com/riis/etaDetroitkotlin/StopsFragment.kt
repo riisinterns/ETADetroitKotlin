@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
@@ -22,7 +23,6 @@ class StopsFragment : Fragment() {
     private lateinit var stopsRecyclerView: RecyclerView
     private lateinit var adapter: StopAdapter
     private val sharedViewModel: SharedViewModel by activityViewModels()
-//    private lateinit var routeStopsList: List<RouteStops>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,13 +46,6 @@ class StopsFragment : Fragment() {
                 updateUI(routeStops)
             }
         )
-
-
-//        val stop: Stops = Stops(1, "Lafayette & Trumbull", 1.0, 2.0)
-//
-//        val test: List<Stops> = listOf(stop, Stops(1, "Miller @ Ford Gate 6", 1.0, 2.0))
-//
-//        updateUI(test)
     }
 
     private fun updateUI(routeStops: List<RouteStops>) {
@@ -67,6 +60,8 @@ class StopsFragment : Fragment() {
 
         private val stopName: TextView = itemView.findViewById(R.id.stop_name)
 
+        private val dynamicLinearLayout = itemView.findViewById(R.id.dynamic_linear_layout) as LinearLayout
+
         init {
             itemView.setOnClickListener(this) //setting a click listener on each itemView
         }
@@ -80,7 +75,12 @@ class StopsFragment : Fragment() {
 
         override fun onClick(itemView: View) {
             //TODO navigate to StopsFragment
-//            Toast.makeText(context, "Clicked on route number ${routeItem.number}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Clicked on stop  ${stopItem.name}", Toast.LENGTH_SHORT).show()
+            if (dynamicLinearLayout.visibility == View.GONE) {
+                dynamicLinearLayout.visibility = View.VISIBLE
+            } else{
+                dynamicLinearLayout.visibility = View.GONE
+            }
         }
     }
 
@@ -104,7 +104,6 @@ class StopsFragment : Fragment() {
                     holder.bind(stop)
                 }
             )
-//            holder.bind(stop)
         }
     }
 }
