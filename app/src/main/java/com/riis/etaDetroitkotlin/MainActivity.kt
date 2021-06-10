@@ -2,6 +2,9 @@ package com.riis.etaDetroitkotlin
 
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -24,6 +27,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     //global variables
     private lateinit var appBarConfig: AppBarConfiguration
     private lateinit var navController: NavController
+    private lateinit var drawerMenu: DrawerLayout
 
     //CREATING THE ACTIVITY
     //---------------------
@@ -42,7 +46,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setSupportActionBar(appBar) //setting the ToolBar as the activity's action bar
 
         //defining app bar configurations
-        val drawerMenu: DrawerLayout? = findViewById(R.id.drawer_menu)
+        drawerMenu = findViewById(R.id.drawer_menu)
         appBarConfig = AppBarConfiguration(
             setOf(R.id.home_dest), //setting the top-level fragment destinations
             drawerMenu
@@ -76,9 +80,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.nav_route_map -> navController.navigate(R.id.action_home_dest_to_routeMapFragment)
-        }
+
+        drawerMenu.closeDrawers()
+        
+        Handler(Looper.getMainLooper()).postDelayed({
+            when (item.itemId) {
+                R.id.nav_route_map -> navController.navigate(R.id.action_home_dest_to_routeMapFragment)
+            }
+        }, 1000)
+
         return true
     }
 
