@@ -1,13 +1,14 @@
 package com.riis.etaDetroitkotlin
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
-import com.riis.etaDetroitkotlin.model.Company
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.riis.etaDetroitkotlin.model.Routes
@@ -17,6 +18,7 @@ class RoutesFragment : Fragment() {
     //CLASS VARIABLES
     //---------------
     private lateinit var routeRecyclerView: RecyclerView
+    private lateinit var busPhotoImageView: ImageView
     private var adapter: RouteAdapter? = null
     private val homeToRoutesSharedViewModel: HomeToRoutesSharedViewModel by activityViewModels()
 
@@ -28,10 +30,11 @@ class RoutesFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         //inflating the fragment_home layout as the fragment view
-        val view = inflater.inflate(R.layout.fragment_home, container, false)
+        val view = inflater.inflate(R.layout.fragment_routes, container, false)
 
         //RecyclerView setup (Grid Layout)
-        routeRecyclerView = view.findViewById(R.id.company_recycler_view) as RecyclerView
+        routeRecyclerView = view.findViewById(R.id.route_recycler_view) as RecyclerView
+        busPhotoImageView = view.findViewById(R.id.busImage) as ImageView
         routeRecyclerView.layoutManager = LinearLayoutManager(context)
         //update the RecyclerView with itemViews and their corresponding data from the model layer
         return view
@@ -39,15 +42,24 @@ class RoutesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // set Photo and Background
+        val currentCompany = homeToRoutesSharedViewModel.currentCompany
+        val resID: Int = context?.resources!!.getIdentifier(currentCompany?.busImgUrl, "drawable", requireContext().packageName)
+        busPhotoImageView.setImageResource(resID)
+        routeRecyclerView.setBackgroundColor(Color.parseColor(currentCompany?.brandColor))
+
+
+
         homeToRoutesSharedViewModel.routeListLiveData.observe(
             viewLifecycleOwner,
             { routes ->
-                updateUI(routes)
+                updateRoutesDisplayed(routes)
             }
         )
     }
 
-    private fun updateUI(routes: List<Routes>) {
+    private fun updateRoutesDisplayed(routes: List<Routes>) {
         adapter = RouteAdapter(routes)
         routeRecyclerView.adapter = adapter
     }
@@ -61,8 +73,8 @@ class RoutesFragment : Fragment() {
         private lateinit var routeItem: Routes //instantiating a new Route object to later receive model layer data
 
         //referencing the itemView's child views from the list_item_route layout
-        private val routeTitleTextView: TextView = itemView.findViewById(R.id.route_title)
-        private val routeSubtitleTextView: TextView = itemView.findViewById(R.id.route_subtitle)
+        private val routeNumberTextView: TextView = itemView.findViewById(R.id.route_number)
+        private val routeNameTextView: TextView = itemView.findViewById(R.id.route_name)
 
         init {
             itemView.setOnClickListener(this) //setting a click listener on each itemView
@@ -74,8 +86,8 @@ class RoutesFragment : Fragment() {
 
             //updating the itemView attributes using the received data
 
-            routeTitleTextView.text = routeItem.name
-            routeSubtitleTextView.text = getString(R.string.route_item_subtitle, routeItem.number.toString())
+            routeNumberTextView.text = getString(R.string.route_item_subtitle, routeItem.number.toString())
+            routeNameTextView.text = routeItem.name
 
         }
 

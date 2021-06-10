@@ -24,6 +24,9 @@ class HomeToRoutesSharedViewModel : ViewModel() {
             busRepository.getRoutes(company.id)
         }
 
+    val currentCompany: Company?
+        get() = companyContainer.value
+
     fun saveCompany(newCompany: Company) { //this function sets the value of companyContainer to a new Company object
         companyContainer.value = newCompany
     }
