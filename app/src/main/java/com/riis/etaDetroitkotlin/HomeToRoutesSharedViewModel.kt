@@ -19,9 +19,13 @@ class HomeToRoutesSharedViewModel : ViewModel() {
     // ... to allow observers to listen to any changes to it
 
     var routeListLiveData: LiveData<List<Routes>> =
-        Transformations.switchMap(companyContainer){ company ->
+        //switches the Routes (observed in RoutesFragment) based of the company that gets saved
+        Transformations.switchMap(companyContainer) { company ->
             busRepository.getRoutes(company.id)
         }
+
+    val currentCompany: Company?
+        get() = companyContainer.value
 
     fun saveCompany(newCompany: Company) { //this function sets the value of companyContainer to a new Company object
         companyContainer.value = newCompany
