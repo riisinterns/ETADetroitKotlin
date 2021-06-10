@@ -30,6 +30,6 @@
     <fragment
         android:id="@+id/routeMapFragment"
         android:name="com.riis.etaDetroitkotlin.fragment.RouteMapFragment"
-        android:label="RouteMapFragment" />
+        android:label="Route Map" />
 
 </navigation>

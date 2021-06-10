@@ -98,6 +98,8 @@ class RouteMapFragment : Fragment(), View.OnClickListener {
         peopleMoverCheckbox.setOnClickListener(this)
 
         dialog = RouteLoadingDialog(activity as Activity)
+
+
     }
 
 
