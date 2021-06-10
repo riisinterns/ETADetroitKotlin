@@ -22,4 +22,5 @@ interface BusDao {
 
     @Query("SELECT * FROM stops WHERE stop_id=(:stopId)")
     fun getStop(stopId: Int): LiveData<Stops>
+
 }
