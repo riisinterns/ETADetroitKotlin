@@ -5,10 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.riis.etaDetroitkotlin.model.Company
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.riis.etaDetroitkotlin.model.Routes
 
@@ -18,7 +20,7 @@ class RoutesFragment : Fragment() {
     //---------------
     private lateinit var routeRecyclerView: RecyclerView
     private var adapter: RouteAdapter? = null
-    private val homeToRoutesSharedViewModel: HomeToRoutesSharedViewModel by activityViewModels()
+    private val sharedViewModel: SharedViewModel by activityViewModels()
 
     //CREATING THE FRAGMENT VIEW
     //--------------------------
@@ -39,7 +41,7 @@ class RoutesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        homeToRoutesSharedViewModel.routeListLiveData.observe(
+        sharedViewModel.routeListLiveData.observe(
             viewLifecycleOwner,
             { routes ->
                 updateUI(routes)
@@ -80,6 +82,9 @@ class RoutesFragment : Fragment() {
 
         override fun onClick(itemView: View) {
             //TODO navigate to StopsFragment
+            Toast.makeText(context, "Clicked on route number ${routeItem.number}", Toast.LENGTH_SHORT).show()
+            sharedViewModel.saveRoute(routeItem)
+            itemView.findNavController().navigate(R.id.route_to_stops)
         }
     }
 

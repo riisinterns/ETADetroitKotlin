@@ -39,11 +39,7 @@ class HomeFragment : Fragment() {
     
     //LINKING FRAGMENT WITH VIEW MODELS
     //----------------------------------
-    private val homeViewModel: HomeViewModel by lazy {
-        ViewModelProvider(this).get(HomeViewModel::class.java)
-    }
-
-    private val homeToRoutesSharedViewModel: HomeToRoutesSharedViewModel by activityViewModels()
+    private val sharedViewModel: SharedViewModel by activityViewModels()
 
     //CREATING THE FRAGMENT VIEW
     //--------------------------
@@ -66,7 +62,7 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        homeViewModel.companyListLiveData.observe(
+        sharedViewModel.companyListLiveData.observe(
             viewLifecycleOwner,
             { companyList ->
                 companyList?.let {
@@ -118,7 +114,7 @@ class HomeFragment : Fragment() {
         }
 
         override fun onClick(itemView: View) {
-            homeToRoutesSharedViewModel.saveCompany(companyItem)
+            sharedViewModel.saveCompany(companyItem)
             itemView.findNavController().navigate(R.id.moveToRoutesFragment)
         }
     }

@@ -61,4 +61,6 @@
     <string name="loadingRoutes">Loading Routes...</string>
 
     <string name="noRoute">No Route for the selected Day</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

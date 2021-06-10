@@ -26,10 +26,18 @@
         android:label="@string/routes_label"
         tools:layout="@layout/fragment_routes">
 
+        <action
+                android:id="@+id/route_to_stops"
+                app:destination="@id/stopsFragment" />
     </fragment>
     <fragment
         android:id="@+id/routeMapFragment"
         android:name="com.riis.etaDetroitkotlin.fragment.RouteMapFragment"
         android:label="Route Map" />
+    <fragment
+            android:id="@+id/stopsFragment"
+            android:name="com.riis.etaDetroitkotlin.StopsFragment"
+            android:label="stops_fragment"
+            tools:layout="@layout/stops_fragment" />
 
 </navigation>
