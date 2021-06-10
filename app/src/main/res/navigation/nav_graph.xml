@@ -14,6 +14,9 @@
         <action
             android:id="@+id/moveToRoutesFragment"
             app:destination="@id/routes_dest" />
+        <action
+            android:id="@+id/action_home_dest_to_routeMapFragment"
+            app:destination="@id/routeMapFragment" />
 
     </fragment>
 
@@ -24,5 +27,9 @@
         tools:layout="@layout/fragment_routes">
 
     </fragment>
+    <fragment
+        android:id="@+id/routeMapFragment"
+        android:name="com.riis.etaDetroitkotlin.fragment.RouteMapFragment"
+        android:label="RouteMapFragment" />
 
 </navigation>

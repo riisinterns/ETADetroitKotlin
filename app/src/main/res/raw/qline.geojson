@@ -1,0 +1,8 @@
+{
+"type": "FeatureCollection",
+"name": "912c540e-30f4-4beb-977d-e83f3c534282202046-1-1lffibr.ehga",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{"type":"Feature", "geometry":{"type":"LineString", "coordinates":[[ -83.073143362708095, 42.370014241809798 ], [ -83.045496463922206, 42.329630753399499 ]]}}
+]
+}

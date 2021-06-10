@@ -5,16 +5,29 @@
     <color name="purple_700">#FF3700B3</color>
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+
+    <color name="colorPrimary">#808000</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="light_gray">#F2F2F2</color>
+    <color name="grey_500">#9E9E9E</color>
+    <color name="white">#FFFFFF</color>
+    <color name="green">#66FF00</color>
+    <color name="blue">#0000FF</color>
+    <color name="routeListColor">#0E5280</color>
+    <color name="routeNumberColor">#218cca</color>
+    <color name="black">#99000000</color>
+    <color name="translucent_black">#80000000</color>
+    <color name="translucent">#00000000</color>
 
     <color name="SmartBusRed">#C00025</color>
     <color name="DdotGreen">#00483A</color>
     <color name="ReflexBlue">#458BC3</color>
     <color name="PeopleMoverColor">#204879</color>
-    <color name="Qline">#973c37</color>
     <color name="PlanMyRoute">#009C77</color>
-    <color name="FAST">#5092fc</color>
-
-
+    <color name="ETAHeader">#009C77</color>
+    <color name="walkingTint">#2788D3</color>
+    <color name="busTint">#FFFFFF</color>
+    <color name="TexasGreen">#00952A</color>
+    <color name="Qline">#973c37</color>
 </resources>

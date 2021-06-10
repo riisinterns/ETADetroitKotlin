@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:cardBackgroundColor="@color/white"
+        app:cardElevation="50dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <CheckBox
+                android:id="@+id/DdotCheckBox"
+                android:layout_width="200dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"
+                android:text="@string/ddotRoutesTitle"
+                android:textColor="@color/black"
+                app:layout_constraintBottom_toTopOf="@+id/SmartCheckBox"
+                app:layout_constraintEnd_toStartOf="@+id/ddotColorBar"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <FrameLayout
+                android:id="@+id/ddotColorBar"
+                android:layout_width="50dp"
+                android:layout_height="20dp"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="8dp"
+                android:background="@color/DdotGreen"
+                app:layout_constraintBottom_toTopOf="@+id/smartColorBar"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/DdotCheckBox"
+                app:layout_constraintTop_toTopOf="parent">
+
+            </FrameLayout>
+
+            <CheckBox
+                android:id="@+id/SmartCheckBox"
+                android:layout_width="0dp"
+                android:layout_height="20dp"
+                android:layout_marginBottom="8dp"
+                android:text="@string/smartRoutesTitle"
+                android:textColor="@color/black"
+                app:layout_constraintBottom_toTopOf="@+id/ReflexCheckBox"
+                app:layout_constraintEnd_toStartOf="@+id/smartColorBar"
+                app:layout_constraintStart_toStartOf="@+id/DdotCheckBox"
+                app:layout_constraintTop_toBottomOf="@+id/DdotCheckBox" />
+
+            <FrameLayout
+                android:id="@+id/smartColorBar"
+                android:layout_width="50dp"
+                android:layout_height="20dp"
+                android:layout_marginBottom="8dp"
+                android:background="@color/SmartBusRed"
+                app:layout_constraintBottom_toTopOf="@+id/reflexColorBar"
+                app:layout_constraintEnd_toEndOf="@+id/ddotColorBar"
+                app:layout_constraintStart_toEndOf="@+id/SmartCheckBox"
+                app:layout_constraintTop_toBottomOf="@+id/ddotColorBar" />
+
+            <CheckBox
+                android:id="@+id/ReflexCheckBox"
+                android:layout_width="0dp"
+                android:layout_height="20dp"
+                android:layout_marginBottom="8dp"
+                android:text="@string/reflexRoutesTitle"
+                android:textColor="@color/black"
+                app:layout_constraintBottom_toTopOf="@+id/PeopleMoverCheckBox"
+                app:layout_constraintEnd_toStartOf="@+id/reflexColorBar"
+                app:layout_constraintStart_toStartOf="@+id/SmartCheckBox"
+                app:layout_constraintTop_toBottomOf="@+id/SmartCheckBox" />
+
+            <FrameLayout
+                android:id="@+id/reflexColorBar"
+                android:layout_width="50dp"
+                android:layout_height="20dp"
+                android:layout_marginBottom="8dp"
+                android:background="@color/ReflexBlue"
+                app:layout_constraintBottom_toTopOf="@+id/peopleMoverColorBar"
+                app:layout_constraintEnd_toEndOf="@+id/smartColorBar"
+                app:layout_constraintStart_toEndOf="@+id/ReflexCheckBox"
+                app:layout_constraintTop_toBottomOf="@+id/smartColorBar" />
+
+            <CheckBox
+                android:id="@+id/PeopleMoverCheckBox"
+                android:layout_width="0dp"
+                android:layout_height="20dp"
+                android:layout_marginBottom="8dp"
+                android:text="@string/peopleMoverTitle"
+                android:textColor="@color/black"
+                app:layout_constraintBottom_toTopOf="@+id/QlineCheckBox"
+                app:layout_constraintEnd_toStartOf="@+id/peopleMoverColorBar"
+                app:layout_constraintStart_toStartOf="@+id/ReflexCheckBox"
+                app:layout_constraintTop_toBottomOf="@+id/ReflexCheckBox" />
+
+            <FrameLayout
+                android:id="@+id/peopleMoverColorBar"
+                android:layout_width="50dp"
+                android:layout_height="20dp"
+                android:layout_marginBottom="8dp"
+                android:background="@color/PeopleMoverColor"
+                app:layout_constraintBottom_toTopOf="@+id/qlineColorBar"
+                app:layout_constraintEnd_toEndOf="@+id/reflexColorBar"
+                app:layout_constraintStart_toEndOf="@+id/PeopleMoverCheckBox"
+                app:layout_constraintTop_toBottomOf="@+id/reflexColorBar" />
+
+            <CheckBox
+                android:id="@+id/QlineCheckBox"
+                android:layout_width="0dp"
+                android:layout_height="20dp"
+                android:layout_marginBottom="16dp"
+                android:text="@string/navQline"
+                android:textColor="@color/black"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/qlineColorBar"
+                app:layout_constraintStart_toStartOf="@+id/PeopleMoverCheckBox"
+                app:layout_constraintTop_toBottomOf="@+id/PeopleMoverCheckBox" />
+
+            <FrameLayout
+                android:id="@+id/qlineColorBar"
+                android:layout_width="50dp"
+                android:layout_height="20dp"
+                android:layout_marginBottom="16dp"
+                android:background="@color/Qline"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/peopleMoverColorBar"
+                app:layout_constraintStart_toEndOf="@+id/QlineCheckBox"
+                app:layout_constraintTop_toBottomOf="@+id/peopleMoverColorBar" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
