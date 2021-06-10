@@ -61,8 +61,9 @@
     <string name="loadingRoutes">Loading Routes...</string>
 
     <string name="noRoute">No Route for the selected Day</string>
-    <string name="route_title">Route Title</string>
-    <string name="route_subtitle">Route Subtitle</string>
-    <string name="arrow_desc">Arrow pointing left</string>
+    <string name="route_number">Route Number</string>
+    <string name="route_name">Route Name</string>
+    <string name="arrow_desc">Arrow pointing right</string>
     <string name="route_item_subtitle">ROUTE %s</string>
+    <string name="transportation_desc">An image of your chosen transportation.</string>
 </resources>
