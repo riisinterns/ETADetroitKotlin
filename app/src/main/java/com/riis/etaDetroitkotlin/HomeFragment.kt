@@ -50,11 +50,7 @@ class HomeFragment : Fragment() , NavigationView.OnNavigationItemSelectedListene
     
     //LINKING FRAGMENT WITH VIEW MODELS
     //----------------------------------
-    private val homeViewModel: HomeViewModel by lazy {
-        ViewModelProvider(this).get(HomeViewModel::class.java)
-    }
-
-    private val homeToRoutesSharedViewModel: HomeToRoutesSharedViewModel by activityViewModels()
+    private val sharedViewModel: SharedViewModel by activityViewModels()
 
     //CREATING THE FRAGMENT VIEW
     //--------------------------
@@ -84,7 +80,7 @@ class HomeFragment : Fragment() , NavigationView.OnNavigationItemSelectedListene
         navView?.setupWithNavController(navController)
         navView?.setNavigationItemSelectedListener(this)
 
-        homeViewModel.companyListLiveData.observe(
+        sharedViewModel.companyListLiveData.observe(
             viewLifecycleOwner,
             { companyList ->
                 companyList?.let {
@@ -111,23 +107,23 @@ class HomeFragment : Fragment() , NavigationView.OnNavigationItemSelectedListene
             when (item.itemId) {
                 R.id.nav_route_map -> navController.navigate(R.id.action_home_dest_to_routeMapFragment)
                 R.id.nav_ddot ->{
-                    homeToRoutesSharedViewModel.saveCompany(leListOfCompanies[1])
+                    sharedViewModel.saveCompany(leListOfCompanies[1])
                     navController.navigate(R.id.moveToRoutesFragment)
                 }
                 R.id.nav_smart -> {
-                    homeToRoutesSharedViewModel.saveCompany(leListOfCompanies[0])
+                    sharedViewModel.saveCompany(leListOfCompanies[0])
                     navController.navigate(R.id.moveToRoutesFragment)
                 }
                 R.id.nav_reflex -> {
-                    homeToRoutesSharedViewModel.saveCompany(leListOfCompanies[2])
+                    sharedViewModel.saveCompany(leListOfCompanies[2])
                     navController.navigate(R.id.moveToRoutesFragment)
                 }
                 R.id.nav_people_mover -> {
-                    homeToRoutesSharedViewModel.saveCompany(leListOfCompanies[3])
+                    sharedViewModel.saveCompany(leListOfCompanies[3])
                     navController.navigate(R.id.moveToRoutesFragment)
                 }
                 R.id.nav_qline -> {
-                    homeToRoutesSharedViewModel.saveCompany(leListOfCompanies[4])
+                    sharedViewModel.saveCompany(leListOfCompanies[4])
                     navController.navigate(R.id.moveToRoutesFragment)
                 }
                 R.id.nav_planner -> {
@@ -172,7 +168,7 @@ class HomeFragment : Fragment() , NavigationView.OnNavigationItemSelectedListene
             if (companyItem.name == "Route Map"){
                 navController.navigate(R.id.action_home_dest_to_routeMapFragment)
             }else{
-                homeToRoutesSharedViewModel.saveCompany(companyItem)
+                sharedViewModel.saveCompany(companyItem)
                 itemView.findNavController().navigate(R.id.moveToRoutesFragment)
             }
         }

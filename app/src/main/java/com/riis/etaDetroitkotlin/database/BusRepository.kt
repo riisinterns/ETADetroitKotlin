@@ -3,8 +3,7 @@ package com.riis.etaDetroitkotlin.database
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.room.Room
-import com.riis.etaDetroitkotlin.model.Company
-import com.riis.etaDetroitkotlin.model.Routes
+import com.riis.etaDetroitkotlin.model.*
 
 private const val DATABASE_NAME = "eta_detroit.sqlite"
 private const val DATABASE_PATH = "databases/eta_detroit.sqlite"
@@ -20,6 +19,9 @@ class BusRepository private constructor(context: Context) {
 
     fun getCompanies(): LiveData<List<Company>> = busDao.getCompanies()
     fun getRoutes(companyId: Int): LiveData<List<Routes>> = busDao.getRoutes(companyId)
+    fun getRouteStops(routeId: Int): LiveData<List<RouteStops>> = busDao.getRouteStops(routeId)
+    fun getTripStops(stopId: Int): LiveData<List<TripStops>> = busDao.getTripStops(stopId)
+    fun getStop(stopId: Int): LiveData<Stops> = busDao.getStop(stopId)
 
     companion object {
         private var INSTANCE: BusRepository? = null
