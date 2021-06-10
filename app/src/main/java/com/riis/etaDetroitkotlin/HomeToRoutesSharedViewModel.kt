@@ -19,7 +19,8 @@ class HomeToRoutesSharedViewModel : ViewModel() {
     // ... to allow observers to listen to any changes to it
 
     var routeListLiveData: LiveData<List<Routes>> =
-        Transformations.switchMap(companyContainer){ company ->
+        //switches the Routes (observed in RoutesFragment) based of the company that gets saved
+        Transformations.switchMap(companyContainer) { company ->
             busRepository.getRoutes(company.id)
         }
 

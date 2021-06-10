@@ -73,8 +73,9 @@ class RoutesFragment : Fragment() {
             routeItem = route
 
             //updating the itemView attributes using the received data
-            routeSubtitleTextView.text = "ROUTE ${routeItem.number}"
-            routeTitleTextView.text = "ROUTE ${routeItem.number}"
+
+            routeTitleTextView.text = routeItem.name
+            routeSubtitleTextView.text = getString(R.string.route_item_subtitle, routeItem.number.toString())
 
         }
 
