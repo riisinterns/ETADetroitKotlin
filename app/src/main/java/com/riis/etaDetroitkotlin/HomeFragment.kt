@@ -119,8 +119,7 @@ class HomeFragment : Fragment() {
 
         override fun onClick(itemView: View) {
             homeToRoutesSharedViewModel.saveCompany(companyItem)
-            val action = HomeFragmentDirections.moveToRoutesFragment()
-            itemView.findNavController().navigate(action)
+            itemView.findNavController().navigate(R.id.moveToRoutesFragment)
         }
     }
 
