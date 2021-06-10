@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/form"
+    android:clickable="true"
+    >
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/fromFieldHolder"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="24dp"
+        >
+        <AutoCompleteTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName|textMultiLine"
+            android:text=""
+            android:ems="10"
+            android:id="@+id/fromField"
+            android:textCursorDrawable="@drawable/color_cursor"
+            android:hint="From"
+            android:drawableStart="@drawable/ic_location"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/fromFieldHolder"
+        android:id="@+id/toFieldHolder"
+        android:layout_alignStart="@+id/fromFieldHolder"
+        android:layout_alignEnd="@+id/fromFieldHolder"
+        >
+        <AutoCompleteTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName|textMultiLine"
+            android:ems="10"
+            android:id="@+id/toField"
+            android:textCursorDrawable="@drawable/color_cursor"
+            android:hint="To"
+            android:drawableStart="@drawable/ic_location"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_below="@id/toFieldHolder"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        >
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:ems="10"
+            android:id="@+id/dayField"
+            android:focusable="false"
+            android:hint=" Date"
+            android:drawableStart="@drawable/ic_icon_calendar"
+            />
+
+        <EditText
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:inputType="textPersonName"
+            android:text=""
+            android:ems="10"
+            android:id="@+id/timeField"
+            android:focusable="false"
+            android:hint=" Time"
+            android:drawableStart="@drawable/ic_icon_clock"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="20dp"
+            >
+
+            <Button
+                android:id="@+id/goBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Get route"
+                />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/SavedRoutesRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:scrollbars="vertical"
+                />
+
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

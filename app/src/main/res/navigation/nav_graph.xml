@@ -17,6 +17,9 @@
         <action
             android:id="@+id/action_home_dest_to_routeMapFragment"
             app:destination="@id/routeMapFragment" />
+        <action
+            android:id="@+id/action_home_dest_to_routePlannerFragment"
+            app:destination="@id/routePlannerFragment" />
 
     </fragment>
 
@@ -31,13 +34,20 @@
                 app:destination="@id/stopsFragment" />
     </fragment>
     <fragment
-        android:id="@+id/routeMapFragment"
-        android:name="com.riis.etaDetroitkotlin.fragment.RouteMapFragment"
-        android:label="Route Map" />
+            android:id="@+id/routeMapFragment"
+            android:name="com.riis.etaDetroitkotlin.fragment.RouteMapFragment"
+            tools:layout="@layout/fragment_route_map"
+            android:label="Route Map" />
+
     <fragment
             android:id="@+id/stopsFragment"
             android:name="com.riis.etaDetroitkotlin.StopsFragment"
             android:label="stops_fragment"
             tools:layout="@layout/stops_fragment" />
+    <fragment
+        android:id="@+id/routePlannerFragment"
+        android:name="com.riis.etaDetroitkotlin.fragment.RoutePlannerFragment"
+        android:label="Plan My Route"
+        tools:layout="@layout/fragment_route_planner" />
 
 </navigation>

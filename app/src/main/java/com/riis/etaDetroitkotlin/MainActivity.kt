@@ -22,7 +22,7 @@ import com.google.android.material.navigation.NavigationView
 import com.riis.etaDetroitkotlin.fragment.RouteMapFragment
 
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener{
+class MainActivity : AppCompatActivity(){
 
     //global variables
     private lateinit var appBarConfig: AppBarConfiguration
@@ -54,7 +54,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         //setting the app bar and side navigation view to work with the Navigation jetpack architecture
         setActionBar(navController, appBarConfig)
-        setNavigationMenu(navController)
 
     }
 
@@ -64,13 +63,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setupActionBarWithNavController(navController, appBarConfig)
     }
 
-    private fun setNavigationMenu(navController: NavController) {
-        val navView = findViewById<NavigationView>(R.id.side_nav_view)
-        //if sideNavView exists, it uses the NavController to navigate to a destination when a menu item is selected from it
-        navView?.setupWithNavController(navController)
-
-        navView.setNavigationItemSelectedListener(this)
-    }
 
     //HANDLING "UP" and DRAWER LAYOUT BEHAVIOUR IN THE ACTION BAR
     //===========================================================
@@ -79,23 +71,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return findNavController(R.id.nav_host_fragment).navigateUp(appBarConfig)
     }
 
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-
-        drawerMenu.closeDrawers()
-
-        Handler(Looper.getMainLooper()).postDelayed({
-            when (item.itemId) {
-                R.id.nav_route_map -> navController.navigate(R.id.action_home_dest_to_routeMapFragment)
-                R.id.nav_ddot -> navController.navigate(R.id.moveToRoutesFragment)
-                R.id.nav_smart -> navController.navigate(R.id.moveToRoutesFragment)
-                R.id.nav_reflex -> navController.navigate(R.id.moveToRoutesFragment)
-                R.id.nav_people_mover -> navController.navigate(R.id.moveToRoutesFragment)
-                R.id.nav_qline -> navController.navigate(R.id.moveToRoutesFragment)
-            }
-        }, 1000)
-
-        return true
-    }
 
 
 }
