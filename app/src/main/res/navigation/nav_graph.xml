@@ -30,16 +30,16 @@
         tools:layout="@layout/fragment_routes">
 
         <action
-                android:id="@+id/route_to_stops"
-                app:destination="@id/stopsFragment" />
+            android:id="@+id/route_to_stops"
+            app:destination="@id/stopsFragment" />
     </fragment>
 
     <!-- ======================== RouteMapFragment ============================ -->
     <fragment
         android:id="@+id/routeMap_dest"
         android:name="com.riis.etaDetroitkotlin.fragment.RouteMapFragment"
-        tools:layout="@layout/fragment_route_map"
-        android:label="Route Map" >
+        android:label="Route Map"
+        tools:layout="@layout/fragment_route_map">
 
     </fragment>
 
@@ -57,7 +57,7 @@
         android:id="@+id/stopsFragment"
         android:name="com.riis.etaDetroitkotlin.StopsFragment"
         android:label="stops_fragment"
-        tools:layout="@layout/stops_fragment" >
+        tools:layout="@layout/stops_fragment">
 
     </fragment>
 

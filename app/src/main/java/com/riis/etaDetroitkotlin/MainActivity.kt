@@ -4,7 +4,6 @@ package com.riis.etaDetroitkotlin
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -18,7 +17,7 @@ import com.google.android.material.navigation.NavigationView
 import com.riis.etaDetroitkotlin.model.Company
 
 
-class MainActivity : AppCompatActivity(),  NavigationView.OnNavigationItemSelectedListener{
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     //global variables
     private lateinit var appBarConfig: AppBarConfiguration
@@ -90,21 +89,19 @@ class MainActivity : AppCompatActivity(),  NavigationView.OnNavigationItemSelect
     }
 
 
-
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
 
         drawerMenu.closeDrawers()
 
-        if (item.groupId == R.id.primary){
+        if (item.groupId == R.id.primary) {
             return item.onNavDestinationSelected(findNavController(R.id.nav_host_fragment))
                     || super.onOptionsItemSelected(item) // Otherwise, returns false
-        }
-        else{
+        } else {
             Handler(Looper.getMainLooper()).postDelayed({
 
                 when (item.title) {
 
-                    this.getString(R.string.navDdot) ->{
+                    this.getString(R.string.navDdot) -> {
                         sharedViewModel.saveCompany(listOfCompanies[1])
                         navController.navigate(R.id.routes_dest, null, null)
                     }

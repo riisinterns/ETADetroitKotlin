@@ -6,24 +6,17 @@ package com.riis.etaDetroitkotlin
 
 import android.graphics.Color
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.navigation.NavigationView
 import com.riis.etaDetroitkotlin.model.Company
 
 
@@ -39,7 +32,7 @@ class HomeFragment : Fragment() {
     private var adapter: CompanyAdapter? = null
     private lateinit var leListOfCompanies: List<Company>
 
-    
+
     //LINKING FRAGMENT WITH VIEW MODELS
     //----------------------------------
     private val sharedViewModel: SharedViewModel by activityViewModels()
@@ -87,7 +80,6 @@ class HomeFragment : Fragment() {
     }
 
 
-
     //VIEW HOLDER CLASS FOR RECYCLER VIEW
     //-----------------------------------
     private inner class CompanyHolder(view: View)
@@ -122,9 +114,9 @@ class HomeFragment : Fragment() {
         }
 
         override fun onClick(itemView: View) {
-            if (companyItem.name == "Route Map"){
+            if (companyItem.name == "Route Map") {
                 findNavController().navigate(R.id.action_home_dest_to_routeMapFragment)
-            }else{
+            } else {
                 sharedViewModel.saveCompany(companyItem)
                 itemView.findNavController().navigate(R.id.moveToRoutesFragment)
             }

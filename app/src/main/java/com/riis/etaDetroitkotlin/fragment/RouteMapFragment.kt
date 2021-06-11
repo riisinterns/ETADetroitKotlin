@@ -7,18 +7,13 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.NavController
-import androidx.navigation.findNavController
-import androidx.navigation.ui.setupWithNavController
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -26,7 +21,6 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.material.navigation.NavigationView
 import com.google.maps.android.data.geojson.GeoJsonLayer
 import com.riis.etaDetroitkotlin.R
 import com.riis.etaDetroitkotlin.SharedViewModel
@@ -39,7 +33,7 @@ private val checkBoxCompanyNames: MutableMap<Int, String> = HashMap()
 private var busRoutes: MutableMap<String, GeoJsonLayer> = HashMap()
 private lateinit var dialog: RouteLoadingDialog
 
-class RouteMapFragment : Fragment(), View.OnClickListener{
+class RouteMapFragment : Fragment(), View.OnClickListener {
 
     private lateinit var listOfCompanies: List<Company>
     private val sharedViewModel: SharedViewModel by activityViewModels()
@@ -125,8 +119,6 @@ class RouteMapFragment : Fragment(), View.OnClickListener{
         )
 
     }
-
-
 
 
     class LayerThread(private val layer: GeoJsonLayer) :

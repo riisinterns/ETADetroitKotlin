@@ -2,35 +2,26 @@ package com.riis.etaDetroitkotlin
 
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.toColorInt
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.NavController
-import androidx.navigation.findNavController
-import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.navigation.NavigationView
 import com.riis.etaDetroitkotlin.model.Company
 import com.riis.etaDetroitkotlin.model.RouteStops
-import com.riis.etaDetroitkotlin.model.Routes
 import com.riis.etaDetroitkotlin.model.Stops
 
 private const val TAG = "StopsFragment"
 private var CURRENT_DIRECTION: Int = 1
 private var CURRENT_DAY: Int = 1
 
-class StopsFragment : Fragment(){
+class StopsFragment : Fragment() {
 
     private lateinit var stopsRecyclerView: RecyclerView
     private lateinit var adapter: StopAdapter
@@ -81,7 +72,6 @@ class StopsFragment : Fragment(){
         adapter = StopAdapter(routeStops)
         stopsRecyclerView.adapter = adapter
     }
-
 
 
     private inner class StopHolder(view: View) : RecyclerView.ViewHolder(view),
