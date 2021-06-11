@@ -26,6 +26,8 @@ import com.riis.etaDetroitkotlin.model.Routes
 import com.riis.etaDetroitkotlin.model.Stops
 
 private const val TAG = "StopsFragment"
+private var CURRENT_DIRECTION: Int = 1
+private var CURRENT_DAY: Int = 1
 
 class StopsFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -70,7 +72,9 @@ class StopsFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
         sharedViewModel.routeStopsListLiveData.observe(
             viewLifecycleOwner,
             { routeStops ->
-                updateUI(routeStops)
+                updateUI(routeStops.filter {
+                    it.directionId == CURRENT_DIRECTION && it.dayId == CURRENT_DAY
+                })
             }
         )
     }
@@ -155,7 +159,8 @@ class StopsFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
                     viewLifecycleOwner,
                     { tripStop ->
                         for (i in tripStop) {
-                            allArrivalTimes.text = "${allArrivalTimes.text} \n ${i.stopId}: ${i.arrivalTime}"
+                            //TODO Fix bug where scrolling past view and scrolling back up gets rid of stuff
+                            allArrivalTimes.text = "${allArrivalTimes.text}${i.arrivalTime}\n"
                         }
                     }
                 )
@@ -178,6 +183,7 @@ class StopsFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
 
         override fun onBindViewHolder(holder: StopsFragment.StopHolder, position: Int) {
             val routeStop = routeStopsList[position]
+
             sharedViewModel.getStop(routeStop.stopId).observe(
                 viewLifecycleOwner,
                 { stop ->
