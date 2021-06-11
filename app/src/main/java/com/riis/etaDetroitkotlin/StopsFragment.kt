@@ -26,14 +26,12 @@ import com.riis.etaDetroitkotlin.model.Stops
 
 private const val TAG = "StopsFragment"
 
-class StopsFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener {
+class StopsFragment : Fragment(){
 
     private lateinit var stopsRecyclerView: RecyclerView
     private lateinit var adapter: StopAdapter
     private val sharedViewModel: SharedViewModel by activityViewModels()
     private lateinit var listOfCompanies: List<Company>
-    private lateinit var navController: NavController
-    private lateinit var drawerMenu: DrawerLayout
 //    private lateinit var routeStopsList: List<RouteStops>
 
     override fun onCreateView(
@@ -50,12 +48,6 @@ class StopsFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        navController = view.findNavController()
-        drawerMenu = requireActivity().findViewById(R.id.drawer_menu)
-        val navView = activity?.findViewById<NavigationView>(R.id.side_nav_view)
-        navView?.setupWithNavController(navController)
-        navView?.setNavigationItemSelectedListener(this)
 
         sharedViewModel.companyListLiveData.observe(
             viewLifecycleOwner,
@@ -86,44 +78,7 @@ class StopsFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
         stopsRecyclerView.adapter = adapter
     }
 
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        drawerMenu.closeDrawers()
 
-        Handler(Looper.getMainLooper()).postDelayed({
-            when (item.itemId) {
-
-                R.id.nav_home-> navController.navigate(R.id.stopsFragment_to_homeFragment)
-
-                R.id.nav_route_map -> navController.navigate(R.id.stopsFragment_to_routeMapFragment)
-
-                R.id.nav_ddot ->{
-                    sharedViewModel.saveCompany(listOfCompanies[1])
-                    navController.navigate(R.id.stopsFragment_to_routesFragment)
-                }
-                R.id.nav_smart -> {
-                    sharedViewModel.saveCompany(listOfCompanies[0])
-                    navController.navigate(R.id.stopsFragment_to_routesFragment)
-                }
-                R.id.nav_reflex -> {
-                    sharedViewModel.saveCompany(listOfCompanies[2])
-                    navController.navigate(R.id.stopsFragment_to_routesFragment)
-                }
-                R.id.nav_people_mover -> {
-                    sharedViewModel.saveCompany(listOfCompanies[3])
-                    navController.navigate(R.id.stopsFragment_to_routesFragment)
-                }
-                R.id.nav_qline -> {
-                    sharedViewModel.saveCompany(listOfCompanies[4])
-                    navController.navigate(R.id.stopsFragment_to_routesFragment)
-                }
-                R.id.nav_planner -> {
-                    navController.navigate(R.id.stopsFragment_to_routePlannerFragment)
-                }
-            }
-        }, 500)
-
-        return true
-    }
 
     private inner class StopHolder(view: View)
         : RecyclerView.ViewHolder(view), View.OnClickListener {

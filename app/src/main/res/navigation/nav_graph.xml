@@ -15,12 +15,10 @@
         <action
             android:id="@+id/moveToRoutesFragment"
             app:destination="@id/routes_dest" />
+
         <action
             android:id="@+id/action_home_dest_to_routeMapFragment"
-            app:destination="@id/routeMapFragment" />
-        <action
-            android:id="@+id/action_home_dest_to_routePlannerFragment"
-            app:destination="@id/routePlannerFragment" />
+            app:destination="@id/routeMap_dest" />
 
     </fragment>
 
@@ -32,75 +30,25 @@
         tools:layout="@layout/fragment_routes">
 
         <action
-            android:id="@+id/action_routesFragment_to_routesFragment"
-            app:destination="@id/routes_dest" />
-
-        <action
-            android:id="@+id/action_routes_dest_to_home_dest"
-            app:destination="@id/home_dest" />
-
-        <action
-            android:id="@+id/action_routes_dest_to_routeMapFragment"
-            app:destination="@id/routeMapFragment" />
-
-        <action
-            android:id="@+id/action_routes_dest_to_routePlannerFragment"
-            app:destination="@id/routePlannerFragment" />
-
-        <action
                 android:id="@+id/route_to_stops"
                 app:destination="@id/stopsFragment" />
     </fragment>
 
     <!-- ======================== RouteMapFragment ============================ -->
     <fragment
-        android:id="@+id/routeMapFragment"
+        android:id="@+id/routeMap_dest"
         android:name="com.riis.etaDetroitkotlin.fragment.RouteMapFragment"
         tools:layout="@layout/fragment_route_map"
         android:label="Route Map" >
-
-        <action
-            android:id="@+id/routeMapFragment_to_routesFragment"
-            app:destination="@id/routes_dest" />
-
-        <action
-            android:id="@+id/routeMapFragment_to_homeFragment"
-            app:destination="@id/home_dest" />
-
-        <action
-            android:id="@+id/routeMapFragment_to_routeMapFragment"
-            app:destination="@id/routeMapFragment" />
-
-        <action
-            android:id="@+id/routeMapFragment_to_routePlannerFragment"
-            app:destination="@id/routePlannerFragment" />
 
     </fragment>
 
     <!-- ======================= RoutePlannerFragment ========================= -->
     <fragment
-        android:id="@+id/routePlannerFragment"
+        android:id="@+id/routePlanner_dest"
         android:name="com.riis.etaDetroitkotlin.fragment.RoutePlannerFragment"
         android:label="Plan My Route"
         tools:layout="@layout/fragment_route_planner">
-
-        <action
-            android:id="@+id/routePlannerFragment_to_routesFragment"
-            app:destination="@id/routes_dest" />
-
-        <action
-            android:id="@+id/routePlannerFragment_to_homeFragment"
-            app:destination="@id/home_dest" />
-
-        <action
-            android:id="@+id/routePlannerFragment_to_routeMapFragment"
-            app:destination="@id/routeMapFragment" />
-
-        <action
-            android:id="@+id/routePlannerFragment_to_routePlannerFragment"
-            app:destination="@id/routePlannerFragment" />
-
-
 
     </fragment>
 
@@ -110,22 +58,6 @@
         android:name="com.riis.etaDetroitkotlin.StopsFragment"
         android:label="stops_fragment"
         tools:layout="@layout/stops_fragment" >
-
-        <action
-            android:id="@+id/stopsFragment_to_routesFragment"
-            app:destination="@id/routes_dest" />
-
-        <action
-            android:id="@+id/stopsFragment_to_homeFragment"
-            app:destination="@id/home_dest" />
-
-        <action
-            android:id="@+id/stopsFragment_to_routeMapFragment"
-            app:destination="@id/routeMapFragment" />
-
-        <action
-            android:id="@+id/stopsFragment_to_routePlannerFragment"
-            app:destination="@id/routePlannerFragment" />
 
     </fragment>
 

@@ -25,6 +25,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -37,14 +38,12 @@ import com.riis.etaDetroitkotlin.model.Company
 //It provides the interface for the user to select between different bus companies
 private const val TAG = "HomeFragment"
 
-class HomeFragment : Fragment() , NavigationView.OnNavigationItemSelectedListener{
+class HomeFragment : Fragment() {
 
     //CLASS VARIABLES
     //---------------
     private lateinit var companyRecyclerView: RecyclerView
     private var adapter: CompanyAdapter? = null
-    private lateinit var navController: NavController
-    private lateinit var drawerMenu: DrawerLayout
     private lateinit var leListOfCompanies: List<Company>
 
     
@@ -75,12 +74,6 @@ class HomeFragment : Fragment() , NavigationView.OnNavigationItemSelectedListene
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        navController = view.findNavController()
-        drawerMenu = requireActivity().findViewById(R.id.drawer_menu)
-        val navView = activity?.findViewById<NavigationView>(R.id.side_nav_view)
-        navView?.setupWithNavController(navController)
-        navView?.setNavigationItemSelectedListener(this)
-
         sharedViewModel.companyListLiveData.observe(
             viewLifecycleOwner,
             { companyList ->
@@ -101,40 +94,7 @@ class HomeFragment : Fragment() , NavigationView.OnNavigationItemSelectedListene
         companyRecyclerView.adapter = CompanyAdapter(companies)
     }
 
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        drawerMenu.closeDrawers()
 
-        Handler(Looper.getMainLooper()).postDelayed({
-            when (item.itemId) {
-                R.id.nav_route_map -> navController.navigate(R.id.action_home_dest_to_routeMapFragment)
-                R.id.nav_ddot ->{
-                    sharedViewModel.saveCompany(leListOfCompanies[1])
-                    navController.navigate(R.id.moveToRoutesFragment)
-                }
-                R.id.nav_smart -> {
-                    sharedViewModel.saveCompany(leListOfCompanies[0])
-                    navController.navigate(R.id.moveToRoutesFragment)
-                }
-                R.id.nav_reflex -> {
-                    sharedViewModel.saveCompany(leListOfCompanies[2])
-                    navController.navigate(R.id.moveToRoutesFragment)
-                }
-                R.id.nav_people_mover -> {
-                    sharedViewModel.saveCompany(leListOfCompanies[3])
-                    navController.navigate(R.id.moveToRoutesFragment)
-                }
-                R.id.nav_qline -> {
-                    sharedViewModel.saveCompany(leListOfCompanies[4])
-                    navController.navigate(R.id.moveToRoutesFragment)
-                }
-                R.id.nav_planner -> {
-                    navController.navigate(R.id.action_home_dest_to_routePlannerFragment)
-                }
-            }
-        }, 500)
-
-        return true
-    }
 
     //VIEW HOLDER CLASS FOR RECYCLER VIEW
     //-----------------------------------
@@ -167,7 +127,7 @@ class HomeFragment : Fragment() , NavigationView.OnNavigationItemSelectedListene
 
         override fun onClick(itemView: View) {
             if (companyItem.name == "Route Map"){
-                navController.navigate(R.id.action_home_dest_to_routeMapFragment)
+                findNavController().navigate(R.id.action_home_dest_to_routeMapFragment)
             }else{
                 sharedViewModel.saveCompany(companyItem)
                 itemView.findNavController().navigate(R.id.moveToRoutesFragment)

@@ -11,10 +11,11 @@ import com.riis.etaDetroitkotlin.model.Routes
 import com.riis.etaDetroitkotlin.model.Stops
 
 class SharedViewModel : ViewModel() {
+
     private val busRepository = BusRepository.get()
     val companyListLiveData = busRepository.getCompanies()
 
-    val companyContainer = MutableLiveData<Company>() //this variable can store a Company object and is wrapped in LiveData
+    private val companyContainer = MutableLiveData<Company>() //this variable can store a Company object and is wrapped in LiveData
     private val routeContainer = MutableLiveData<Routes>()
 
     // ... to allow observers to listen to any changes to it

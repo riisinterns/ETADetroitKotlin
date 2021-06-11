@@ -27,7 +27,7 @@ import com.google.android.material.navigation.NavigationView
 import com.riis.etaDetroitkotlin.model.Company
 import com.riis.etaDetroitkotlin.model.Routes
 
-class RoutesFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener {
+class RoutesFragment : Fragment(){
 
     //CLASS VARIABLES
     //---------------
@@ -36,8 +36,7 @@ class RoutesFragment : Fragment(), NavigationView.OnNavigationItemSelectedListen
     private var adapter: RouteAdapter? = null
     private val sharedViewModel: SharedViewModel by activityViewModels()
     private lateinit var listOfCompanies: List<Company>
-    private lateinit var navController: NavController
-    private lateinit var drawerMenu: DrawerLayout
+
 
     //CREATING THE FRAGMENT VIEW
     //--------------------------
@@ -60,11 +59,6 @@ class RoutesFragment : Fragment(), NavigationView.OnNavigationItemSelectedListen
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        navController = view.findNavController()
-        drawerMenu = requireActivity().findViewById(R.id.drawer_menu)
-        val navView = activity?.findViewById<NavigationView>(R.id.side_nav_view)
-        navView?.setupWithNavController(navController)
-        navView?.setNavigationItemSelectedListener(this)
 
         val currentCompany = sharedViewModel.currentCompany
         if (currentCompany != null) {
@@ -88,44 +82,7 @@ class RoutesFragment : Fragment(), NavigationView.OnNavigationItemSelectedListen
         )
     }
 
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        drawerMenu.closeDrawers()
 
-        Handler(Looper.getMainLooper()).postDelayed({
-            when (item.itemId) {
-
-                R.id.nav_home-> navController.navigate(R.id.action_routes_dest_to_home_dest)
-
-                R.id.nav_route_map -> navController.navigate(R.id.action_routes_dest_to_routeMapFragment)
-
-                R.id.nav_ddot ->{
-                    sharedViewModel.saveCompany(listOfCompanies[1])
-                    navController.navigate(R.id.action_routesFragment_to_routesFragment)
-                }
-                R.id.nav_smart -> {
-                    sharedViewModel.saveCompany(listOfCompanies[0])
-                    navController.navigate(R.id.action_routesFragment_to_routesFragment)
-                }
-                R.id.nav_reflex -> {
-                    sharedViewModel.saveCompany(listOfCompanies[2])
-                    navController.navigate(R.id.action_routesFragment_to_routesFragment)
-                }
-                R.id.nav_people_mover -> {
-                    sharedViewModel.saveCompany(listOfCompanies[3])
-                    navController.navigate(R.id.action_routesFragment_to_routesFragment)
-                }
-                R.id.nav_qline -> {
-                    sharedViewModel.saveCompany(listOfCompanies[4])
-                    navController.navigate(R.id.action_routesFragment_to_routesFragment)
-                }
-                R.id.nav_planner -> {
-                    navController.navigate(R.id.action_routes_dest_to_routePlannerFragment)
-                }
-            }
-        }, 500)
-
-        return true
-    }
 
     override fun onPause() {
         super.onPause()
