@@ -1,11 +1,9 @@
 package com.riis.etaDetroitkotlin.model
 
-import androidx.annotation.Nullable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
-import java.sql.Time
 
 @Entity(
     primaryKeys = ["trip_id", "stop_id", "stop_sequence"],
@@ -25,7 +23,11 @@ import java.sql.Time
         )
     ],
     tableName = "trip_stops",
-    indices=[Index(name= "idx_trip_stops_fk_trip_stop_stops", unique=false, value=["stop_id"])]
+    indices = [Index(
+        name = "idx_trip_stops_fk_trip_stop_stops",
+        unique = false,
+        value = ["stop_id"]
+    )]
 )
 data class TripStops(
     @ColumnInfo(name = "trip_id") val tripId: Int,

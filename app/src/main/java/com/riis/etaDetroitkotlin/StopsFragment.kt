@@ -1,18 +1,19 @@
 package com.riis.etaDetroitkotlin
 
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.graphics.toColorInt
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
@@ -22,7 +23,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.navigation.NavigationView
 import com.riis.etaDetroitkotlin.model.Company
 import com.riis.etaDetroitkotlin.model.RouteStops
-import com.riis.etaDetroitkotlin.model.Routes
 import com.riis.etaDetroitkotlin.model.Stops
 
 private const val TAG = "StopsFragment"
@@ -37,16 +37,20 @@ class StopsFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
     private lateinit var listOfCompanies: List<Company>
     private lateinit var navController: NavController
     private lateinit var drawerMenu: DrawerLayout
-//    private lateinit var routeStopsList: List<RouteStops>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view =  inflater.inflate(R.layout.stops_fragment, container, false)
+        val view = inflater.inflate(R.layout.stops_fragment, container, false)
+        (requireActivity() as AppCompatActivity).supportActionBar?.title =
+            "${sharedViewModel.getRouteName()}"
 
         stopsRecyclerView = view.findViewById(R.id.stops_recycler_view)
         stopsRecyclerView.layoutManager = LinearLayoutManager(context)
+
+        val appBarColor = ColorDrawable(sharedViewModel.getCompany()?.brandColor?.toColorInt()!!)
+        (requireActivity() as AppCompatActivity).supportActionBar?.setBackgroundDrawable(appBarColor)
 
         return view
     }
@@ -90,11 +94,11 @@ class StopsFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
         Handler(Looper.getMainLooper()).postDelayed({
             when (item.itemId) {
 
-                R.id.nav_home-> navController.navigate(R.id.stopsFragment_to_homeFragment)
+                R.id.nav_home -> navController.navigate(R.id.stopsFragment_to_homeFragment)
 
                 R.id.nav_route_map -> navController.navigate(R.id.stopsFragment_to_routeMapFragment)
 
-                R.id.nav_ddot ->{
+                R.id.nav_ddot -> {
                     sharedViewModel.saveCompany(listOfCompanies[1])
                     navController.navigate(R.id.stopsFragment_to_routesFragment)
                 }
@@ -123,8 +127,8 @@ class StopsFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
         return true
     }
 
-    private inner class StopHolder(view: View)
-        : RecyclerView.ViewHolder(view), View.OnClickListener {
+    private inner class StopHolder(view: View) : RecyclerView.ViewHolder(view),
+        View.OnClickListener {
 
         private lateinit var stopItem: Stops
         private var allArrivalTimes: TextView = view.findViewById(R.id.all_arrival_times)
@@ -132,7 +136,8 @@ class StopsFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
 
         private val stopName: TextView = view.findViewById(R.id.stop_name)
 
-        private var dynamicLinearLayout = view.findViewById(R.id.dynamic_linear_layout) as LinearLayout
+        private var dynamicLinearLayout =
+            view.findViewById(R.id.dynamic_linear_layout) as LinearLayout
 
         init {
             itemView.setOnClickListener(this) //setting a click listener on each itemView
@@ -145,7 +150,6 @@ class StopsFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
             stopName.text = stopItem.name
             dynamicLinearLayout.visibility = View.GONE
         }
-
 
 
         override fun onClick(view: View) {
@@ -164,7 +168,7 @@ class StopsFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
                         }
                     }
                 )
-            } else{
+            } else {
                 dynamicLinearLayout.visibility = View.GONE
             }
         }

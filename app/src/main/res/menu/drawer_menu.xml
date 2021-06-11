@@ -1,56 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+        xmlns:android="http://schemas.android.com/apk/res/android">
     <group
-        android:id="@+id/primary"
-        android:checkableBehavior="single">
+            android:id="@+id/primary"
+            android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_home"
-            android:title="@string/navHomeString"
-            android:icon="@drawable/ic_home_menu"
-            android:checked="true"/>
+                android:id="@+id/nav_home"
+                android:title="@string/navHomeString"
+                android:icon="@drawable/ic_home_menu"
+                android:checked="true" />
 
         <item
-            android:id="@+id/nav_planner"
-            android:title="@string/navPlannerString"
-            android:icon="@drawable/ic_route_planner"
-            />
+                android:id="@+id/nav_planner"
+                android:title="@string/navPlannerString"
+                android:icon="@drawable/ic_route_planner" />
         <item
-            android:icon="@drawable/ic_route_map"
-            android:id="@+id/nav_route_map"
-            android:title="@string/navRouteMap"
-            />
+                android:icon="@drawable/ic_route_map"
+                android:id="@+id/nav_route_map"
+                android:title="@string/navRouteMap" />
 
     </group>
 
-    <item android:title="Bus routes"
-        tools:ignore="HardcodedText">
+    <item
+            android:title="Bus routes"
+            tools:ignore="HardcodedText">
         <menu>
             <item
-                android:id="@+id/nav_ddot"
-                android:title="@string/navDdot"
-                android:icon="@drawable/ic_ddot"
-                />
+                    android:id="@+id/nav_ddot"
+                    android:title="@string/navDdot"
+                    android:icon="@drawable/ic_ddot" />
             <item
-                android:id="@+id/nav_smart"
-                android:title="@string/navSmart"
-                android:icon="@drawable/ic_smart"
-                />
+                    android:id="@+id/nav_smart"
+                    android:title="@string/navSmart"
+                    android:icon="@drawable/ic_smart" />
             <item
-                android:id="@+id/nav_reflex"
-                android:title="@string/navReflex"
-                android:icon="@drawable/ic_reflex"
-                />
+                    android:id="@+id/nav_reflex"
+                    android:title="@string/navReflex"
+                    android:icon="@drawable/ic_reflex" />
             <item
-                android:icon="@drawable/ic_people_mover"
-                android:id="@+id/nav_people_mover"
-                android:title="@string/navPeopleMover"
-                />
+                    android:icon="@drawable/ic_people_mover"
+                    android:id="@+id/nav_people_mover"
+                    android:title="@string/navPeopleMover" />
             <item
-                android:icon="@drawable/ic_people_mover"
-                android:id="@+id/nav_qline"
-                android:title="@string/navQline"
-                />
+                    android:icon="@drawable/ic_people_mover"
+                    android:id="@+id/nav_qline"
+                    android:title="@string/navQline" />
         </menu>
     </item>
 
