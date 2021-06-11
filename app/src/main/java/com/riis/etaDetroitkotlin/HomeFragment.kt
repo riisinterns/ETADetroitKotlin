@@ -59,6 +59,7 @@ class HomeFragment : Fragment() , NavigationView.OnNavigationItemSelectedListene
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         //inflating the fragment_transport_list layout as the fragment view
         val view = inflater.inflate(R.layout.fragment_home, container, false)
 

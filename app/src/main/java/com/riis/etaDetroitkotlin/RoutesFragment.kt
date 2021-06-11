@@ -1,21 +1,33 @@
 package com.riis.etaDetroitkotlin
 
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavController
 import androidx.navigation.findNavController
+import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.navigation.NavigationView
+import com.riis.etaDetroitkotlin.model.Company
 import com.riis.etaDetroitkotlin.model.Routes
 
-class RoutesFragment : Fragment() {
+class RoutesFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener {
 
     //CLASS VARIABLES
     //---------------
@@ -23,6 +35,9 @@ class RoutesFragment : Fragment() {
     private lateinit var busPhotoImageView: ImageView
     private var adapter: RouteAdapter? = null
     private val sharedViewModel: SharedViewModel by activityViewModels()
+    private lateinit var listOfCompanies: List<Company>
+    private lateinit var navController: NavController
+    private lateinit var drawerMenu: DrawerLayout
 
     //CREATING THE FRAGMENT VIEW
     //--------------------------
@@ -45,13 +60,25 @@ class RoutesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // set Photo and Background
+        navController = view.findNavController()
+        drawerMenu = requireActivity().findViewById(R.id.drawer_menu)
+        val navView = activity?.findViewById<NavigationView>(R.id.side_nav_view)
+        navView?.setupWithNavController(navController)
+        navView?.setNavigationItemSelectedListener(this)
+
         val currentCompany = sharedViewModel.currentCompany
-        val resID: Int = context?.resources!!.getIdentifier(currentCompany?.busImgUrl, "drawable", requireContext().packageName)
-        busPhotoImageView.setImageResource(resID)
-        routeRecyclerView.setBackgroundColor(Color.parseColor(currentCompany?.brandColor))
+        if (currentCompany != null) {
+            updateUI(currentCompany)
+        }
 
-
+        sharedViewModel.companyListLiveData.observe(
+            viewLifecycleOwner,
+            { companyList ->
+                companyList?.let {
+                    listOfCompanies = companyList
+                }
+            }
+        )
 
         sharedViewModel.routeListLiveData.observe(
             viewLifecycleOwner,
@@ -61,9 +88,73 @@ class RoutesFragment : Fragment() {
         )
     }
 
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        drawerMenu.closeDrawers()
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            when (item.itemId) {
+
+                R.id.nav_home-> navController.navigate(R.id.action_routes_dest_to_home_dest)
+
+                R.id.nav_route_map -> navController.navigate(R.id.action_routes_dest_to_routeMapFragment)
+
+                R.id.nav_ddot ->{
+                    sharedViewModel.saveCompany(listOfCompanies[1])
+                    navController.navigate(R.id.action_routesFragment_to_routesFragment)
+                }
+                R.id.nav_smart -> {
+                    sharedViewModel.saveCompany(listOfCompanies[0])
+                    navController.navigate(R.id.action_routesFragment_to_routesFragment)
+                }
+                R.id.nav_reflex -> {
+                    sharedViewModel.saveCompany(listOfCompanies[2])
+                    navController.navigate(R.id.action_routesFragment_to_routesFragment)
+                }
+                R.id.nav_people_mover -> {
+                    sharedViewModel.saveCompany(listOfCompanies[3])
+                    navController.navigate(R.id.action_routesFragment_to_routesFragment)
+                }
+                R.id.nav_qline -> {
+                    sharedViewModel.saveCompany(listOfCompanies[4])
+                    navController.navigate(R.id.action_routesFragment_to_routesFragment)
+                }
+                R.id.nav_planner -> {
+                    navController.navigate(R.id.action_routes_dest_to_routePlannerFragment)
+                }
+            }
+        }, 500)
+
+        return true
+    }
+
+    override fun onPause() {
+        super.onPause()
+        val appBarColor = ColorDrawable(ContextCompat.getColor(requireActivity(), R.color.ETAHeader))
+        (requireActivity() as AppCompatActivity).supportActionBar?.setBackgroundDrawable(appBarColor)
+    }
+
     private fun updateRoutesDisplayed(routes: List<Routes>) {
         adapter = RouteAdapter(routes)
         routeRecyclerView.adapter = adapter
+    }
+
+    private fun updateUI(currentCompany: Company){
+        // set Photo and Background
+        //val currentCompany = sharedViewModel.currentCompany
+        val resID: Int = context?.resources!!.getIdentifier(currentCompany.busImgUrl, "drawable", requireContext().packageName)
+        busPhotoImageView.setImageResource(resID)
+        routeRecyclerView.setBackgroundColor(Color.parseColor(currentCompany.brandColor))
+
+        val appBarColor = ColorDrawable(Color.parseColor(currentCompany.brandColor))
+        (requireActivity() as AppCompatActivity).supportActionBar?.setBackgroundDrawable(appBarColor)
+
+        when (currentCompany.name){
+            "SmartBus" -> (requireActivity() as AppCompatActivity).supportActionBar?.title = "Smart Bus Route"
+            "DDOT" -> (requireActivity() as AppCompatActivity).supportActionBar?.title = "Ddot Bus Route"
+            "FAST" -> (requireActivity() as AppCompatActivity).supportActionBar?.title = "Fast Bus Route"
+            "People Mover" -> (requireActivity() as AppCompatActivity).supportActionBar?.title = "People Mover Route"
+            "QLine" -> (requireActivity() as AppCompatActivity).supportActionBar?.title = "Qline Route"
+        }
     }
 
     //VIEW HOLDER CLASS FOR RECYCLER VIEW
@@ -100,6 +191,7 @@ class RoutesFragment : Fragment() {
             itemView.findNavController().navigate(R.id.route_to_stops)
         }
     }
+
 
     //ADAPTER CLASS FOR RECYCLER VIEW
     //-------------------------------
