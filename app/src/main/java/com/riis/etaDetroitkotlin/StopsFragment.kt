@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.drawerlayout.widget.DrawerLayout
@@ -25,6 +26,8 @@ import com.riis.etaDetroitkotlin.model.Routes
 import com.riis.etaDetroitkotlin.model.Stops
 
 private const val TAG = "StopsFragment"
+private var CURRENT_DIRECTION: Int = 1
+private var CURRENT_DAY: Int = 1
 
 class StopsFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -69,16 +72,11 @@ class StopsFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
         sharedViewModel.routeStopsListLiveData.observe(
             viewLifecycleOwner,
             { routeStops ->
-                updateUI(routeStops)
+                updateUI(routeStops.filter {
+                    it.directionId == CURRENT_DIRECTION && it.dayId == CURRENT_DAY
+                })
             }
         )
-
-
-//        val stop: Stops = Stops(1, "Lafayette & Trumbull", 1.0, 2.0)
-//
-//        val test: List<Stops> = listOf(stop, Stops(1, "Miller @ Ford Gate 6", 1.0, 2.0))
-//
-//        updateUI(test)
     }
 
     private fun updateUI(routeStops: List<RouteStops>) {
@@ -129,23 +127,46 @@ class StopsFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
         : RecyclerView.ViewHolder(view), View.OnClickListener {
 
         private lateinit var stopItem: Stops
+        private var allArrivalTimes: TextView = view.findViewById(R.id.all_arrival_times)
 
-        private val stopName: TextView = itemView.findViewById(R.id.stop_name)
+
+        private val stopName: TextView = view.findViewById(R.id.stop_name)
+
+        private var dynamicLinearLayout = view.findViewById(R.id.dynamic_linear_layout) as LinearLayout
 
         init {
             itemView.setOnClickListener(this) //setting a click listener on each itemView
+            allArrivalTimes.text = ""
         }
 
         //binding the viewHolder's Company object to date of another from the model layer
         fun bind(stop: Stops) {
             stopItem = stop
             stopName.text = stopItem.name
-
+            dynamicLinearLayout.visibility = View.GONE
         }
 
-        override fun onClick(itemView: View) {
-            //TODO navigate to StopsFragment
-//            Toast.makeText(context, "Clicked on route number ${routeItem.number}", Toast.LENGTH_SHORT).show()
+
+
+        override fun onClick(view: View) {
+            allArrivalTimes.text = ""
+            sharedViewModel.saveStop(stopItem)
+
+            if (dynamicLinearLayout.visibility == View.GONE) {
+                dynamicLinearLayout.visibility = View.VISIBLE
+
+                sharedViewModel.tripStopsListLiveData.observe(
+                    viewLifecycleOwner,
+                    { tripStop ->
+                        for (i in tripStop) {
+                            //TODO Fix bug where scrolling past view and scrolling back up gets rid of stuff
+                            allArrivalTimes.text = "${allArrivalTimes.text}${i.arrivalTime}\n"
+                        }
+                    }
+                )
+            } else{
+                dynamicLinearLayout.visibility = View.GONE
+            }
         }
     }
 
@@ -169,7 +190,6 @@ class StopsFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
                     holder.bind(stop)
                 }
             )
-//            holder.bind(stop)
         }
     }
 }
