@@ -134,5 +134,4 @@ class MainActivity : AppCompatActivity(),  NavigationView.OnNavigationItemSelect
     }
 
 
-
 }

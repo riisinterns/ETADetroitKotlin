@@ -8,12 +8,12 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import com.riis.etaDetroitkotlin.R
 
-class RouteLoadingDialog(private val activity: Activity){
+class RouteLoadingDialog(private val activity: Activity) {
 
     private lateinit var dialog: AlertDialog
     private lateinit var routeText: TextView
 
-    fun startLoadingDialog(route : String){
+    fun startLoadingDialog(route: String) {
         val builder = AlertDialog.Builder(activity)
         var inflater: LayoutInflater = activity.layoutInflater
 
@@ -31,7 +31,7 @@ class RouteLoadingDialog(private val activity: Activity){
         dialog.show()
     }
 
-    fun dismissDialog(){
+    fun dismissDialog() {
         dialog.dismiss()
     }
 

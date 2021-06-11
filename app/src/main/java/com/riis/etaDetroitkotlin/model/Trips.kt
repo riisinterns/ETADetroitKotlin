@@ -19,7 +19,7 @@ import androidx.room.*
         )
     ],
     tableName = "trips",
-    indices = [ Index(
+    indices = [Index(
         name =
         "idx_trips_fk_trips_directions", unique = false, value = ["direction_id"]
     ), Index(

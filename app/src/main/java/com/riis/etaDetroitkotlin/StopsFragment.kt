@@ -1,17 +1,19 @@
 package com.riis.etaDetroitkotlin
 
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.graphics.toColorInt
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
@@ -25,6 +27,8 @@ import com.riis.etaDetroitkotlin.model.Routes
 import com.riis.etaDetroitkotlin.model.Stops
 
 private const val TAG = "StopsFragment"
+private var CURRENT_DIRECTION: Int = 1
+private var CURRENT_DAY: Int = 1
 
 class StopsFragment : Fragment(){
 
@@ -38,10 +42,15 @@ class StopsFragment : Fragment(){
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view =  inflater.inflate(R.layout.stops_fragment, container, false)
+        val view = inflater.inflate(R.layout.stops_fragment, container, false)
+        (requireActivity() as AppCompatActivity).supportActionBar?.title =
+            "${sharedViewModel.getRouteName()}"
 
         stopsRecyclerView = view.findViewById(R.id.stops_recycler_view)
         stopsRecyclerView.layoutManager = LinearLayoutManager(context)
+
+        val appBarColor = ColorDrawable(sharedViewModel.getCompany()?.brandColor?.toColorInt()!!)
+        (requireActivity() as AppCompatActivity).supportActionBar?.setBackgroundDrawable(appBarColor)
 
         return view
     }
@@ -61,16 +70,11 @@ class StopsFragment : Fragment(){
         sharedViewModel.routeStopsListLiveData.observe(
             viewLifecycleOwner,
             { routeStops ->
-                updateUI(routeStops)
+                updateUI(routeStops.filter {
+                    it.directionId == CURRENT_DIRECTION && it.dayId == CURRENT_DAY
+                })
             }
         )
-
-
-//        val stop: Stops = Stops(1, "Lafayette & Trumbull", 1.0, 2.0)
-//
-//        val test: List<Stops> = listOf(stop, Stops(1, "Miller @ Ford Gate 6", 1.0, 2.0))
-//
-//        updateUI(test)
     }
 
     private fun updateUI(routeStops: List<RouteStops>) {
@@ -80,27 +84,50 @@ class StopsFragment : Fragment(){
 
 
 
-    private inner class StopHolder(view: View)
-        : RecyclerView.ViewHolder(view), View.OnClickListener {
+    private inner class StopHolder(view: View) : RecyclerView.ViewHolder(view),
+        View.OnClickListener {
 
         private lateinit var stopItem: Stops
+        private var allArrivalTimes: TextView = view.findViewById(R.id.all_arrival_times)
 
-        private val stopName: TextView = itemView.findViewById(R.id.stop_name)
+
+        private val stopName: TextView = view.findViewById(R.id.stop_name)
+
+        private var dynamicLinearLayout =
+            view.findViewById(R.id.dynamic_linear_layout) as LinearLayout
 
         init {
             itemView.setOnClickListener(this) //setting a click listener on each itemView
+            allArrivalTimes.text = ""
         }
 
         //binding the viewHolder's Company object to date of another from the model layer
         fun bind(stop: Stops) {
             stopItem = stop
             stopName.text = stopItem.name
-
+            dynamicLinearLayout.visibility = View.GONE
         }
 
-        override fun onClick(itemView: View) {
-            //TODO navigate to StopsFragment
-//            Toast.makeText(context, "Clicked on route number ${routeItem.number}", Toast.LENGTH_SHORT).show()
+
+        override fun onClick(view: View) {
+            allArrivalTimes.text = ""
+            sharedViewModel.saveStop(stopItem)
+
+            if (dynamicLinearLayout.visibility == View.GONE) {
+                dynamicLinearLayout.visibility = View.VISIBLE
+
+                sharedViewModel.tripStopsListLiveData.observe(
+                    viewLifecycleOwner,
+                    { tripStop ->
+                        for (i in tripStop) {
+                            //TODO Fix bug where scrolling past view and scrolling back up gets rid of stuff
+                            allArrivalTimes.text = "${allArrivalTimes.text}${i.arrivalTime}\n"
+                        }
+                    }
+                )
+            } else {
+                dynamicLinearLayout.visibility = View.GONE
+            }
         }
     }
 
@@ -124,7 +151,6 @@ class StopsFragment : Fragment(){
                     holder.bind(stop)
                 }
             )
-//            holder.bind(stop)
         }
     }
 }

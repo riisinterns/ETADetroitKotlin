@@ -5,18 +5,17 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.riis.etaDetroitkotlin.database.BusRepository
-import com.riis.etaDetroitkotlin.model.Company
-import com.riis.etaDetroitkotlin.model.RouteStops
-import com.riis.etaDetroitkotlin.model.Routes
-import com.riis.etaDetroitkotlin.model.Stops
+import com.riis.etaDetroitkotlin.model.*
 
 class SharedViewModel : ViewModel() {
 
     private val busRepository = BusRepository.get()
     val companyListLiveData = busRepository.getCompanies()
 
-    private val companyContainer = MutableLiveData<Company>() //this variable can store a Company object and is wrapped in LiveData
-    private val routeContainer = MutableLiveData<Routes>()
+    private val companyContainer =
+        MutableLiveData<Company>() //this variable can store a Company object and is wrapped in LiveData
+    val routeContainer = MutableLiveData<Routes>()
+    private val stopContainer = MutableLiveData<Stops>()
 
     // ... to allow observers to listen to any changes to it
 
@@ -30,6 +29,12 @@ class SharedViewModel : ViewModel() {
         Transformations.switchMap(routeContainer) { route ->
             busRepository.getRouteStops(route.id)
         }
+
+    var tripStopsListLiveData: LiveData<List<TripStops>> =
+        Transformations.switchMap(stopContainer) { stop ->
+            busRepository.getTripStops(stop.id)
+        }
+
 
     fun getStop(stopId: Int): LiveData<Stops> {
         return busRepository.getStop(stopId)
@@ -45,4 +50,25 @@ class SharedViewModel : ViewModel() {
     fun saveRoute(newRoute: Routes) {
         routeContainer.value = newRoute
     }
+
+    // TODO test with removing updateStop function
+    fun saveStop(newStop: Stops) {
+        stopContainer.value = newStop
+        tripStopsListLiveData = updateStop()
+    }
+
+    private fun updateStop(): LiveData<List<TripStops>> {
+        return Transformations.switchMap(stopContainer) { stop ->
+            busRepository.getTripStops(stop.id)
+        }
+    }
+
+    fun getRouteName(): String? {
+        return (routeContainer.value)?.name
+    }
+
+    fun getCompany(): Company? {
+        return companyContainer.value
+    }
+
 }

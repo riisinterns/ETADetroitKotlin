@@ -26,8 +26,8 @@ android {
         }
     }
 
-    kapt{
-        arguments{
+    kapt {
+        arguments {
             arg("room.schemaLocation", "app/schemas")
         }
     }
@@ -68,5 +68,4 @@ dependencies {
 
     implementation 'com.google.maps.android:android-maps-utils:2.2.3'
     implementation 'com.google.android.gms:play-services-maps:17.0.1'
-
 }
