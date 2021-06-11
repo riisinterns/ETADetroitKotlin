@@ -123,12 +123,12 @@ class StopsFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
         : RecyclerView.ViewHolder(view), View.OnClickListener {
 
         private lateinit var stopItem: Stops
-        private var allArrivalTimes: TextView = itemView.findViewById(R.id.all_arrival_times)
+        private var allArrivalTimes: TextView = view.findViewById(R.id.all_arrival_times)
 
 
-        private val stopName: TextView = itemView.findViewById(R.id.stop_name)
+        private val stopName: TextView = view.findViewById(R.id.stop_name)
 
-        private val dynamicLinearLayout = itemView.findViewById(R.id.dynamic_linear_layout) as LinearLayout
+        private var dynamicLinearLayout = view.findViewById(R.id.dynamic_linear_layout) as LinearLayout
 
         init {
             itemView.setOnClickListener(this) //setting a click listener on each itemView
@@ -139,11 +139,13 @@ class StopsFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
         fun bind(stop: Stops) {
             stopItem = stop
             stopName.text = stopItem.name
-
+            dynamicLinearLayout.visibility = View.GONE
         }
 
-        override fun onClick(itemView: View) {
-            Toast.makeText(context, "Clicked on stop  ${stopItem.name}", Toast.LENGTH_SHORT).show()
+
+
+        override fun onClick(view: View) {
+            allArrivalTimes.text = ""
             sharedViewModel.saveStop(stopItem)
 
             if (dynamicLinearLayout.visibility == View.GONE) {
@@ -153,12 +155,10 @@ class StopsFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
                     viewLifecycleOwner,
                     { tripStop ->
                         for (i in tripStop) {
-                            Log.d(TAG, "TIME FOR ${stopItem.name}: ${i.arrivalTime}")
-//                           allArrivalTimes.text = allArrivalTimes.text + i.arrivalTime
+                            allArrivalTimes.text = "${allArrivalTimes.text} \n ${i.stopId}: ${i.arrivalTime}"
                         }
                     }
                 )
-
             } else{
                 dynamicLinearLayout.visibility = View.GONE
             }
@@ -178,7 +178,6 @@ class StopsFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
 
         override fun onBindViewHolder(holder: StopsFragment.StopHolder, position: Int) {
             val routeStop = routeStopsList[position]
-
             sharedViewModel.getStop(routeStop.stopId).observe(
                 viewLifecycleOwner,
                 { stop ->
