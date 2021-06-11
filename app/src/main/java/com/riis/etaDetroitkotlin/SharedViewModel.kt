@@ -11,7 +11,7 @@ class SharedViewModel : ViewModel() {
     private val busRepository = BusRepository.get()
     val companyListLiveData = busRepository.getCompanies()
 
-    private val companyContainer = MutableLiveData<Company>() //this variable can store a Company object and is wrapped in LiveData
+    val companyContainer = MutableLiveData<Company>() //this variable can store a Company object and is wrapped in LiveData
     private val routeContainer = MutableLiveData<Routes>()
     private val stopContainer = MutableLiveData<Stops>()
 
