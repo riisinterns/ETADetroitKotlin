@@ -6,29 +6,19 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.MenuItem
-import android.view.View
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.core.content.ContentProviderCompat.requireContext
-import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
+import androidx.navigation.ui.*
 import com.google.android.material.navigation.NavigationView
-import com.riis.etaDetroitkotlin.fragment.RouteMapFragment
 import com.riis.etaDetroitkotlin.model.Company
 
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class MainActivity : AppCompatActivity(),  NavigationView.OnNavigationItemSelectedListener{
 
     //global variables
     private lateinit var appBarConfig: AppBarConfiguration
@@ -67,7 +57,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         //defining app bar configurations
         drawerMenu = findViewById(R.id.drawer_menu)
         appBarConfig = AppBarConfiguration(
-            setOf(R.id.home_dest, R.id.routes_dest), //setting the top-level fragment destinations
+            setOf(R.id.home_dest), //setting the top-level fragment destinations
             drawerMenu
         ) //giving the app bar a drawerLayout
 
@@ -100,32 +90,47 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
 
+
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
+
         drawerMenu.closeDrawers()
 
-        Handler(Looper.getMainLooper()).postDelayed({
-            when (item.title) {
+        if (item.groupId == R.id.primary){
+            return item.onNavDestinationSelected(findNavController(R.id.nav_host_fragment))
+                    || super.onOptionsItemSelected(item) // Otherwise, returns false
+        }
+        else{
+            Handler(Looper.getMainLooper()).postDelayed({
 
-               this.getString(R.string.navDdot) ->{
-                    sharedViewModel.saveCompany(listOfCompanies[1])
+                when (item.title) {
+
+                    this.getString(R.string.navDdot) ->{
+                        sharedViewModel.saveCompany(listOfCompanies[1])
+                        navController.navigate(R.id.routes_dest, null, null)
+                    }
+                    this.getString(R.string.navSmart) -> {
+                        sharedViewModel.saveCompany(listOfCompanies[0])
+                        navController.navigate(R.id.routes_dest, null, null)
+                    }
+                    this.getString(R.string.navReflex) -> {
+                        sharedViewModel.saveCompany(listOfCompanies[2])
+                        navController.navigate(R.id.routes_dest, null, null)
+                    }
+                    this.getString(R.string.navPeopleMover) -> {
+                        sharedViewModel.saveCompany(listOfCompanies[3])
+                        navController.navigate(R.id.routes_dest, null, null)
+                    }
+                    this.getString(R.string.navQline) -> {
+                        sharedViewModel.saveCompany(listOfCompanies[4])
+                        navController.navigate(R.id.routes_dest, null, null)
+                    }
                 }
-                this.getString(R.string.navSmart) -> {
-                    sharedViewModel.saveCompany(listOfCompanies[0])
-                }
-                this.getString(R.string.navReflex) -> {
-                    sharedViewModel.saveCompany(listOfCompanies[2])
-                }
-                this.getString(R.string.navPeopleMover) -> {
-                    sharedViewModel.saveCompany(listOfCompanies[3])
-                }
-                this.getString(R.string.navQline) -> {
-                    sharedViewModel.saveCompany(listOfCompanies[4])
-                }
-            }
-            navController.navigate(R.id.moveToRoutesFragment)
-        }, 500)
+            }, 500)
+        }
+
 
         return true
+
     }
 
 
