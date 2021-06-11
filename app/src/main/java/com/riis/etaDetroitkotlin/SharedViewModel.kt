@@ -5,10 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.riis.etaDetroitkotlin.database.BusRepository
-import com.riis.etaDetroitkotlin.model.Company
-import com.riis.etaDetroitkotlin.model.RouteStops
-import com.riis.etaDetroitkotlin.model.Routes
-import com.riis.etaDetroitkotlin.model.Stops
+import com.riis.etaDetroitkotlin.model.*
 
 class SharedViewModel : ViewModel() {
     private val busRepository = BusRepository.get()
@@ -16,6 +13,7 @@ class SharedViewModel : ViewModel() {
 
     private val companyContainer = MutableLiveData<Company>() //this variable can store a Company object and is wrapped in LiveData
     private val routeContainer = MutableLiveData<Routes>()
+    private val stopContainer = MutableLiveData<Stops>()
 
     // ... to allow observers to listen to any changes to it
 
@@ -28,6 +26,11 @@ class SharedViewModel : ViewModel() {
     var routeStopsListLiveData: LiveData<List<RouteStops>> =
         Transformations.switchMap(routeContainer) { route ->
             busRepository.getRouteStops(route.id)
+        }
+
+    var tripStopsListLiveData: LiveData<List<TripStops>> =
+        Transformations.switchMap(stopContainer) { stop ->
+            busRepository.getTripStops(stop.id)
         }
 
     fun getStop(stopId: Int): LiveData<Stops> {
@@ -43,5 +46,9 @@ class SharedViewModel : ViewModel() {
 
     fun saveRoute(newRoute: Routes) {
         routeContainer.value = newRoute
+    }
+
+    fun saveStop(newStop: Stops) {
+        stopContainer.value = newStop
     }
 }

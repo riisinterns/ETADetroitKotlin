@@ -57,6 +57,8 @@ class StopsFragment : Fragment() {
         : RecyclerView.ViewHolder(view), View.OnClickListener {
 
         private lateinit var stopItem: Stops
+        private var allArrivalTimes: TextView = itemView.findViewById(R.id.all_arrival_times)
+
 
         private val stopName: TextView = itemView.findViewById(R.id.stop_name)
 
@@ -64,6 +66,7 @@ class StopsFragment : Fragment() {
 
         init {
             itemView.setOnClickListener(this) //setting a click listener on each itemView
+            allArrivalTimes.text = ""
         }
 
         //binding the viewHolder's Company object to date of another from the model layer
@@ -74,10 +77,22 @@ class StopsFragment : Fragment() {
         }
 
         override fun onClick(itemView: View) {
-            //TODO navigate to StopsFragment
             Toast.makeText(context, "Clicked on stop  ${stopItem.name}", Toast.LENGTH_SHORT).show()
+            sharedViewModel.saveStop(stopItem)
+
             if (dynamicLinearLayout.visibility == View.GONE) {
                 dynamicLinearLayout.visibility = View.VISIBLE
+
+                sharedViewModel.tripStopsListLiveData.observe(
+                    viewLifecycleOwner,
+                    { tripStop ->
+                        for (i in tripStop) {
+                            Log.d(TAG, "TIME FOR ${stopItem.name}: ${i.arrivalTime}")
+//                           allArrivalTimes.text = allArrivalTimes.text + i.arrivalTime
+                        }
+                    }
+                )
+
             } else{
                 dynamicLinearLayout.visibility = View.GONE
             }
