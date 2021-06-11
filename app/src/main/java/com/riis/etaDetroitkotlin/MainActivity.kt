@@ -2,29 +2,18 @@ package com.riis.etaDetroitkotlin
 
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.util.Log
-import android.view.MenuItem
-import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
-import com.google.android.material.navigation.NavigationView
-import com.riis.etaDetroitkotlin.fragment.RouteMapFragment
 
 
-class MainActivity : AppCompatActivity(){
+class MainActivity : AppCompatActivity() {
 
     //global variables
     private lateinit var appBarConfig: AppBarConfiguration
@@ -73,7 +62,6 @@ class MainActivity : AppCompatActivity(){
         // tells the navController how to behave using the appBarConfiguration
         return findNavController(R.id.nav_host_fragment).navigateUp(appBarConfig)
     }
-
 
 
 }

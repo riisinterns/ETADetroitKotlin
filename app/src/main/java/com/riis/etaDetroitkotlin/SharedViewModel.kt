@@ -8,12 +8,12 @@ import com.riis.etaDetroitkotlin.database.BusRepository
 import com.riis.etaDetroitkotlin.model.*
 
 class SharedViewModel : ViewModel() {
-    // TODO add private back for busRepo
-    val busRepository = BusRepository.get()
+    private val busRepository = BusRepository.get()
     val companyListLiveData = busRepository.getCompanies()
 
-    private val companyContainer = MutableLiveData<Company>() //this variable can store a Company object and is wrapped in LiveData
-    private val routeContainer = MutableLiveData<Routes>()
+    private val companyContainer =
+        MutableLiveData<Company>() //this variable can store a Company object and is wrapped in LiveData
+    val routeContainer = MutableLiveData<Routes>()
     private val stopContainer = MutableLiveData<Stops>()
 
     // ... to allow observers to listen to any changes to it
@@ -50,7 +50,6 @@ class SharedViewModel : ViewModel() {
         routeContainer.value = newRoute
     }
 
-
     // TODO test with removing updateStop function
     fun saveStop(newStop: Stops) {
         stopContainer.value = newStop
@@ -62,4 +61,13 @@ class SharedViewModel : ViewModel() {
             busRepository.getTripStops(stop.id)
         }
     }
+
+    fun getRouteName(): String? {
+        return (routeContainer.value)?.name
+    }
+
+    fun getCompany(): Company? {
+        return companyContainer.value
+    }
+
 }

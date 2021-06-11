@@ -26,8 +26,8 @@ android {
         }
     }
 
-    kapt{
-        arguments{
+    kapt {
+        arguments {
             arg("room.schemaLocation", "app/schemas")
         }
     }

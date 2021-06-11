@@ -1,28 +1,22 @@
 package com.riis.etaDetroitkotlin
 
 
-
 //HomeFragment is a fragment that displays a grid-based RecyclerView
+
+
 import android.graphics.Color
-
-
-
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
@@ -32,12 +26,11 @@ import com.google.android.material.navigation.NavigationView
 import com.riis.etaDetroitkotlin.model.Company
 
 
-
 //CompanyListFragment is a fragment that displays a grid-based RecyclerView
 //It provides the interface for the user to select between different bus companies
 private const val TAG = "HomeFragment"
 
-class HomeFragment : Fragment() , NavigationView.OnNavigationItemSelectedListener{
+class HomeFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener {
 
     //CLASS VARIABLES
     //---------------
@@ -47,7 +40,7 @@ class HomeFragment : Fragment() , NavigationView.OnNavigationItemSelectedListene
     private lateinit var drawerMenu: DrawerLayout
     private lateinit var leListOfCompanies: List<Company>
 
-    
+
     //LINKING FRAGMENT WITH VIEW MODELS
     //----------------------------------
     private val sharedViewModel: SharedViewModel by activityViewModels()
@@ -85,7 +78,6 @@ class HomeFragment : Fragment() , NavigationView.OnNavigationItemSelectedListene
             viewLifecycleOwner,
             { companyList ->
                 companyList?.let {
-                    Log.d(TAG, "In the observer")
                     updateUI(companyList)
                     leListOfCompanies = companyList
                 }
@@ -107,7 +99,7 @@ class HomeFragment : Fragment() , NavigationView.OnNavigationItemSelectedListene
         Handler(Looper.getMainLooper()).postDelayed({
             when (item.itemId) {
                 R.id.nav_route_map -> navController.navigate(R.id.action_home_dest_to_routeMapFragment)
-                R.id.nav_ddot ->{
+                R.id.nav_ddot -> {
                     sharedViewModel.saveCompany(leListOfCompanies[1])
                     navController.navigate(R.id.moveToRoutesFragment)
                 }
@@ -160,15 +152,19 @@ class HomeFragment : Fragment() , NavigationView.OnNavigationItemSelectedListene
             companyNameTextView.text = companyItem.name
             companyNameTextView.setBackgroundColor(Color.parseColor(companyItem.brandColor))
 
-            val resID: Int = context?.resources!!.getIdentifier(companyItem.busImgUrl, "drawable", context!!.packageName)
+            val resID: Int = context?.resources!!.getIdentifier(
+                companyItem.busImgUrl,
+                "drawable",
+                context!!.packageName
+            )
             companyImageView.setImageResource(resID)
 
         }
 
         override fun onClick(itemView: View) {
-            if (companyItem.name == "Route Map"){
+            if (companyItem.name == "Route Map") {
                 navController.navigate(R.id.action_home_dest_to_routeMapFragment)
-            }else{
+            } else {
                 sharedViewModel.saveCompany(companyItem)
                 itemView.findNavController().navigate(R.id.moveToRoutesFragment)
             }

@@ -2,7 +2,6 @@ package com.riis.etaDetroitkotlin.fragment
 
 import android.app.Activity
 import android.content.res.Resources
-import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -12,7 +11,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -41,7 +39,8 @@ private val checkBoxCompanyNames: MutableMap<Int, String> = HashMap()
 private var busRoutes: MutableMap<String, GeoJsonLayer> = HashMap()
 private lateinit var dialog: RouteLoadingDialog
 
-class RouteMapFragment : Fragment(), View.OnClickListener, NavigationView.OnNavigationItemSelectedListener {
+class RouteMapFragment : Fragment(), View.OnClickListener,
+    NavigationView.OnNavigationItemSelectedListener {
 
     private lateinit var listOfCompanies: List<Company>
     private lateinit var navController: NavController
@@ -72,7 +71,12 @@ class RouteMapFragment : Fragment(), View.OnClickListener, NavigationView.OnNavi
             addBusRoute(googleMap, "Ddot Bus Route", R.raw.ddot_routes, R.color.DdotGreen)
             addBusRoute(googleMap, "Smart Bus Route", R.raw.smart_bus_routes, R.color.SmartBusRed)
             addBusRoute(googleMap, "Fast Bus Route", R.raw.fast_routes, R.color.ReflexBlue)
-            addBusRoute(googleMap, "Detroit People Mover", R.raw.people_mover_routes, R.color.PeopleMoverColor)
+            addBusRoute(
+                googleMap,
+                "Detroit People Mover",
+                R.raw.people_mover_routes,
+                R.color.PeopleMoverColor
+            )
             addBusRoute(googleMap, "QLine", R.raw.qline, R.color.Qline)
         } catch (e: Exception) {
             e.printStackTrace()
@@ -136,11 +140,11 @@ class RouteMapFragment : Fragment(), View.OnClickListener, NavigationView.OnNavi
         Handler(Looper.getMainLooper()).postDelayed({
             when (item.itemId) {
 
-                R.id.nav_home-> navController.navigate(R.id.routeMapFragment_to_homeFragment)
+                R.id.nav_home -> navController.navigate(R.id.routeMapFragment_to_homeFragment)
 
                 R.id.nav_route_map -> navController.navigate(R.id.routeMapFragment_to_routeMapFragment)
 
-                R.id.nav_ddot ->{
+                R.id.nav_ddot -> {
                     sharedViewModel.saveCompany(listOfCompanies[1])
                     navController.navigate(R.id.routeMapFragment_to_routesFragment)
                 }

@@ -5,7 +5,6 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -16,13 +15,13 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.activityViewModels
-import androidx.recyclerview.widget.RecyclerView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.navigation.NavigationView
 import com.riis.etaDetroitkotlin.model.Company
 import com.riis.etaDetroitkotlin.model.Routes
@@ -94,11 +93,11 @@ class RoutesFragment : Fragment(), NavigationView.OnNavigationItemSelectedListen
         Handler(Looper.getMainLooper()).postDelayed({
             when (item.itemId) {
 
-                R.id.nav_home-> navController.navigate(R.id.action_routes_dest_to_home_dest)
+                R.id.nav_home -> navController.navigate(R.id.action_routes_dest_to_home_dest)
 
                 R.id.nav_route_map -> navController.navigate(R.id.action_routes_dest_to_routeMapFragment)
 
-                R.id.nav_ddot ->{
+                R.id.nav_ddot -> {
                     sharedViewModel.saveCompany(listOfCompanies[1])
                     navController.navigate(R.id.action_routesFragment_to_routesFragment)
                 }
@@ -129,7 +128,8 @@ class RoutesFragment : Fragment(), NavigationView.OnNavigationItemSelectedListen
 
     override fun onPause() {
         super.onPause()
-        val appBarColor = ColorDrawable(ContextCompat.getColor(requireActivity(), R.color.ETAHeader))
+        val appBarColor =
+            ColorDrawable(ContextCompat.getColor(requireActivity(), R.color.ETAHeader))
         (requireActivity() as AppCompatActivity).supportActionBar?.setBackgroundDrawable(appBarColor)
     }
 
@@ -138,22 +138,31 @@ class RoutesFragment : Fragment(), NavigationView.OnNavigationItemSelectedListen
         routeRecyclerView.adapter = adapter
     }
 
-    private fun updateUI(currentCompany: Company){
+    private fun updateUI(currentCompany: Company) {
         // set Photo and Background
         //val currentCompany = sharedViewModel.currentCompany
-        val resID: Int = context?.resources!!.getIdentifier(currentCompany.busImgUrl, "drawable", requireContext().packageName)
+        val resID: Int = context?.resources!!.getIdentifier(
+            currentCompany.busImgUrl,
+            "drawable",
+            requireContext().packageName
+        )
         busPhotoImageView.setImageResource(resID)
         routeRecyclerView.setBackgroundColor(Color.parseColor(currentCompany.brandColor))
 
         val appBarColor = ColorDrawable(Color.parseColor(currentCompany.brandColor))
         (requireActivity() as AppCompatActivity).supportActionBar?.setBackgroundDrawable(appBarColor)
 
-        when (currentCompany.name){
-            "SmartBus" -> (requireActivity() as AppCompatActivity).supportActionBar?.title = "Smart Bus Route"
-            "DDOT" -> (requireActivity() as AppCompatActivity).supportActionBar?.title = "Ddot Bus Route"
-            "FAST" -> (requireActivity() as AppCompatActivity).supportActionBar?.title = "Fast Bus Route"
-            "People Mover" -> (requireActivity() as AppCompatActivity).supportActionBar?.title = "People Mover Route"
-            "QLine" -> (requireActivity() as AppCompatActivity).supportActionBar?.title = "Qline Route"
+        when (currentCompany.name) {
+            "SmartBus" -> (requireActivity() as AppCompatActivity).supportActionBar?.title =
+                "Smart Bus Route"
+            "DDOT" -> (requireActivity() as AppCompatActivity).supportActionBar?.title =
+                "Ddot Bus Route"
+            "FAST" -> (requireActivity() as AppCompatActivity).supportActionBar?.title =
+                "Fast Bus Route"
+            "People Mover" -> (requireActivity() as AppCompatActivity).supportActionBar?.title =
+                "People Mover Route"
+            "QLine" -> (requireActivity() as AppCompatActivity).supportActionBar?.title =
+                "Qline Route"
         }
     }
 
@@ -179,14 +188,19 @@ class RoutesFragment : Fragment(), NavigationView.OnNavigationItemSelectedListen
 
             //updating the itemView attributes using the received data
 
-            routeNumberTextView.text = getString(R.string.route_item_subtitle, routeItem.number.toString())
+            routeNumberTextView.text =
+                getString(R.string.route_item_subtitle, routeItem.number.toString())
             routeNameTextView.text = routeItem.name
 
         }
 
         override fun onClick(itemView: View) {
             //TODO navigate to StopsFragment
-            Toast.makeText(context, "Clicked on route number ${routeItem.number}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                context,
+                "Clicked on route number ${routeItem.number}",
+                Toast.LENGTH_SHORT
+            ).show()
             sharedViewModel.saveRoute(routeItem)
             itemView.findNavController().navigate(R.id.route_to_stops)
         }
