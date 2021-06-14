@@ -4,6 +4,7 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -24,6 +25,8 @@ import com.google.android.material.navigation.NavigationView
 import com.riis.etaDetroitkotlin.model.Company
 import com.riis.etaDetroitkotlin.model.RouteStops
 import com.riis.etaDetroitkotlin.model.Stops
+import com.riis.etaDetroitkotlin.model.TripStops
+import org.w3c.dom.Text
 
 private const val TAG = "StopsFragment"
 private var CURRENT_DIRECTION: Int = 1
@@ -135,6 +138,7 @@ class StopsFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
 
 
         private val stopName: TextView = view.findViewById(R.id.stop_name)
+        private val currentTime: TextView = view.findViewById(R.id.current_time)
 
         private var dynamicLinearLayout =
             view.findViewById(R.id.dynamic_linear_layout) as LinearLayout
@@ -149,25 +153,38 @@ class StopsFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
             stopItem = stop
             stopName.text = stopItem.name
             dynamicLinearLayout.visibility = View.GONE
+            allArrivalTimes.text = null
+            sharedViewModel.saveStop(stopItem)
+
+            sharedViewModel.tripStopsListLiveData.observe(
+                viewLifecycleOwner,
+                { tripStop ->
+                    currentTime.text = tripStop.sortedBy {it.stopSequence}[0].arrivalTime.toString()
+                }
+            )
         }
 
 
         override fun onClick(view: View) {
-            allArrivalTimes.text = ""
+            allArrivalTimes.text = null
             sharedViewModel.saveStop(stopItem)
 
             if (dynamicLinearLayout.visibility == View.GONE) {
                 dynamicLinearLayout.visibility = View.VISIBLE
-
+//                var tripStopCopy: List<TripStops> = null
                 sharedViewModel.tripStopsListLiveData.observe(
                     viewLifecycleOwner,
                     { tripStop ->
-                        for (i in tripStop) {
+                        for (i in tripStop.sortedBy {it.stopSequence}.subList(0, 5)) {
+//                        for (i in tripStop.sortedWith(compareBy {it.stopSequence}, {it.arrivalTime} )) {
                             //TODO Fix bug where scrolling past view and scrolling back up gets rid of stuff
-                            allArrivalTimes.text = "${allArrivalTimes.text}${i.arrivalTime}\n"
+                            allArrivalTimes.text = "${allArrivalTimes.text}${i.arrivalTime.toString()}......${i.stopSequence}\n"
+//                            tripStopCopy = tripStop
                         }
                     }
                 )
+
+//                Log.d(TAG, "$tripStopCopy")
             } else {
                 dynamicLinearLayout.visibility = View.GONE
             }

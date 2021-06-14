@@ -10,6 +10,5 @@ class ETADetroitApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         BusRepository.initialize(this)
-        Log.d(TAG, "In $TAG")
     }
 }
