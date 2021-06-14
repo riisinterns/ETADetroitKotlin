@@ -2,8 +2,6 @@ package com.riis.etaDetroitkotlin
 
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -19,8 +17,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.riis.etaDetroitkotlin.model.Company
 import com.riis.etaDetroitkotlin.model.RouteStops
 import com.riis.etaDetroitkotlin.model.Stops
-import com.riis.etaDetroitkotlin.model.TripStops
-import org.w3c.dom.Text
 
 private const val TAG = "StopsFragment"
 private var CURRENT_DIRECTION: Int = 1
@@ -32,6 +28,7 @@ class StopsFragment : Fragment() {
     private lateinit var adapter: StopAdapter
     private val sharedViewModel: SharedViewModel by activityViewModels()
     private lateinit var listOfCompanies: List<Company>
+    private var stopsVisibility: HashMap<Int, Boolean> = hashMapOf()
 //    private lateinit var routeStopsList: List<RouteStops>
 
     override fun onCreateView(
@@ -83,7 +80,7 @@ class StopsFragment : Fragment() {
         View.OnClickListener {
 
         private lateinit var stopItem: Stops
-        private var allArrivalTimes: TextView = view.findViewById(R.id.all_arrival_times)
+        private lateinit var allArrivalTimes: TextView
 
 
         private val stopName: TextView = view.findViewById(R.id.stop_name)
@@ -94,15 +91,25 @@ class StopsFragment : Fragment() {
 
         init {
             itemView.setOnClickListener(this) //setting a click listener on each itemView
-            allArrivalTimes.text = ""
+//            allArrivalTimes.text = ""
         }
 
         //binding the viewHolder's Company object to date of another from the model layer
         fun bind(stop: Stops) {
+            allArrivalTimes = view?.findViewById(R.id.all_arrival_times) as TextView
             stopItem = stop
             stopName.text = stopItem.name
-            dynamicLinearLayout.visibility = View.GONE
-            allArrivalTimes.text = null
+            if (stopItem.id !in stopsVisibility) {
+                stopsVisibility[stopItem.id] = true
+            }
+
+            if (stopsVisibility[stopItem.id] == true) {
+                dynamicLinearLayout.visibility = View.GONE
+                allArrivalTimes.text = null
+            } else {
+                dynamicLinearLayout.visibility = View.VISIBLE
+            }
+
             sharedViewModel.saveStop(stopItem)
 
             sharedViewModel.tripStopsListLiveData.observe(
@@ -120,6 +127,7 @@ class StopsFragment : Fragment() {
 
             if (dynamicLinearLayout.visibility == View.GONE) {
                 dynamicLinearLayout.visibility = View.VISIBLE
+                stopsVisibility[stopItem.id] = false
 //                var tripStopCopy: List<TripStops> = null
                 sharedViewModel.tripStopsListLiveData.observe(
                     viewLifecycleOwner,
@@ -127,7 +135,8 @@ class StopsFragment : Fragment() {
                         for (i in tripStop.sortedBy {it.stopSequence}.subList(0, 5)) {
 //                        for (i in tripStop.sortedWith(compareBy {it.stopSequence}, {it.arrivalTime} )) {
                             //TODO Fix bug where scrolling past view and scrolling back up gets rid of stuff
-                            allArrivalTimes.text = "${allArrivalTimes.text}${i.arrivalTime.toString().substring(11, 16)}......${i.stopSequence}\n"
+//                            allArrivalTimes.text = "${allArrivalTimes.text}${i.arrivalTime.toString().substring(11, 16)}......${i.stopSequence}\n"
+                            allArrivalTimes.append("${i.arrivalTime.toString().substring(11, 16)}......${i.stopSequence}")
 //                            tripStopCopy = tripStop
                         }
                     }
@@ -136,6 +145,7 @@ class StopsFragment : Fragment() {
 //                Log.d(TAG, "$tripStopCopy")
             } else {
                 dynamicLinearLayout.visibility = View.GONE
+                stopsVisibility[stopItem.id] = true
             }
         }
     }
