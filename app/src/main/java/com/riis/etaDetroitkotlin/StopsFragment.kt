@@ -2,9 +2,7 @@ package com.riis.etaDetroitkotlin
 
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -42,6 +40,8 @@ class StopsFragment : Fragment() {
 
         val appBarColor = ColorDrawable(sharedViewModel.getCompany()?.brandColor?.toColorInt()!!)
         (requireActivity() as AppCompatActivity).supportActionBar?.setBackgroundDrawable(appBarColor)
+
+        setHasOptionsMenu(true) //allows this fragment to be able to add its own menu options to the Main Activity's app bar
 
         return view
     }
@@ -119,6 +119,15 @@ class StopsFragment : Fragment() {
                 dynamicLinearLayout.visibility = View.GONE
             }
         }
+    }
+
+    //ADDING MENU OPTIONS TO THE APP BAR PROVIDED BY MAIN ACTIVITY
+    //------------------------------------------------------------
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(
+            R.menu.search_menu,
+            menu
+        ) //search_menu.xml displays a search icon (magnifying glass) in the top right of the app bar
     }
 
     private inner class StopAdapter(var routeStopsList: List<RouteStops>)//accepts a list of Company objects from model layer

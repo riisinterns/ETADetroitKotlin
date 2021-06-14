@@ -2,6 +2,8 @@
     <string name="app_name">ETA Detroit Kotlin</string>
     <string name="routes_label">Routes</string>
 
+    <string name="search_icon">search</string>
+
     <string name="open">Navigation View Open</string>
     <string name="close">Navigation View Close</string>
     <string name="title_activity_favorites">Favorites</string>

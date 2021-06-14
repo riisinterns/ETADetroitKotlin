@@ -3,13 +3,12 @@ package com.riis.etaDetroitkotlin
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.view.*
+import android.view.inputmethod.EditorInfo
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
+
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -18,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.riis.etaDetroitkotlin.model.Company
 import com.riis.etaDetroitkotlin.model.Routes
+import java.util.*
 
 class RoutesFragment : Fragment() {
 
@@ -45,6 +45,9 @@ class RoutesFragment : Fragment() {
         busPhotoImageView = view.findViewById(R.id.busImage) as ImageView
         routeRecyclerView.layoutManager = LinearLayoutManager(context)
         //update the RecyclerView with itemViews and their corresponding data from the model layer
+
+        setHasOptionsMenu(true) //allows this fragment to be able to add its own menu options to the Main Activity's app bar
+
         return view
     }
 
@@ -159,7 +162,9 @@ class RoutesFragment : Fragment() {
     //ADAPTER CLASS FOR RECYCLER VIEW
     //-------------------------------
     private inner class RouteAdapter(var routeList: List<Routes>)//accepts a list of Company objects from model layer
-        : RecyclerView.Adapter<RouteHolder>() {
+        : RecyclerView.Adapter<RouteHolder>(), Filterable {
+
+        private var routeFilterList: List<Routes> = routeList
 
         //creates a new viewHolder with a new itemView wrapped inside
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int)
@@ -170,13 +175,94 @@ class RoutesFragment : Fragment() {
         }
 
         //returns the number of items in the list of Transport objects
-        override fun getItemCount() = routeList.size
+        override fun getItemCount() = routeFilterList.size
 
         //binds the viewHolder with a Company object from a given position in companyList
         override fun onBindViewHolder(holder: RouteHolder, position: Int) {
             val route = routeList[position]
             holder.bind(route)
         }
+
+        //creates a filter for the adapter.
+        override fun getFilter(): Filter {
+            return object : Filter() { //A filter constrains data with a filtering pattern
+
+                //If the user has typed text into the SearchView, that text becomes a constraint to filter results from the list of routes
+                override fun performFiltering(constraint: CharSequence?): FilterResults {
+                    val search = constraint.toString()
+
+                    //if there is no search query, return all results from the list of routes
+                    if (search.isEmpty()) {
+                        routeFilterList = routeList
+                    } else {
+
+                        val resultList: MutableList<Routes> = mutableListOf()
+
+                        for (route in routeList) {
+                            val routeNumber: String = "route " + route.number
+                            if (route.name.lowercase(Locale.ROOT).trim()
+                                    .contains(search.lowercase(Locale.ROOT))
+                                || routeNumber.contains(search.lowercase(Locale.ROOT))
+                            ) {
+                                resultList.add(route)
+                            }
+                        }
+                        routeFilterList = resultList
+                    }
+                    val filteredResults = FilterResults()
+                    filteredResults.values = routeFilterList
+                    return filteredResults
+                }
+
+                @Suppress("UNCHECKED_CAST")
+                override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+                    routeFilterList = results?.values as List<Routes>
+                    notifyDataSetChanged()
+                }
+
+
+            }
+        }
     }
 
+    //ADDING MENU OPTIONS TO THE APP BAR PROVIDED BY MAIN ACTIVITY
+    //------------------------------------------------------------
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(
+            R.menu.search_menu,
+            menu
+        ) //search_menu.xml displays a search icon (magnifying glass) in the top right of the app bar
+
+
+        /*NOTE: An action view is an action that provides functionality within the app bar. In this case, we ...
+                    are using the SearchView action view which initially appears as a menu item. When the user clicks ...
+                    the action, it expands to fit the app bar.
+
+                    A SearchView allows the user to enter search query and submit a request to a search provider.
+                    It Shows a list of query suggestions or results, if available, and allows the user to pick a suggestion or result to launch into.
+             */
+
+        //creating configuring the search bar
+        val searchIcon = menu.findItem(R.id.search_icon)
+        val searchView =
+            searchIcon?.actionView as SearchView //SearchView widget implements an action view for entering search queries
+        searchView.imeOptions =
+            EditorInfo.IME_ACTION_DONE //replaces the user's carriage return button in their on-screen keyboard
+        // with a "Done" action button (may appear as a check mark)
+
+        //handling interactions with the search bar
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            //when user clicks submit button after entering query...
+            override fun onQueryTextSubmit(s: String): Boolean {
+                return false //return false to let the SearchView handle the submission by launching any associated intent
+            }
+
+            //when the query text is changed by the user
+            override fun onQueryTextChange(s: String): Boolean {
+                adapter?.getFilter()?.filter(s)
+                return false
+            }
+        })
+
+    }
 }
