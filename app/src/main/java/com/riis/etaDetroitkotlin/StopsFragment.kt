@@ -87,6 +87,7 @@ class StopsFragment : Fragment() {
 
 
         private val stopName: TextView = view.findViewById(R.id.stop_name)
+        private val currentTime: TextView = view.findViewById(R.id.current_time)
 
         private var dynamicLinearLayout =
             view.findViewById(R.id.dynamic_linear_layout) as LinearLayout
