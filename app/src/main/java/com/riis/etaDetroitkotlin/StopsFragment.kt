@@ -159,7 +159,7 @@ class StopsFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
             sharedViewModel.tripStopsListLiveData.observe(
                 viewLifecycleOwner,
                 { tripStop ->
-                    currentTime.text = tripStop.sortedBy {it.stopSequence}[0].arrivalTime.toString()
+                    currentTime.text = "(${tripStop.sortedBy {it.stopSequence}[0].arrivalTime.toString().substring(11, 16)})"
                 }
             )
         }
@@ -178,7 +178,7 @@ class StopsFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
                         for (i in tripStop.sortedBy {it.stopSequence}.subList(0, 5)) {
 //                        for (i in tripStop.sortedWith(compareBy {it.stopSequence}, {it.arrivalTime} )) {
                             //TODO Fix bug where scrolling past view and scrolling back up gets rid of stuff
-                            allArrivalTimes.text = "${allArrivalTimes.text}${i.arrivalTime.toString()}......${i.stopSequence}\n"
+                            allArrivalTimes.text = "${allArrivalTimes.text}${i.arrivalTime.toString().substring(11, 16)}......${i.stopSequence}\n"
 //                            tripStopCopy = tripStop
                         }
                     }
