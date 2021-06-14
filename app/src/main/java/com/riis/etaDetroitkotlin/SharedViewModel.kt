@@ -8,6 +8,7 @@ import com.riis.etaDetroitkotlin.database.BusRepository
 import com.riis.etaDetroitkotlin.model.*
 
 class SharedViewModel : ViewModel() {
+
     private val busRepository = BusRepository.get()
     val companyListLiveData = busRepository.getCompanies()
 

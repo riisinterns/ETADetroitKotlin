@@ -7,18 +7,13 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.NavController
-import androidx.navigation.findNavController
-import androidx.navigation.ui.setupWithNavController
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -26,7 +21,6 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.material.navigation.NavigationView
 import com.google.maps.android.data.geojson.GeoJsonLayer
 import com.riis.etaDetroitkotlin.R
 import com.riis.etaDetroitkotlin.SharedViewModel
@@ -39,12 +33,9 @@ private val checkBoxCompanyNames: MutableMap<Int, String> = HashMap()
 private var busRoutes: MutableMap<String, GeoJsonLayer> = HashMap()
 private lateinit var dialog: RouteLoadingDialog
 
-class RouteMapFragment : Fragment(), View.OnClickListener,
-    NavigationView.OnNavigationItemSelectedListener {
+class RouteMapFragment : Fragment(), View.OnClickListener {
 
     private lateinit var listOfCompanies: List<Company>
-    private lateinit var navController: NavController
-    private lateinit var drawerMenu: DrawerLayout
     private val sharedViewModel: SharedViewModel by activityViewModels()
 
     private val callback = OnMapReadyCallback { googleMap ->
@@ -117,11 +108,6 @@ class RouteMapFragment : Fragment(), View.OnClickListener,
 
         dialog = RouteLoadingDialog(activity as Activity)
 
-        navController = view.findNavController()
-        drawerMenu = requireActivity().findViewById(R.id.drawer_menu)
-        val navView = activity?.findViewById<NavigationView>(R.id.side_nav_view)
-        navView?.setupWithNavController(navController)
-        navView?.setNavigationItemSelectedListener(this)
 
         sharedViewModel.companyListLiveData.observe(
             viewLifecycleOwner,
@@ -132,45 +118,6 @@ class RouteMapFragment : Fragment(), View.OnClickListener,
             }
         )
 
-    }
-
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        drawerMenu.closeDrawers()
-
-        Handler(Looper.getMainLooper()).postDelayed({
-            when (item.itemId) {
-
-                R.id.nav_home -> navController.navigate(R.id.routeMapFragment_to_homeFragment)
-
-                R.id.nav_route_map -> navController.navigate(R.id.routeMapFragment_to_routeMapFragment)
-
-                R.id.nav_ddot -> {
-                    sharedViewModel.saveCompany(listOfCompanies[1])
-                    navController.navigate(R.id.routeMapFragment_to_routesFragment)
-                }
-                R.id.nav_smart -> {
-                    sharedViewModel.saveCompany(listOfCompanies[0])
-                    navController.navigate(R.id.routeMapFragment_to_routesFragment)
-                }
-                R.id.nav_reflex -> {
-                    sharedViewModel.saveCompany(listOfCompanies[2])
-                    navController.navigate(R.id.routeMapFragment_to_routesFragment)
-                }
-                R.id.nav_people_mover -> {
-                    sharedViewModel.saveCompany(listOfCompanies[3])
-                    navController.navigate(R.id.routeMapFragment_to_routesFragment)
-                }
-                R.id.nav_qline -> {
-                    sharedViewModel.saveCompany(listOfCompanies[4])
-                    navController.navigate(R.id.routeMapFragment_to_routesFragment)
-                }
-                R.id.nav_planner -> {
-                    navController.navigate(R.id.routeMapFragment_to_routePlannerFragment)
-                }
-            }
-        }, 500)
-
-        return true
     }
 
 

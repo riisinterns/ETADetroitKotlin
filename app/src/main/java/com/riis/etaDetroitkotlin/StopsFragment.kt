@@ -6,22 +6,16 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.toColorInt
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.NavController
-import androidx.navigation.findNavController
-import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.navigation.NavigationView
 import com.riis.etaDetroitkotlin.model.Company
 import com.riis.etaDetroitkotlin.model.RouteStops
 import com.riis.etaDetroitkotlin.model.Stops
@@ -32,14 +26,13 @@ private const val TAG = "StopsFragment"
 private var CURRENT_DIRECTION: Int = 1
 private var CURRENT_DAY: Int = 1
 
-class StopsFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener {
+class StopsFragment : Fragment() {
 
     private lateinit var stopsRecyclerView: RecyclerView
     private lateinit var adapter: StopAdapter
     private val sharedViewModel: SharedViewModel by activityViewModels()
     private lateinit var listOfCompanies: List<Company>
-    private lateinit var navController: NavController
-    private lateinit var drawerMenu: DrawerLayout
+//    private lateinit var routeStopsList: List<RouteStops>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -60,12 +53,6 @@ class StopsFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        navController = view.findNavController()
-        drawerMenu = requireActivity().findViewById(R.id.drawer_menu)
-        val navView = activity?.findViewById<NavigationView>(R.id.side_nav_view)
-        navView?.setupWithNavController(navController)
-        navView?.setNavigationItemSelectedListener(this)
 
         sharedViewModel.companyListLiveData.observe(
             viewLifecycleOwner,
@@ -91,44 +78,6 @@ class StopsFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
         stopsRecyclerView.adapter = adapter
     }
 
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        drawerMenu.closeDrawers()
-
-        Handler(Looper.getMainLooper()).postDelayed({
-            when (item.itemId) {
-
-                R.id.nav_home -> navController.navigate(R.id.stopsFragment_to_homeFragment)
-
-                R.id.nav_route_map -> navController.navigate(R.id.stopsFragment_to_routeMapFragment)
-
-                R.id.nav_ddot -> {
-                    sharedViewModel.saveCompany(listOfCompanies[1])
-                    navController.navigate(R.id.stopsFragment_to_routesFragment)
-                }
-                R.id.nav_smart -> {
-                    sharedViewModel.saveCompany(listOfCompanies[0])
-                    navController.navigate(R.id.stopsFragment_to_routesFragment)
-                }
-                R.id.nav_reflex -> {
-                    sharedViewModel.saveCompany(listOfCompanies[2])
-                    navController.navigate(R.id.stopsFragment_to_routesFragment)
-                }
-                R.id.nav_people_mover -> {
-                    sharedViewModel.saveCompany(listOfCompanies[3])
-                    navController.navigate(R.id.stopsFragment_to_routesFragment)
-                }
-                R.id.nav_qline -> {
-                    sharedViewModel.saveCompany(listOfCompanies[4])
-                    navController.navigate(R.id.stopsFragment_to_routesFragment)
-                }
-                R.id.nav_planner -> {
-                    navController.navigate(R.id.stopsFragment_to_routePlannerFragment)
-                }
-            }
-        }, 500)
-
-        return true
-    }
 
     private inner class StopHolder(view: View) : RecyclerView.ViewHolder(view),
         View.OnClickListener {
@@ -138,7 +87,6 @@ class StopsFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
 
 
         private val stopName: TextView = view.findViewById(R.id.stop_name)
-        private val currentTime: TextView = view.findViewById(R.id.current_time)
 
         private var dynamicLinearLayout =
             view.findViewById(R.id.dynamic_linear_layout) as LinearLayout

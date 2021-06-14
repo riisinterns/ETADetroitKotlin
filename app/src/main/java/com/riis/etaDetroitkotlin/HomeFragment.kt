@@ -1,59 +1,42 @@
 package com.riis.etaDetroitkotlin
 
-
-//HomeFragment is a fragment that displays a grid-based RecyclerView
-
-
 import android.graphics.Color
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.NavController
 import androidx.navigation.findNavController
-import androidx.navigation.ui.setupWithNavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.navigation.NavigationView
 import com.riis.etaDetroitkotlin.model.Company
 
 
-//CompanyListFragment is a fragment that displays a grid-based RecyclerView
-//It provides the interface for the user to select between different bus companies
-private const val TAG = "HomeFragment"
+//HomeFragment is a fragment that displays a grid-based RecyclerView
+//It is the first screen the user sees and provides the interface for the user to select between different bus companies
 
-class HomeFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener {
+class HomeFragment : Fragment() {
 
-    //CLASS VARIABLES
-    //---------------
+    //GLOBAL CLASS VARIABLES
+    //----------------------
     private lateinit var companyRecyclerView: RecyclerView
-    private var adapter: CompanyAdapter? = null
-    private lateinit var navController: NavController
-    private lateinit var drawerMenu: DrawerLayout
-    private lateinit var leListOfCompanies: List<Company>
 
-
-    //LINKING FRAGMENT WITH VIEW MODELS
-    //----------------------------------
+    //links the activity to a viewModel shared with MainActivity and other fragments
     private val sharedViewModel: SharedViewModel by activityViewModels()
 
-    //CREATING THE FRAGMENT VIEW
-    //--------------------------
+    //INFLATING THE FRAGMENT VIEW FROM A LAYOUT
+    //-----------------------------------------
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
 
-        //inflating the fragment_transport_list layout as the fragment view
+        //inflating the fragment_home layout as the fragment view
         val view = inflater.inflate(R.layout.fragment_home, container, false)
 
         //RecyclerView setup (Grid Layout)
@@ -61,71 +44,30 @@ class HomeFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
         companyRecyclerView.layoutManager =
             GridLayoutManager(context, 2) //second parameter specifies number of columns in grid
 
-        //update the RecyclerView with itemViews and their corresponding data from the model layer
         return view
     }
 
+    //UPDATING THE UI BASED ON NEW MODEL DATA
+    //---------------------------------------
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        navController = view.findNavController()
-        drawerMenu = requireActivity().findViewById(R.id.drawer_menu)
-        val navView = activity?.findViewById<NavigationView>(R.id.side_nav_view)
-        navView?.setupWithNavController(navController)
-        navView?.setNavigationItemSelectedListener(this)
 
         sharedViewModel.companyListLiveData.observe(
             viewLifecycleOwner,
             { companyList ->
                 companyList?.let {
                     updateUI(companyList)
-                    leListOfCompanies = companyList
                 }
             }
         )
     }
 
 
-    //UPDATING THE FRAGMENT VIEW
-    //--------------------------
+    //FUNCTION TO UPDATE UI
+    //---------------------
     private fun updateUI(companies: List<Company>) {
-        //Connecting the RecyclerView to its adapter
+        //Connecting the RecyclerView to a new adapter populated with updated model data
         companyRecyclerView.adapter = CompanyAdapter(companies)
-    }
-
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        drawerMenu.closeDrawers()
-
-        Handler(Looper.getMainLooper()).postDelayed({
-            when (item.itemId) {
-                R.id.nav_route_map -> navController.navigate(R.id.action_home_dest_to_routeMapFragment)
-                R.id.nav_ddot -> {
-                    sharedViewModel.saveCompany(leListOfCompanies[1])
-                    navController.navigate(R.id.moveToRoutesFragment)
-                }
-                R.id.nav_smart -> {
-                    sharedViewModel.saveCompany(leListOfCompanies[0])
-                    navController.navigate(R.id.moveToRoutesFragment)
-                }
-                R.id.nav_reflex -> {
-                    sharedViewModel.saveCompany(leListOfCompanies[2])
-                    navController.navigate(R.id.moveToRoutesFragment)
-                }
-                R.id.nav_people_mover -> {
-                    sharedViewModel.saveCompany(leListOfCompanies[3])
-                    navController.navigate(R.id.moveToRoutesFragment)
-                }
-                R.id.nav_qline -> {
-                    sharedViewModel.saveCompany(leListOfCompanies[4])
-                    navController.navigate(R.id.moveToRoutesFragment)
-                }
-                R.id.nav_planner -> {
-                    navController.navigate(R.id.action_home_dest_to_routePlannerFragment)
-                }
-            }
-        }, 500)
-
-        return true
     }
 
     //VIEW HOLDER CLASS FOR RECYCLER VIEW
@@ -148,8 +90,9 @@ class HomeFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
         fun bind(company: Company) {
             companyItem = company
 
-            //updating the itemView attributes using the received data
+            //updating the itemView's title, background color, and image using the received data
             companyNameTextView.text = companyItem.name
+
             companyNameTextView.setBackgroundColor(Color.parseColor(companyItem.brandColor))
 
             val resID: Int = context?.resources!!.getIdentifier(
@@ -161,10 +104,13 @@ class HomeFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
 
         }
 
+        //HANDLING NAVIGATION WHEN A ITEM VIEW IS SELECTED FROM RECYCLER VIEW
+        //--------------------------------------------------------------
         override fun onClick(itemView: View) {
             if (companyItem.name == "Route Map") {
-                navController.navigate(R.id.action_home_dest_to_routeMapFragment)
+                findNavController().navigate(R.id.action_home_dest_to_routeMapFragment) //navigate to RouteMapFragment
             } else {
+                //save the selected itemView's Company object to the shared view model and navigate to the RoutesFragment
                 sharedViewModel.saveCompany(companyItem)
                 itemView.findNavController().navigate(R.id.moveToRoutesFragment)
             }
@@ -193,7 +139,6 @@ class HomeFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
             holder.bind(company)
         }
     }
-
 
 }
 
