@@ -37,38 +37,51 @@ class StopsFragmentParent : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewPager = view.findViewById(R.id.pager)
+
         sharedViewModel.daysOfOperationLiveData.observe(viewLifecycleOwner, {
             days = it
+
+            sharedViewModel.routeStopsListLiveData.observe( //we only observe routestops until days has been initialized
+                viewLifecycleOwner,
+                { routeStops ->
+                    updateUI(routeStops)
+                })
         })
 
-        sharedViewModel.routeStopsListLiveData.observe(
-            viewLifecycleOwner,
-            { routeStops ->
-                updateUI(routeStops)
-            })
     }
 
     private fun updateUI(routeStops: List<RouteStops>) {
+
+        //set tab menu color
         appBarLayout.setBackgroundColor(Color.parseColor(sharedViewModel.currentCompany?.brandColor))
+
+        //TODO DISPLAY ROUTE NOT RUNNING IF ROUTE STOPS EMPTY
+        //get all possible values of directions and days
         val days = routeStops.map { it.dayId }.distinct()
-        stopViewPageAdapter = StopViewPageAdapter(this, days)
+        val directions = routeStops.map { it.directionId }.distinct()
+
+        // populate the swipeable fragments
+        val direction = if (directions.isEmpty()) 0 else directions[0]
+        stopViewPageAdapter = StopViewPageAdapter(this, days, direction)
         viewPager.adapter = stopViewPageAdapter
 
+        //puts them in tabs and sets text of tab to the day of operation it filters by
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             val day = this.days.filter { it.id == days[position] } // since all id's are unique, this will return singleton
-            tab.text = day[0].day.uppercase()
+            tab.text = day[0].day.uppercase() //access the string corresponding to day id
         }.attach()
     }
 
     private inner class StopViewPageAdapter(
         fragment: Fragment,
-        private var days: List<Int>
+        private var days: List<Int>,
+        private var defaultDirection: Int
     ) : FragmentStateAdapter(fragment) {
 
         override fun getItemCount() = days.size
 
         override fun createFragment(position: Int): Fragment {
-            return StopsFragmentChild.newInstance(days[position])
+            return StopsFragmentChild.newInstance(days[position], defaultDirection)
         }
 
     }

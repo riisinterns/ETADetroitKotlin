@@ -89,7 +89,7 @@ class RoutesFragment : Fragment() {
 
     private fun updateUI(currentCompany: Company) {
         // set Photo and Background
-        val resID: Int = context?.resources!!.getIdentifier(
+        val resID: Int = requireContext().resources.getIdentifier(
             currentCompany.busImgUrl,
             "drawable",
             requireContext().packageName

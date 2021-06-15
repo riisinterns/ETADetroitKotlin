@@ -8,30 +8,39 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.graphics.toColorInt
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.riis.etaDetroitkotlin.model.Company
 import com.riis.etaDetroitkotlin.model.RouteStops
 import com.riis.etaDetroitkotlin.model.Stops
 
 private const val TAG = "StopsFragment"
 private const val DAY_KEY = "day_key"
+private const val DIRECTION_KEY = "direction_key"
 private var CURRENT_DIRECTION: Int = 1
 
-class StopsFragmentChild : Fragment() {
+class StopsFragmentChild private constructor() : Fragment() {
 
     private lateinit var stopsRecyclerView: RecyclerView
     private lateinit var adapter: StopAdapter
+    private lateinit var directionFab: FloatingActionButton
     private val sharedViewModel: SharedViewModel by activityViewModels()
     private lateinit var listOfCompanies: List<Company>
     private var day = 0
+    private var direction = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        //not null, only can create fragment by calling NewInstance()
         this.day = arguments?.getInt(DAY_KEY)!!
+        this.direction = arguments?.getInt(DIRECTION_KEY)!!
     }
 
     override fun onCreateView(
@@ -39,14 +48,13 @@ class StopsFragmentChild : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_stops_child, container, false)
-        (requireActivity() as AppCompatActivity).supportActionBar?.title =
-            "${sharedViewModel.currentRoute?.name}"
 
         stopsRecyclerView = view.findViewById(R.id.stops_recycler_view)
+        directionFab = view.findViewById(R.id.fab)
         stopsRecyclerView.layoutManager = LinearLayoutManager(context)
 
-        val appBarColor = ColorDrawable(sharedViewModel.currentCompany?.brandColor?.toColorInt()!!)
-        (requireActivity() as AppCompatActivity).supportActionBar?.setBackgroundDrawable(appBarColor)
+        setDirectionImage()
+        setUpAppBar()
 
         return view
     }
@@ -54,23 +62,36 @@ class StopsFragmentChild : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        sharedViewModel.companyListLiveData.observe(
-            viewLifecycleOwner,
-            { companyList ->
-                companyList?.let {
-                    listOfCompanies = companyList
-                }
-            }
-        )
-
         sharedViewModel.routeStopsListLiveData.observe(
             viewLifecycleOwner,
             { routeStops ->
                 updateUI(routeStops.filter {
-                    it.directionId == CURRENT_DIRECTION && it.dayId == day
+                    it.directionId == direction && it.dayId == day
                 })
             }
         )
+    }
+
+    private fun setDirectionImage() {
+        var drawable = when (direction) {
+            1 -> ContextCompat.getDrawable(requireContext(), R.drawable.ic_arrow_down)
+            2 -> ContextCompat.getDrawable(requireContext(), R.drawable.ic_arrow_up)
+            3 -> ContextCompat.getDrawable(requireContext(), R.drawable.ic_arrow_left)
+            4 -> ContextCompat.getDrawable(requireContext(), R.drawable.ic_arrow_right)
+            else -> null
+        }
+
+        if(drawable != null){
+            drawable = DrawableCompat.wrap(drawable)
+            DrawableCompat.setTint(
+                drawable,
+                ContextCompat.getColor(requireContext(), R.color.white)
+            )
+            directionFab.setImageDrawable(drawable)
+        }else{
+            directionFab.visibility = View.INVISIBLE //use the fab in constraint layout, cannot set to gone
+            directionFab.isEnabled = false
+        }
     }
 
     private fun updateUI(routeStops: List<RouteStops>) {
@@ -78,10 +99,20 @@ class StopsFragmentChild : Fragment() {
         stopsRecyclerView.adapter = adapter
     }
 
-    companion object{
-        fun newInstance(day: Int): StopsFragmentChild{
+    private fun setUpAppBar() {
+        (requireActivity() as AppCompatActivity).supportActionBar?.title =
+            "${sharedViewModel.currentRoute?.name}"
+
+        val appBarColor = ColorDrawable(sharedViewModel.currentCompany?.brandColor?.toColorInt()!!)
+        (requireActivity() as AppCompatActivity).supportActionBar?.setBackgroundDrawable(appBarColor)
+    }
+
+
+    companion object {
+        fun newInstance(day: Int, direction: Int): StopsFragmentChild {
             val args = Bundle().apply {
                 putInt(DAY_KEY, day)
+                putInt(DIRECTION_KEY, direction)
             }
             return StopsFragmentChild().apply {
                 arguments = args
@@ -106,7 +137,7 @@ class StopsFragmentChild : Fragment() {
             allArrivalTimes.text = ""
         }
 
-        //binding the viewHolder's Company object to date of another from the model layer
+        //binding the viewHolder's Stop object to date of another from the model layer
         fun bind(stop: Stops) {
             stopItem = stop
             stopName.text = stopItem.name
@@ -141,7 +172,7 @@ class StopsFragmentChild : Fragment() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int)
                 : StopsFragmentChild.StopHolder {
-            val itemView = layoutInflater.inflate(R.layout.stop_list_item, parent, false)
+            val itemView = layoutInflater.inflate(R.layout.list_item_stop, parent, false)
             return StopHolder(itemView)
         }
 
