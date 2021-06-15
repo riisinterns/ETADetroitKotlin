@@ -27,7 +27,6 @@ class RoutesFragment : Fragment() {
     private lateinit var routeRecyclerView: RecyclerView
     private lateinit var busPhotoImageView: ImageView
     private var adapter: RouteAdapter? = null
-    private lateinit var listOfCompanies: List<Company>
 
     //links the fragment to a viewModel shared with MainActivity and other fragments
     private val sharedViewModel: SharedViewModel by activityViewModels()
@@ -41,8 +40,8 @@ class RoutesFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        sharedElementEnterTransition = TransitionInflater.from(this.context).inflateTransition(R.transition.bus_img_transition)
-        sharedElementReturnTransition =  TransitionInflater.from(this.context).inflateTransition(R.transition.bus_img_transition)
+        sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
+        sharedElementReturnTransition =  TransitionInflater.from(context).inflateTransition(android.R.transition.move)
 
         //inflating the fragment_home layout as the fragment view
         val view = inflater.inflate(R.layout.fragment_routes, container, false)
@@ -69,15 +68,6 @@ class RoutesFragment : Fragment() {
             updateUI(currentCompany)
         }
 
-        //listen to changes to the list of Company objects saved in the database and save the list to a class variable
-        sharedViewModel.companyListLiveData.observe(
-            viewLifecycleOwner,
-            { companyList ->
-                companyList?.let {
-                    listOfCompanies = companyList
-                }
-            }
-        )
 
         //listen to changes to the list of Routes objects saved in the database and update the recycler view using it
         sharedViewModel.routeListLiveData.observe(

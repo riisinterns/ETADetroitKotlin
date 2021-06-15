@@ -16,7 +16,7 @@
             android:adjustViewBounds="true"
             android:contentDescription="@string/transportation_desc"
             android:scaleType="fitStart"
-            android:transitionName="tImage" />
+            android:transitionName="bus_transition" />
 
     </FrameLayout>
 

@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.view.ViewCompat
+import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
@@ -25,6 +27,7 @@ class HomeFragment : Fragment() {
     //GLOBAL CLASS VARIABLES
     //----------------------
     private lateinit var companyRecyclerView: RecyclerView
+
 
     //links the fragment to a viewModel shared with MainActivity and other fragments
     private val sharedViewModel: SharedViewModel by activityViewModels()
@@ -68,6 +71,10 @@ class HomeFragment : Fragment() {
     //---------------------
     private fun updateUI(companies: List<Company>) {
         //Connecting the RecyclerView to a new adapter populated with updated model data
+
+        postponeEnterTransition()
+        view?.doOnPreDraw { startPostponedEnterTransition() }
+
         companyRecyclerView.adapter = CompanyAdapter(companies)
     }
 
@@ -81,7 +88,7 @@ class HomeFragment : Fragment() {
 
         //referencing the itemView's child views from the list_item_transport layout
         private val companyNameTextView: TextView = itemView.findViewById(R.id.company_name)
-        private val companyImageView: ImageView = itemView.findViewById(R.id.company_image)
+        private val companyImageView: ImageView = itemView.findViewById(R.id.busImgView)
 
         init {
             itemView.setOnClickListener(this) //setting a click listener on each itemView
@@ -103,6 +110,8 @@ class HomeFragment : Fragment() {
             )
             companyImageView.setImageResource(resID)
 
+            ViewCompat.setTransitionName(companyImageView, companyItem.id.toString())
+
         }
 
         //HANDLING NAVIGATION WHEN A ITEM VIEW (Company) IS SELECTED FROM RECYCLER VIEW
@@ -115,7 +124,7 @@ class HomeFragment : Fragment() {
                 sharedViewModel.saveCompany(companyItem)
 
                 val extras = FragmentNavigatorExtras(
-                    companyImageView to "tImage"
+                    companyImageView to "bus_transition"
                 )
                 itemView.findNavController().navigate(R.id.moveToRoutesFragment, null, null, extras)
             }
