@@ -110,11 +110,11 @@ class StopsFragment : Fragment() {
 
         override fun onClick(view: View) {
             allArrivalTimes.text = null
-            sharedViewModel.saveStop(stopItem)
+//            sharedViewModel.saveStop(stopItem)
 
             if (dynamicLinearLayout.visibility == View.GONE) {
                 dynamicLinearLayout.visibility = View.VISIBLE
-                sharedViewModel.tripStopsListLiveData.observe(
+                sharedViewModel.getTripStops(stopItem.id).observe(
                     viewLifecycleOwner,
                     { tripStop ->
                         var tmp = ""

@@ -30,11 +30,14 @@ class SharedViewModel : ViewModel() {
             busRepository.getRouteStops(route.id)
         }
 
-    var tripStopsListLiveData: LiveData<List<TripStops>> =
-        Transformations.switchMap(stopContainer) { stop ->
-            busRepository.getTripStops(stop.id)
-        }
+//    var tripStopsListLiveData: LiveData<List<TripStops>> =
+//        Transformations.switchMap(stopContainer) { stop ->
+//            busRepository.getTripStops(stop.id)
+//        }
 
+    fun getTripStops(stopId: Int): LiveData<List<TripStops>> {
+        return busRepository.getTripStops(stopId)
+    }
 
     fun getStop(stopId: Int): LiveData<Stops> {
         return busRepository.getStop(stopId)
@@ -52,16 +55,16 @@ class SharedViewModel : ViewModel() {
     }
 
     // TODO test with removing updateStop function
-    fun saveStop(newStop: Stops) {
-        stopContainer.value = newStop
-        tripStopsListLiveData = updateStop()
-    }
+//    fun saveStop(newStop: Stops) {
+//        stopContainer.value = newStop
+//        tripStopsListLiveData = updateStop()
+//    }
 
-    private fun updateStop(): LiveData<List<TripStops>> {
-        return Transformations.switchMap(stopContainer) { stop ->
-            busRepository.getTripStops(stop.id)
-        }
-    }
+//    private fun updateStop(): LiveData<List<TripStops>> {
+//        return Transformations.switchMap(stopContainer) { stop ->
+//            busRepository.getTripStops(stop.id)
+//        }
+//    }
 
     fun getRouteName(): String? {
         return (routeContainer.value)?.name
