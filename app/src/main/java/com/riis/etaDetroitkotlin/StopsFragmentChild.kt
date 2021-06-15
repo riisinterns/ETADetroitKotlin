@@ -19,6 +19,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.riis.etaDetroitkotlin.model.Company
 import com.riis.etaDetroitkotlin.model.RouteStops
 import com.riis.etaDetroitkotlin.model.Stops
+import java.lang.Integer.max
 
 private const val TAG = "StopsFragment"
 private const val DAY_KEY = "day_key"
@@ -183,7 +184,7 @@ class StopsFragmentChild private constructor() : Fragment() {
                 viewLifecycleOwner,
                 { tripStop ->
                     var tmp = ""
-                    for (i in tripStop.sortedBy { it.stopSequence }.subList(0, 5)) {
+                    for (i in tripStop.sortedBy { it.stopSequence }.subList(0, minOf(tripStop.size, 5))) {
 //                        for (i in tripStop.sortedWith(compareBy {it.stopSequence}, {it.arrivalTime} )) {
                         tmp += "${
                             i.arrivalTime.toString().substring(11, 16)
