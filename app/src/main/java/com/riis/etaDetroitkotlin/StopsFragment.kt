@@ -99,12 +99,12 @@ class StopsFragment : Fragment() {
 
 //            sharedViewModel.saveStop(stopItem)
 //
-//            sharedViewModel.tripStopsListLiveData.observe(
-//                viewLifecycleOwner,
-//                { tripStop ->
-//                    currentTime.text = "(${tripStop.sortedBy {it.stopSequence}[0].arrivalTime.toString().substring(11, 16)})"
-//                }
-//            )
+            sharedViewModel.getTripStops(stopItem.id).observe(
+                viewLifecycleOwner,
+                { tripStop ->
+                    currentTime.text = "(${tripStop.sortedBy {it.stopSequence}[0].arrivalTime.toString().substring(11, 16)})"
+                }
+            )
         }
 
 
