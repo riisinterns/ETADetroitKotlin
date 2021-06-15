@@ -1,100 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/form"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:clickable="true">
+        android:id="@+id/form"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true">
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/fromFieldHolder"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="10dp">
-
-        <AutoCompleteTextView
-            android:id="@+id/fromField"
+            android:id="@+id/fromFieldHolder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawableStart="@drawable/ic_location"
-            android:ems="10"
-            android:hint="From"
-            android:inputType="textPersonName|textMultiLine"
-            android:text=""
-            android:textCursorDrawable="@drawable/color_cursor" />
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="10dp">
+
+        <AutoCompleteTextView
+                android:id="@+id/fromField"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_location"
+                android:ems="10"
+                android:hint="From"
+                android:inputType="textPersonName|textMultiLine"
+                android:text=""
+                android:textCursorDrawable="@drawable/color_cursor" />
     </com.google.android.material.textfield.TextInputLayout>
 
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/toFieldHolder"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/fromFieldHolder"
-        android:layout_alignStart="@+id/fromFieldHolder"
-        android:layout_alignEnd="@+id/fromFieldHolder">
-
-        <AutoCompleteTextView
-            android:id="@+id/toField"
+            android:id="@+id/toFieldHolder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawableStart="@drawable/ic_location"
-            android:ems="10"
-            android:hint="To"
-            android:inputType="textPersonName|textMultiLine"
-            android:textCursorDrawable="@drawable/color_cursor" />
+            android:layout_below="@+id/fromFieldHolder"
+            android:layout_alignStart="@+id/fromFieldHolder"
+            android:layout_alignEnd="@+id/fromFieldHolder">
+
+        <AutoCompleteTextView
+                android:id="@+id/toField"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_location"
+                android:ems="10"
+                android:hint="To"
+                android:inputType="textPersonName|textMultiLine"
+                android:textCursorDrawable="@drawable/color_cursor" />
     </com.google.android.material.textfield.TextInputLayout>
 
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/toFieldHolder"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:orientation="vertical">
-
-        <EditText
-            android:id="@+id/dayField"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:drawableStart="@drawable/ic_icon_calendar"
-            android:ems="10"
-            android:focusable="false"
-            android:hint=" Date"
-            android:inputType="textPersonName" />
-
-        <EditText
-            android:id="@+id/timeField"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:drawableStart="@drawable/ic_icon_clock"
-            android:ems="10"
-            android:focusable="false"
-            android:hint=" Time"
-            android:inputType="textPersonName"
-            android:text="" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_height="match_parent"
+            android:layout_below="@id/toFieldHolder"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
             android:orientation="vertical">
 
-            <Button
-                android:id="@+id/goBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Get route" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/SavedRoutesRecyclerView"
+        <EditText
+                android:id="@+id/dayField"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:scrollbars="vertical" />
+                android:drawableStart="@drawable/ic_icon_calendar"
+                android:ems="10"
+                android:focusable="false"
+                android:hint=" Date"
+                android:inputType="textPersonName" />
+
+        <EditText
+                android:id="@+id/timeField"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_icon_clock"
+                android:ems="10"
+                android:focusable="false"
+                android:hint=" Time"
+                android:inputType="textPersonName"
+                android:text="" />
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:orientation="vertical">
+
+            <Button
+                    android:id="@+id/goBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Get route" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/SavedRoutesRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:scrollbars="vertical" />
 
         </LinearLayout>
     </LinearLayout>

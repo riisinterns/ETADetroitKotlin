@@ -160,15 +160,8 @@ class RoutesFragment : Fragment() {
 
         //Handling navigation when an item view (route) is selected from the recycler view
         override fun onClick(itemView: View) {
-            Toast.makeText(
-                context,
-                "Clicked on route number ${routeItem.number}",
-                Toast.LENGTH_SHORT
-            ).show()
-
-            sharedViewModel.saveRoute(routeItem) //save the selected itemView's Routes object to the shared view model
-            itemView.findNavController()
-                .navigate(R.id.route_to_stops) //navigate to the StopsFragment
+            sharedViewModel.saveRoute(routeItem)
+            itemView.findNavController().navigate(R.id.route_to_stops)
         }
     }
 

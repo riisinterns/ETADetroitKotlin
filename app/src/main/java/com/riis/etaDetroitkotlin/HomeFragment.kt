@@ -103,7 +103,7 @@ class HomeFragment : Fragment() {
 
             companyNameTextView.setBackgroundColor(Color.parseColor(companyItem.brandColor))
 
-            val resID: Int = context?.resources!!.getIdentifier(
+            val resID: Int = requireContext().resources.getIdentifier(
                 companyItem.busImgUrl,
                 "drawable",
                 context!!.packageName

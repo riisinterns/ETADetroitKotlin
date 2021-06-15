@@ -14,8 +14,7 @@ class SharedViewModel : ViewModel() {
 
     private val companyContainer =
         MutableLiveData<Company>() //this variable can store a Company object and is wrapped in LiveData
-    val routeContainer = MutableLiveData<Routes>()
-    private val stopContainer = MutableLiveData<Stops>()
+    private val routeContainer = MutableLiveData<Routes>()
 
     // ... to allow observers to listen to any changes to it
 
@@ -26,22 +25,22 @@ class SharedViewModel : ViewModel() {
         }
 
     var routeStopsListLiveData: LiveData<List<RouteStops>> =
+        //switches the RouteStops (observed in StopFragment) based of the Route that gets saved
         Transformations.switchMap(routeContainer) { route ->
             busRepository.getRouteStops(route.id)
         }
 
-    var tripStopsListLiveData: LiveData<List<TripStops>> =
-        Transformations.switchMap(stopContainer) { stop ->
-            busRepository.getTripStops(stop.id)
-        }
-
-
-    fun getStop(stopId: Int): LiveData<Stops> {
-        return busRepository.getStop(stopId)
+    fun getTripStops(stopId: Int): LiveData<List<TripStops>> {
+        return busRepository.getTripStops(stopId)
     }
+
+    var daysOfOperationLiveData: LiveData<List<DaysOfOperation>> = busRepository.getDays()
 
     val currentCompany: Company?
         get() = companyContainer.value
+
+    val currentRoute: Routes?
+        get() = routeContainer.value
 
     fun saveCompany(newCompany: Company) { //this function sets the value of companyContainer to a new Company object
         companyContainer.value = newCompany
@@ -51,24 +50,7 @@ class SharedViewModel : ViewModel() {
         routeContainer.value = newRoute
     }
 
-    // TODO test with removing updateStop function
-    fun saveStop(newStop: Stops) {
-        stopContainer.value = newStop
-        tripStopsListLiveData = updateStop()
+    fun getStopLiveData(stopId: Int): LiveData<Stops> {
+        return busRepository.getStop(stopId)
     }
-
-    private fun updateStop(): LiveData<List<TripStops>> {
-        return Transformations.switchMap(stopContainer) { stop ->
-            busRepository.getTripStops(stop.id)
-        }
-    }
-
-    fun getRouteName(): String? {
-        return (routeContainer.value)?.name
-    }
-
-    fun getCompany(): Company? {
-        return companyContainer.value
-    }
-
 }

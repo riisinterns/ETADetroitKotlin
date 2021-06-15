@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
+import java.util.*
 
 @Entity(
     primaryKeys = ["trip_id", "stop_id", "stop_sequence"],
@@ -32,6 +33,6 @@ import androidx.room.Index
 data class TripStops(
     @ColumnInfo(name = "trip_id") val tripId: Int,
     @ColumnInfo(name = "stop_id") val stopId: Int,
-    @ColumnInfo(name = "arrival_time") val arrivalTime: String?,
+    @ColumnInfo(name = "arrival_time") val arrivalTime: Date? = Date(),
     @ColumnInfo(name = "stop_sequence") val stopSequence: Int
 )

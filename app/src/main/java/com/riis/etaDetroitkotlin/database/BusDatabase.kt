@@ -2,6 +2,7 @@ package com.riis.etaDetroitkotlin.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import com.riis.etaDetroitkotlin.model.*
 
 
@@ -19,7 +20,7 @@ import com.riis.etaDetroitkotlin.model.*
     ],
     version = 1
 )
-//@TypeConverters(BusTypeConverter::class)
+@TypeConverters(BusTypeConverter::class)
 abstract class BusDatabase : RoomDatabase() {
     abstract fun busDao(): BusDao
 }

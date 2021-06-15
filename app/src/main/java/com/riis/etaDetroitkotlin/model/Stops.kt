@@ -9,6 +9,7 @@ import androidx.room.PrimaryKey
     indices = [Index(value = ["latitude", "longitude"], unique = true)],
     tableName = "stops"
 )
+
 data class Stops(
     @PrimaryKey @ColumnInfo(name = "stop_id") val id: Int,
     val name: String = "",
