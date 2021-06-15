@@ -25,6 +25,7 @@ class SharedViewModel : ViewModel() {
         }
 
     var routeStopsListLiveData: LiveData<List<RouteStops>> =
+        //switches the RouteStops (observed in StopFragment) based of the Route that gets saved
         Transformations.switchMap(routeContainer) { route ->
             busRepository.getRouteStops(route.id)
         }
@@ -37,8 +38,13 @@ class SharedViewModel : ViewModel() {
         return busRepository.getStop(stopId)
     }
 
+    var daysOfOperationLiveData: LiveData<List<DaysOfOperation>> = busRepository.getDays()
+
     val currentCompany: Company?
         get() = companyContainer.value
+
+    val currentRoute: Routes?
+        get() = routeContainer.value
 
     fun saveCompany(newCompany: Company) { //this function sets the value of companyContainer to a new Company object
         companyContainer.value = newCompany

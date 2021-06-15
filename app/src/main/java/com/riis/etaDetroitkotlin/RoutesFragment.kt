@@ -89,8 +89,7 @@ class RoutesFragment : Fragment() {
 
     private fun updateUI(currentCompany: Company) {
         // set Photo and Background
-        //val currentCompany = sharedViewModel.currentCompany
-        val resID: Int = context?.resources!!.getIdentifier(
+        val resID: Int = requireContext().resources.getIdentifier(
             currentCompany.busImgUrl,
             "drawable",
             requireContext().packageName
@@ -158,21 +157,21 @@ class RoutesFragment : Fragment() {
 
     //ADAPTER CLASS FOR RECYCLER VIEW
     //-------------------------------
-    private inner class RouteAdapter(var routeList: List<Routes>)//accepts a list of Company objects from model layer
+    private inner class RouteAdapter(var routeList: List<Routes>)//accepts a list of Route objects from model layer
         : RecyclerView.Adapter<RouteHolder>() {
 
         //creates a new viewHolder with a new itemView wrapped inside
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int)
                 : RouteHolder {
-            //inflates the list_item_transport layout and passes the resulting View to a new instance of CompanyHolder
+            //inflates the list_item_route layout and passes the resulting View to a new instance of RouteHolder
             val itemView = layoutInflater.inflate(R.layout.list_item_route, parent, false)
             return RouteHolder(itemView)
         }
 
-        //returns the number of items in the list of Transport objects
+        //returns the number of items in the list of Route objects
         override fun getItemCount() = routeList.size
 
-        //binds the viewHolder with a Company object from a given position in companyList
+        //binds the viewHolder with a Route object from a given position in routeList
         override fun onBindViewHolder(holder: RouteHolder, position: Int) {
             val route = routeList[position]
             holder.bind(route)
