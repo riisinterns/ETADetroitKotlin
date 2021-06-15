@@ -15,7 +15,6 @@ class SharedViewModel : ViewModel() {
     private val companyContainer =
         MutableLiveData<Company>() //this variable can store a Company object and is wrapped in LiveData
     private val routeContainer = MutableLiveData<Routes>()
-    private val stopContainer = MutableLiveData<Stops>()
 
     // ... to allow observers to listen to any changes to it
 
@@ -29,11 +28,6 @@ class SharedViewModel : ViewModel() {
         Transformations.switchMap(routeContainer) { route ->
             busRepository.getRouteStops(route.id)
         }
-
-//    var tripStopsListLiveData: LiveData<List<TripStops>> =
-//        Transformations.switchMap(stopContainer) { stop ->
-//            busRepository.getTripStops(stop.id)
-//        }
 
     fun getTripStops(stopId: Int): LiveData<List<TripStops>> {
         return busRepository.getTripStops(stopId)
@@ -54,18 +48,6 @@ class SharedViewModel : ViewModel() {
         routeContainer.value = newRoute
     }
 
-    // TODO test with removing updateStop function
-//    fun saveStop(newStop: Stops) {
-//        stopContainer.value = newStop
-//        tripStopsListLiveData = updateStop()
-//    }
-
-//    private fun updateStop(): LiveData<List<TripStops>> {
-//        return Transformations.switchMap(stopContainer) { stop ->
-//            busRepository.getTripStops(stop.id)
-//        }
-//    }
-
     fun getRouteName(): String? {
         return (routeContainer.value)?.name
     }
@@ -73,5 +55,4 @@ class SharedViewModel : ViewModel() {
     fun getCompany(): Company? {
         return companyContainer.value
     }
-
 }
