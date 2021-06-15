@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -56,15 +55,6 @@ class RoutesFragment : Fragment() {
         if (currentCompany != null) {
             updateUI(currentCompany)
         }
-
-        sharedViewModel.companyListLiveData.observe(
-            viewLifecycleOwner,
-            { companyList ->
-                companyList?.let {
-                    listOfCompanies = companyList
-                }
-            }
-        )
 
         sharedViewModel.routeListLiveData.observe(
             viewLifecycleOwner,
@@ -143,12 +133,6 @@ class RoutesFragment : Fragment() {
         }
 
         override fun onClick(itemView: View) {
-            //TODO navigate to StopsFragment
-            Toast.makeText(
-                context,
-                "Clicked on route number ${routeItem.number}",
-                Toast.LENGTH_SHORT
-            ).show()
             sharedViewModel.saveRoute(routeItem)
             itemView.findNavController().navigate(R.id.route_to_stops)
         }

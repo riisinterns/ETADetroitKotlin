@@ -67,7 +67,8 @@ class StopsFragmentParent : Fragment() {
 
         //puts them in tabs and sets text of tab to the day of operation it filters by
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
-            val day = this.days.filter { it.id == days[position] } // since all id's are unique, this will return singleton
+            val day =
+                this.days.filter { it.id == days[position] } // since all id's are unique, this will return singleton
             tab.text = day[0].day.uppercase() //access the string corresponding to day id
         }.attach()
     }

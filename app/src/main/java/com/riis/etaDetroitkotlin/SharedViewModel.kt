@@ -34,10 +34,6 @@ class SharedViewModel : ViewModel() {
         return busRepository.getTripStops(stopId)
     }
 
-    fun getStop(stopId: Int): LiveData<Stops> {
-        return busRepository.getStop(stopId)
-    }
-
     var daysOfOperationLiveData: LiveData<List<DaysOfOperation>> = busRepository.getDays()
 
     val currentCompany: Company?
@@ -54,11 +50,7 @@ class SharedViewModel : ViewModel() {
         routeContainer.value = newRoute
     }
 
-    fun getRouteName(): String? {
-        return (routeContainer.value)?.name
-    }
-
-    fun getCompany(): Company? {
-        return companyContainer.value
+    fun getStopLiveData(stopId: Int): LiveData<Stops> {
+        return busRepository.getStop(stopId)
     }
 }

@@ -82,15 +82,16 @@ class StopsFragmentChild private constructor() : Fragment() {
             else -> null
         }
 
-        if(drawable != null){
+        if (drawable != null) {
             drawable = DrawableCompat.wrap(drawable)
             DrawableCompat.setTint(
                 drawable,
                 ContextCompat.getColor(requireContext(), R.color.white)
             )
             directionFab.setImageDrawable(drawable)
-        }else{
-            directionFab.visibility = View.INVISIBLE //use the fab in constraint layout, cannot set to gone
+        } else {
+            directionFab.visibility =
+                View.INVISIBLE //use the fab in constraint layout, cannot set to gone
             directionFab.isEnabled = false
         }
     }
