@@ -27,7 +27,7 @@ class StopsFragment : Fragment() {
     private lateinit var adapter: StopAdapter
     private val sharedViewModel: SharedViewModel by activityViewModels()
     private lateinit var listOfCompanies: List<Company>
-//    private var stopsVisibility: HashMap<Int, Boolean> = hashMapOf()
+    private var stopsVisibility: HashMap<Int, Int> = hashMapOf()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -97,6 +97,11 @@ class StopsFragment : Fragment() {
             stopName.text = stopItem.name
             allArrivalTimes.text = null
 
+            if (stopItem.id !in stopsVisibility) {
+                stopsVisibility[stopItem.id] = View.GONE
+            }
+            dynamicLinearLayout.visibility = stopsVisibility[stopItem.id]!!
+
             if (dynamicLinearLayout.visibility == View.VISIBLE) {
                 setArrivalTimes()
             }
@@ -121,6 +126,8 @@ class StopsFragment : Fragment() {
             } else {
                 dynamicLinearLayout.visibility = View.GONE
             }
+
+            stopsVisibility[stopItem.id] = dynamicLinearLayout.visibility
         }
 
         fun setArrivalTimes() {
