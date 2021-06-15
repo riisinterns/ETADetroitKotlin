@@ -18,29 +18,34 @@ import com.riis.etaDetroitkotlin.model.RouteStops
 import com.riis.etaDetroitkotlin.model.Stops
 
 private const val TAG = "StopsFragment"
+private const val DAY_KEY = "day_key"
 private var CURRENT_DIRECTION: Int = 1
-private var CURRENT_DAY: Int = 1
 
-class StopsFragment : Fragment() {
+class StopsFragmentChild : Fragment() {
 
     private lateinit var stopsRecyclerView: RecyclerView
     private lateinit var adapter: StopAdapter
     private val sharedViewModel: SharedViewModel by activityViewModels()
     private lateinit var listOfCompanies: List<Company>
-//    private lateinit var routeStopsList: List<RouteStops>
+    private var day = 0
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        this.day = arguments?.getInt(DAY_KEY)!!
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.stops_fragment, container, false)
+        val view = inflater.inflate(R.layout.fragment_stops_child, container, false)
         (requireActivity() as AppCompatActivity).supportActionBar?.title =
-            "${sharedViewModel.getRouteName()}"
+            "${sharedViewModel.currentRoute?.name}"
 
         stopsRecyclerView = view.findViewById(R.id.stops_recycler_view)
         stopsRecyclerView.layoutManager = LinearLayoutManager(context)
 
-        val appBarColor = ColorDrawable(sharedViewModel.getCompany()?.brandColor?.toColorInt()!!)
+        val appBarColor = ColorDrawable(sharedViewModel.currentCompany?.brandColor?.toColorInt()!!)
         (requireActivity() as AppCompatActivity).supportActionBar?.setBackgroundDrawable(appBarColor)
 
         return view
@@ -62,7 +67,7 @@ class StopsFragment : Fragment() {
             viewLifecycleOwner,
             { routeStops ->
                 updateUI(routeStops.filter {
-                    it.directionId == CURRENT_DIRECTION && it.dayId == CURRENT_DAY
+                    it.directionId == CURRENT_DIRECTION && it.dayId == day
                 })
             }
         )
@@ -73,6 +78,16 @@ class StopsFragment : Fragment() {
         stopsRecyclerView.adapter = adapter
     }
 
+    companion object{
+        fun newInstance(day: Int): StopsFragmentChild{
+            val args = Bundle().apply {
+                putInt(DAY_KEY, day)
+            }
+            return StopsFragmentChild().apply {
+                arguments = args
+            }
+        }
+    }
 
     private inner class StopHolder(view: View) : RecyclerView.ViewHolder(view),
         View.OnClickListener {
@@ -121,21 +136,20 @@ class StopsFragment : Fragment() {
         }
     }
 
-    private inner class StopAdapter(var routeStopsList: List<RouteStops>)//accepts a list of Company objects from model layer
-        : RecyclerView.Adapter<StopsFragment.StopHolder>() {
+    private inner class StopAdapter(var routeStopsList: List<RouteStops>)//accepts a list of RouteStops objects from model layer
+        : RecyclerView.Adapter<StopsFragmentChild.StopHolder>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int)
-                : StopsFragment.StopHolder {
+                : StopsFragmentChild.StopHolder {
             val itemView = layoutInflater.inflate(R.layout.stop_list_item, parent, false)
             return StopHolder(itemView)
         }
 
         override fun getItemCount() = routeStopsList.size
 
-        override fun onBindViewHolder(holder: StopsFragment.StopHolder, position: Int) {
+        override fun onBindViewHolder(holder: StopsFragmentChild.StopHolder, position: Int) {
             val routeStop = routeStopsList[position]
-
-            sharedViewModel.getStop(routeStop.stopId).observe(
+            sharedViewModel.getStopLiveData(routeStop.stopId).observe(
                 viewLifecycleOwner,
                 { stop ->
                     holder.bind(stop)

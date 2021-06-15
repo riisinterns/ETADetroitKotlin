@@ -31,7 +31,7 @@
 
         <action
             android:id="@+id/route_to_stops"
-            app:destination="@id/stopsFragment" />
+            app:destination="@id/stopsFragmentParent" />
     </fragment>
 
     <!-- ======================== RouteMapFragment ============================ -->
@@ -54,11 +54,8 @@
 
     <!-- ========================= StopsFragment ============================== -->
     <fragment
-        android:id="@+id/stopsFragment"
-        android:name="com.riis.etaDetroitkotlin.StopsFragment"
-        android:label="stops_fragment"
-        tools:layout="@layout/stops_fragment">
-
-    </fragment>
+        android:id="@+id/stopsFragmentParent"
+        android:name="com.riis.etaDetroitkotlin.StopsFragmentParent"
+        android:label="StopsFragmentParent" />
 
 </navigation>
