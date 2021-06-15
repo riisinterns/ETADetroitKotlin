@@ -12,12 +12,11 @@ class SharedViewModel : ViewModel() {
     private val busRepository = BusRepository.get()
     val companyListLiveData = busRepository.getCompanies()
 
-    private val companyContainer =
-        MutableLiveData<Company>() //this variable can store a Company object and is wrapped in LiveData
-    val routeContainer = MutableLiveData<Routes>()
+    //this variable can store a Company object and is wrapped in LiveData to allow observers to listen to any changes to it
+    private val companyContainer = MutableLiveData<Company>()
+    private val routeContainer = MutableLiveData<Routes>()
     private val stopContainer = MutableLiveData<Stops>()
 
-    // ... to allow observers to listen to any changes to it
 
     var routeListLiveData: LiveData<List<Routes>> =
         //switches the Routes (observed in RoutesFragment) based of the company that gets saved
@@ -26,22 +25,24 @@ class SharedViewModel : ViewModel() {
         }
 
     var routeStopsListLiveData: LiveData<List<RouteStops>> =
+        //switches the RouteStops (observed in StopFragment) based of the Route that gets saved
         Transformations.switchMap(routeContainer) { route ->
             busRepository.getRouteStops(route.id)
         }
 
     var tripStopsListLiveData: LiveData<List<TripStops>> =
+        //switches the TripStops (observed in StopFragment) based of the Stop that gets saved
         Transformations.switchMap(stopContainer) { stop ->
             busRepository.getTripStops(stop.id)
         }
 
-
-    fun getStop(stopId: Int): LiveData<Stops> {
-        return busRepository.getStop(stopId)
-    }
+    var daysOfOperationLiveData: LiveData<List<DaysOfOperation>> = busRepository.getDays()
 
     val currentCompany: Company?
         get() = companyContainer.value
+
+    val currentRoute: Routes?
+        get() = routeContainer.value
 
     fun saveCompany(newCompany: Company) { //this function sets the value of companyContainer to a new Company object
         companyContainer.value = newCompany
@@ -51,24 +52,14 @@ class SharedViewModel : ViewModel() {
         routeContainer.value = newRoute
     }
 
-    // TODO test with removing updateStop function
     fun saveStop(newStop: Stops) {
         stopContainer.value = newStop
-        tripStopsListLiveData = updateStop()
     }
 
-    private fun updateStop(): LiveData<List<TripStops>> {
-        return Transformations.switchMap(stopContainer) { stop ->
-            busRepository.getTripStops(stop.id)
-        }
+
+    fun getStopLiveData(stopId: Int): LiveData<Stops> {
+        return busRepository.getStop(stopId)
     }
 
-    fun getRouteName(): String? {
-        return (routeContainer.value)?.name
-    }
-
-    fun getCompany(): Company? {
-        return companyContainer.value
-    }
 
 }
