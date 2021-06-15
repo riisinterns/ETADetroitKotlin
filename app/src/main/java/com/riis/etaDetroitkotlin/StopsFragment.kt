@@ -97,6 +97,10 @@ class StopsFragment : Fragment() {
             stopName.text = stopItem.name
             allArrivalTimes.text = null
 
+            if (dynamicLinearLayout.visibility == View.VISIBLE) {
+                setArrivalTimes()
+            }
+
             sharedViewModel.getTripStops(stopItem.id).observe(
                 viewLifecycleOwner,
                 { tripStop ->
@@ -108,29 +112,33 @@ class StopsFragment : Fragment() {
             )
         }
 
-
         override fun onClick(view: View) {
             allArrivalTimes.text = null
 
             if (dynamicLinearLayout.visibility == View.GONE) {
                 dynamicLinearLayout.visibility = View.VISIBLE
-                sharedViewModel.getTripStops(stopItem.id).observe(
-                    viewLifecycleOwner,
-                    { tripStop ->
-                        var tmp = ""
-                        for (i in tripStop.sortedBy { it.stopSequence }.subList(0, 5)) {
-//                        for (i in tripStop.sortedWith(compareBy {it.stopSequence}, {it.arrivalTime} )) {
-                            tmp += "${
-                                i.arrivalTime.toString().substring(11, 16)
-                            }......${i.stopSequence}\n"
-                        }
-                        allArrivalTimes.text = tmp
-                    }
-                )
+                setArrivalTimes()
             } else {
                 dynamicLinearLayout.visibility = View.GONE
             }
         }
+
+        fun setArrivalTimes() {
+            sharedViewModel.getTripStops(stopItem.id).observe(
+                viewLifecycleOwner,
+                { tripStop ->
+                    var tmp = ""
+                    for (i in tripStop.sortedBy { it.stopSequence }.subList(0, 5)) {
+//                        for (i in tripStop.sortedWith(compareBy {it.stopSequence}, {it.arrivalTime} )) {
+                        tmp += "${
+                            i.arrivalTime.toString().substring(11, 16)
+                        }......${i.stopSequence}\n"
+                    }
+                    allArrivalTimes.text = tmp
+                }
+            )
+        }
+
     }
 
     private inner class StopAdapter(var routeStopsList: List<RouteStops>)//accepts a list of Company objects from model layer
