@@ -2,7 +2,6 @@ package com.riis.etaDetroitkotlin
 
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,7 +28,6 @@ class StopsFragment : Fragment() {
     private val sharedViewModel: SharedViewModel by activityViewModels()
     private lateinit var listOfCompanies: List<Company>
     private var stopsVisibility: HashMap<Int, Boolean> = hashMapOf()
-//    private lateinit var routeStopsList: List<RouteStops>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -80,8 +78,7 @@ class StopsFragment : Fragment() {
         View.OnClickListener {
 
         private lateinit var stopItem: Stops
-        private lateinit var allArrivalTimes: TextView
-
+        private var allArrivalTimes: TextView = view.findViewById(R.id.all_arrival_times)
 
         private val stopName: TextView = view.findViewById(R.id.stop_name)
         private val currentTime: TextView = view.findViewById(R.id.current_time)
@@ -91,33 +88,23 @@ class StopsFragment : Fragment() {
 
         init {
             itemView.setOnClickListener(this) //setting a click listener on each itemView
-//            allArrivalTimes.text = ""
+            dynamicLinearLayout.visibility = View.GONE
         }
 
         //binding the viewHolder's Company object to date of another from the model layer
         fun bind(stop: Stops) {
-            allArrivalTimes = view?.findViewById(R.id.all_arrival_times) as TextView
             stopItem = stop
             stopName.text = stopItem.name
-            if (stopItem.id !in stopsVisibility) {
-                stopsVisibility[stopItem.id] = true
-            }
+            allArrivalTimes.text = null
 
-            if (stopsVisibility[stopItem.id] == true) {
-                dynamicLinearLayout.visibility = View.GONE
-                allArrivalTimes.text = null
-            } else {
-                dynamicLinearLayout.visibility = View.VISIBLE
-            }
-
-            sharedViewModel.saveStop(stopItem)
-
-            sharedViewModel.tripStopsListLiveData.observe(
-                viewLifecycleOwner,
-                { tripStop ->
-                    currentTime.text = "(${tripStop.sortedBy {it.stopSequence}[0].arrivalTime.toString().substring(11, 16)})"
-                }
-            )
+//            sharedViewModel.saveStop(stopItem)
+//
+//            sharedViewModel.tripStopsListLiveData.observe(
+//                viewLifecycleOwner,
+//                { tripStop ->
+//                    currentTime.text = "(${tripStop.sortedBy {it.stopSequence}[0].arrivalTime.toString().substring(11, 16)})"
+//                }
+//            )
         }
 
 
@@ -127,25 +114,21 @@ class StopsFragment : Fragment() {
 
             if (dynamicLinearLayout.visibility == View.GONE) {
                 dynamicLinearLayout.visibility = View.VISIBLE
-                stopsVisibility[stopItem.id] = false
-//                var tripStopCopy: List<TripStops> = null
                 sharedViewModel.tripStopsListLiveData.observe(
                     viewLifecycleOwner,
                     { tripStop ->
-                        for (i in tripStop.sortedBy {it.stopSequence}.subList(0, 5)) {
+                        var tmp = ""
+                        for (i in tripStop.sortedBy { it.stopSequence }.subList(0, 5)) {
 //                        for (i in tripStop.sortedWith(compareBy {it.stopSequence}, {it.arrivalTime} )) {
-                            //TODO Fix bug where scrolling past view and scrolling back up gets rid of stuff
-//                            allArrivalTimes.text = "${allArrivalTimes.text}${i.arrivalTime.toString().substring(11, 16)}......${i.stopSequence}\n"
-                            allArrivalTimes.append("${i.arrivalTime.toString().substring(11, 16)}......${i.stopSequence}")
-//                            tripStopCopy = tripStop
+                            tmp += "${
+                                i.arrivalTime.toString().substring(11, 16)
+                            }......${i.stopSequence}\n"
                         }
+                        allArrivalTimes.text = tmp
                     }
                 )
-
-//                Log.d(TAG, "$tripStopCopy")
             } else {
                 dynamicLinearLayout.visibility = View.GONE
-                stopsVisibility[stopItem.id] = true
             }
         }
     }

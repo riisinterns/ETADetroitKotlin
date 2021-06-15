@@ -1,7 +1,6 @@
 package com.riis.etaDetroitkotlin
 
 import android.app.Application
-import android.util.Log
 import com.riis.etaDetroitkotlin.database.BusRepository
 
 private const val TAG = "ETADetroitApplication"
