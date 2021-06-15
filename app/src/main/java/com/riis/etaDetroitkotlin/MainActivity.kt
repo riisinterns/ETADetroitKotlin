@@ -105,32 +105,31 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         } else {
             //The remaining menu items all navigate to the RoutesFragment. Based on which is selected, the data ...
             // ... saved to the shared view model is different and the fragment's UI changes accordingly
-            Handler(Looper.getMainLooper()).postDelayed({
 
-                when (item.title) {
+            when (item.title) {
 
-                    this.getString(R.string.navDdot) -> {
-                        sharedViewModel.saveCompany(listOfCompanies[1])
-                        navController.navigate(R.id.routes_dest, null, null)
-                    }
-                    this.getString(R.string.navSmart) -> {
-                        sharedViewModel.saveCompany(listOfCompanies[0])
-                        navController.navigate(R.id.routes_dest, null, null)
-                    }
-                    this.getString(R.string.navReflex) -> {
-                        sharedViewModel.saveCompany(listOfCompanies[2])
-                        navController.navigate(R.id.routes_dest, null, null)
-                    }
-                    this.getString(R.string.navPeopleMover) -> {
-                        sharedViewModel.saveCompany(listOfCompanies[3])
-                        navController.navigate(R.id.routes_dest, null, null)
-                    }
-                    this.getString(R.string.navQline) -> {
-                        sharedViewModel.saveCompany(listOfCompanies[4])
-                        navController.navigate(R.id.routes_dest, null, null)
-                    }
+                this.getString(R.string.navDdot) -> {
+                    sharedViewModel.saveCompany(listOfCompanies[1])
+                    navController.navigate(R.id.routes_dest, null, null)
                 }
-            }, 500) //delay half a second before navigating to next fragment
+                this.getString(R.string.navSmart) -> {
+                    sharedViewModel.saveCompany(listOfCompanies[0])
+                    navController.navigate(R.id.routes_dest, null, null)
+                }
+                this.getString(R.string.navReflex) -> {
+                    sharedViewModel.saveCompany(listOfCompanies[2])
+                    navController.navigate(R.id.routes_dest, null, null)
+                }
+                this.getString(R.string.navPeopleMover) -> {
+                    sharedViewModel.saveCompany(listOfCompanies[3])
+                    navController.navigate(R.id.routes_dest, null, null)
+                }
+                this.getString(R.string.navQline) -> {
+                    sharedViewModel.saveCompany(listOfCompanies[4])
+                    navController.navigate(R.id.routes_dest, null, null)
+                }
+            }
+
         }
 
         return true

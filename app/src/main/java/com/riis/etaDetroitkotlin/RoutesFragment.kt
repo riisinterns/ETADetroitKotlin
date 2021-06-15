@@ -15,6 +15,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.transition.TransitionInflater
 import com.riis.etaDetroitkotlin.model.Company
 import com.riis.etaDetroitkotlin.model.Routes
 import java.util.*
@@ -26,8 +27,10 @@ class RoutesFragment : Fragment() {
     private lateinit var routeRecyclerView: RecyclerView
     private lateinit var busPhotoImageView: ImageView
     private var adapter: RouteAdapter? = null
-    private val sharedViewModel: SharedViewModel by activityViewModels()
     private lateinit var listOfCompanies: List<Company>
+
+    //links the fragment to a viewModel shared with MainActivity and other fragments
+    private val sharedViewModel: SharedViewModel by activityViewModels()
 
 
     //CREATING THE FRAGMENT VIEW
@@ -37,12 +40,16 @@ class RoutesFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        sharedElementEnterTransition = TransitionInflater.from(this.context).inflateTransition(R.transition.bus_img_transition)
+        sharedElementReturnTransition =  TransitionInflater.from(this.context).inflateTransition(R.transition.bus_img_transition)
+
         //inflating the fragment_home layout as the fragment view
         val view = inflater.inflate(R.layout.fragment_routes, container, false)
 
         //RecyclerView setup (Grid Layout)
         routeRecyclerView = view.findViewById(R.id.route_recycler_view) as RecyclerView
-        busPhotoImageView = view.findViewById(R.id.busImage) as ImageView
+        busPhotoImageView = view.findViewById(R.id.busImgView) as ImageView
         routeRecyclerView.layoutManager = LinearLayoutManager(context)
         //update the RecyclerView with itemViews and their corresponding data from the model layer
 
@@ -51,15 +58,18 @@ class RoutesFragment : Fragment() {
         return view
     }
 
+    //CONNECTING FRAGMENT VIEW TO MODEL DATA
+    //--------------------------------------
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
+        //if a company was selected and saved to the shared view model from the HomeFragment, update fragment UI using that data
         val currentCompany = sharedViewModel.currentCompany
         if (currentCompany != null) {
             updateUI(currentCompany)
         }
 
+        //listen to changes to the list of Company objects saved in the database and save the list to a class variable
         sharedViewModel.companyListLiveData.observe(
             viewLifecycleOwner,
             { companyList ->
@@ -69,6 +79,7 @@ class RoutesFragment : Fragment() {
             }
         )
 
+        //listen to changes to the list of Routes objects saved in the database and update the recycler view using it
         sharedViewModel.routeListLiveData.observe(
             viewLifecycleOwner,
             { routes ->
@@ -77,33 +88,44 @@ class RoutesFragment : Fragment() {
         )
     }
 
-
+    //WHEN THE FRAGMENT VIEW IS NOT VISIBLE ON THE SCREEN
+    //---------------------------------------------------
     override fun onPause() {
         super.onPause()
+        //When user leaves fragment, app bar color reverts back to its original color (green)
         val appBarColor =
+            //creating a ColorDrawable from the home screen's color resource id
             ColorDrawable(ContextCompat.getColor(requireActivity(), R.color.ETAHeader))
+        //using the ColorDrawable to change the app bar color in MainActivity
         (requireActivity() as AppCompatActivity).supportActionBar?.setBackgroundDrawable(appBarColor)
     }
 
+    //when the list of Routes objects changes, update the recycler view
     private fun updateRoutesDisplayed(routes: List<Routes>) {
         adapter = RouteAdapter(routes)
         routeRecyclerView.adapter = adapter
     }
 
+    //When the selected company from the HomeFragment changes, update the fragment's UI
     private fun updateUI(currentCompany: Company) {
-        // set Photo and Background
-        //val currentCompany = sharedViewModel.currentCompany
+
+        //getting the image resource id based on the selected Company object's busImgUrl property
         val resID: Int = context?.resources!!.getIdentifier(
             currentCompany.busImgUrl,
             "drawable",
             requireContext().packageName
         )
-        busPhotoImageView.setImageResource(resID)
+        busPhotoImageView.setImageResource(resID) //setting image view
+
+        //setting the background color of the recycler view based on the selected Company object's brandColor property
         routeRecyclerView.setBackgroundColor(Color.parseColor(currentCompany.brandColor))
 
+        //creating a ColorDrawable based on the selected Company's brandColor property
         val appBarColor = ColorDrawable(Color.parseColor(currentCompany.brandColor))
+        //using the ColorDrawable to change the app bar color in MainActivity
         (requireActivity() as AppCompatActivity).supportActionBar?.setBackgroundDrawable(appBarColor)
 
+        //setting the title of the MainActivity's app bar based on the selected Company object's title property
         when (currentCompany.name) {
             "SmartBus" -> (requireActivity() as AppCompatActivity).supportActionBar?.title =
                 "Smart Bus Route"
@@ -146,38 +168,42 @@ class RoutesFragment : Fragment() {
 
         }
 
+        //Handling navigation when an item view (route) is selected from the recycler view
         override fun onClick(itemView: View) {
-            //TODO navigate to StopsFragment
             Toast.makeText(
                 context,
                 "Clicked on route number ${routeItem.number}",
                 Toast.LENGTH_SHORT
             ).show()
-            sharedViewModel.saveRoute(routeItem)
-            itemView.findNavController().navigate(R.id.route_to_stops)
+
+            sharedViewModel.saveRoute(routeItem) //save the selected itemView's Routes object to the shared view model
+            itemView.findNavController()
+                .navigate(R.id.route_to_stops) //navigate to the StopsFragment
         }
     }
 
 
     //ADAPTER CLASS FOR RECYCLER VIEW
     //-------------------------------
-    private inner class RouteAdapter(var routeList: List<Routes>)//accepts a list of Company objects from model layer
+    private inner class RouteAdapter(var routeList: List<Routes>)//accepts a list of Routes objects from model layer
         : RecyclerView.Adapter<RouteHolder>(), Filterable {
 
+        //This list will hold Routes objects that have been filtered through a search query. It is initialized using ...
+        // the original list of Routes objects since no search queries have been made yet.
         private var routeFilterList: List<Routes> = routeList
 
         //creates a new viewHolder with a new itemView wrapped inside
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int)
                 : RouteHolder {
-            //inflates the list_item_transport layout and passes the resulting View to a new instance of CompanyHolder
+            //inflates the list_item_route layout and passes the resulting View to a new instance of RouteHolder
             val itemView = layoutInflater.inflate(R.layout.list_item_route, parent, false)
             return RouteHolder(itemView)
         }
 
-        //returns the number of items in the list of Transport objects
+        //returns the number of items in the list of filtered Routes objects
         override fun getItemCount() = routeFilterList.size
 
-        //binds the viewHolder with a Company object from a given position in companyList
+        //binds the viewHolder with a Routes object from a given position in routeFilterList
         override fun onBindViewHolder(holder: RouteHolder, position: Int) {
             val route = routeFilterList[position]
             holder.bind(route)
@@ -187,17 +213,17 @@ class RoutesFragment : Fragment() {
         override fun getFilter(): Filter {
             return object : Filter() { //A filter constrains data with a filtering pattern
 
-                //If the user has typed text into the SearchView, that text becomes a constraint to filter results from the list of routes
+                //If the user has typed text into the SearchView, that text becomes a constraint to filter results from the list of Routes objects
                 override fun performFiltering(constraint: CharSequence?): FilterResults {
                     val search = constraint.toString()
 
-                    //if there is no search query, return all results from the list of routes
+                    //if there is no search query, return all results from the list of Routes objects
                     if (search.isEmpty()) {
                         routeFilterList = routeList
                     } else {
                         val resultList: MutableList<Routes> = mutableListOf()
 
-                        //If a search query exists, check to see if it contains any of the names or route numbers from the list of routes.
+                        //If a search query exists, check to see if it contains any of the names or route numbers from the list of Routes object.
                         //If a match is made to a route, add that route to the resultList
                         for (route in routeList) {
                             val routeNumber: String = "route " + route.number
@@ -211,63 +237,64 @@ class RoutesFragment : Fragment() {
                         }
                         routeFilterList = resultList //update the filtered list of routes
                     }
-                        val filteredResults = FilterResults()
-                        filteredResults.values = routeFilterList
-                        return filteredResults
-                    }
-
-                    @Suppress("UNCHECKED_CAST")
-                    override fun publishResults(
-                        constraint: CharSequence?,
-                        results: FilterResults?
-                    ) {
-                        routeFilterList = results?.values as List<Routes>
-                        notifyDataSetChanged()
-                    }
-
-
+                    //return the filtered list of Routes object inside of a FilterResults object
+                    val filteredResults = FilterResults()
+                    filteredResults.values = routeFilterList
+                    return filteredResults
                 }
+
+                //updating routeFilterList after each search query
+                @Suppress("UNCHECKED_CAST")
+                override fun publishResults(
+                    constraint: CharSequence?,
+                    results: FilterResults?
+                ) {
+                    routeFilterList = results?.values as List<Routes>
+                    notifyDataSetChanged()
+                }
+
             }
         }
-
-        //ADDING MENU OPTIONS TO THE APP BAR PROVIDED BY MAIN ACTIVITY
-        //------------------------------------------------------------
-        override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-            inflater.inflate(
-                R.menu.search_menu,
-                menu
-            ) //search_menu.xml displays a search icon (magnifying glass) in the top right of the app bar
-
-
-            /*NOTE: An action view is an action that provides functionality within the app bar. In this case, we ...
-                    are using the SearchView action view which initially appears as a menu item. When the user clicks ...
-                    the action, it expands to fit the app bar.
-
-                    A SearchView allows the user to enter search query and submit a request to a search provider.
-                    It Shows a list of query suggestions or results, if available, and allows the user to pick a suggestion or result to launch into.
-             */
-
-            //creating configuring the search bar
-            val searchIcon = menu.findItem(R.id.search_icon)
-            val searchView =
-                searchIcon?.actionView as SearchView //SearchView widget implements an action view for entering search queries
-            searchView.imeOptions =
-                EditorInfo.IME_ACTION_DONE //replaces the user's carriage return button in their on-screen keyboard
-            // with a "Done" action button (may appear as a check mark)
-
-            //handling interactions with the search bar
-            searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-                //when user clicks submit button after entering query...
-                override fun onQueryTextSubmit(s: String): Boolean {
-                    return false //return false to let the SearchView handle the submission by launching any associated intent
-                }
-
-                //when the query text is changed by the user
-                override fun onQueryTextChange(s: String): Boolean {
-                    adapter?.filter?.filter(s)
-                    return false
-                }
-            })
-
-        }
     }
+
+    //ADDING MENU OPTIONS TO THE APP BAR PROVIDED BY MAIN ACTIVITY
+    //------------------------------------------------------------
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(
+            R.menu.search_menu,
+            menu
+        ) //search_menu.xml displays a search icon (magnifying glass) in the top right of the app bar
+
+
+        /*NOTE: An action view is an action that provides functionality within the app bar. In this case, we ...
+                are using the SearchView action view which initially appears as a menu item. When the user clicks ...
+                the action, it expands to fit the app bar.
+
+                A SearchView allows the user to enter search query and submit a request to a search provider.
+                It Shows a list of query suggestions or results, if available, and allows the user to pick a suggestion or result to launch into.
+         */
+
+        //creating and configuring the search bar
+        val searchIcon = menu.findItem(R.id.search_icon)
+        val searchView =
+            searchIcon?.actionView as SearchView //SearchView widget implements an action view for entering search queries
+        searchView.imeOptions =
+            EditorInfo.IME_ACTION_DONE //replaces the user's carriage return button in their on-screen keyboard
+        // with a "Done" action button (may appear as a check mark)
+
+        //handling interactions with the search bar
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            //when user clicks submit button after entering query...
+            override fun onQueryTextSubmit(s: String): Boolean {
+                return false //return false to let the SearchView handle the submission by launching any associated intent
+            }
+
+            //when the query text is changed by the user
+            override fun onQueryTextChange(s: String): Boolean {
+                adapter?.filter?.filter(s)
+                return false
+            }
+        })
+
+    }
+}

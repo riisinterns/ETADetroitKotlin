@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -25,7 +26,7 @@ class HomeFragment : Fragment() {
     //----------------------
     private lateinit var companyRecyclerView: RecyclerView
 
-    //links the activity to a viewModel shared with MainActivity and other fragments
+    //links the fragment to a viewModel shared with MainActivity and other fragments
     private val sharedViewModel: SharedViewModel by activityViewModels()
 
     //INFLATING THE FRAGMENT VIEW FROM A LAYOUT
@@ -104,15 +105,19 @@ class HomeFragment : Fragment() {
 
         }
 
-        //HANDLING NAVIGATION WHEN A ITEM VIEW IS SELECTED FROM RECYCLER VIEW
-        //--------------------------------------------------------------
+        //HANDLING NAVIGATION WHEN A ITEM VIEW (Company) IS SELECTED FROM RECYCLER VIEW
+        //-----------------------------------------------------------------------------
         override fun onClick(itemView: View) {
             if (companyItem.name == "Route Map") {
                 findNavController().navigate(R.id.action_home_dest_to_routeMapFragment) //navigate to RouteMapFragment
             } else {
                 //save the selected itemView's Company object to the shared view model and navigate to the RoutesFragment
                 sharedViewModel.saveCompany(companyItem)
-                itemView.findNavController().navigate(R.id.moveToRoutesFragment)
+
+                val extras = FragmentNavigatorExtras(
+                    companyImageView to "tImage"
+                )
+                itemView.findNavController().navigate(R.id.moveToRoutesFragment, null, null, extras)
             }
         }
     }
