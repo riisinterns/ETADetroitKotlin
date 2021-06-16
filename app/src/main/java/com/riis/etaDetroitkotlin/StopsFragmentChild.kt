@@ -37,10 +37,10 @@ class StopsFragmentChild : Fragment() {
     private lateinit var directionFab: FloatingActionButton
     private val sharedViewModel: SharedViewModel by activityViewModels()
     private var stopsVisibility: HashMap<Int, Int> = hashMapOf()
+    private var tripStopsPositions: HashMap<Int, Int> = hashMapOf()
     private var day = 0
     private var directions: List<Int> = mutableListOf()
     private lateinit var routeStops: List<RouteStops>
-    private var tripStopsPosition = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -201,7 +201,7 @@ class StopsFragmentChild : Fragment() {
                             })"
 
                             arrivalTimeLabel.text = "Next Stop: $hours:${minutes % 60}"
-                            tripStopsPosition = i
+                            tripStopsPositions[stopItem.id] = i
                             break
                         }
 
@@ -229,8 +229,9 @@ class StopsFragmentChild : Fragment() {
                 { tripStop ->
                     var tmp = ""
                     val sortedTripStops = tripStop.sortedBy { it.arrivalTime }
+                    val tripStopsPosition = tripStopsPositions[stopItem.id]
 //                    for (i in sortedTripStops.subList(tripStopsPosition % sortedTripStops.size, (tripStopsPosition + 5) % sortedTripStops.size)) {
-                    for (i in tripStopsPosition..(tripStopsPosition + 4)) {
+                    for (i in tripStopsPosition!!..(tripStopsPosition + 4)) {
                         val tmpTripStop = sortedTripStops[i % sortedTripStops.size]
                         tmp += "${
                             tmpTripStop.arrivalTime.toString().substring(11, 16)
