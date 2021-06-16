@@ -23,26 +23,27 @@ import java.lang.Integer.max
 
 private const val TAG = "StopsFragment"
 private const val DAY_KEY = "day_key"
-private const val DIRECTION_KEY = "direction_key"
-private var CURRENT_DIRECTION: Int = 1
+private const val DIRECTIONS_KEY = "directions_key"
 
-class StopsFragmentChild private constructor() : Fragment() {
+class StopsFragmentChild : Fragment() {
 
     private lateinit var stopsRecyclerView: RecyclerView
     private lateinit var adapter: StopAdapter
     private lateinit var directionFab: FloatingActionButton
     private val sharedViewModel: SharedViewModel by activityViewModels()
-    private lateinit var listOfCompanies: List<Company>
     private var stopsVisibility: HashMap<Int, Int> = hashMapOf()
     private var day = 0
-    private var direction = 0
+    private var directions: List<Int> = mutableListOf()
+    private lateinit var routeStops: List<RouteStops>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         //not null, only can create fragment by calling NewInstance()
         this.day = arguments?.getInt(DAY_KEY)!!
-        this.direction = arguments?.getInt(DIRECTION_KEY)!!
+        this.directions = arguments?.getIntegerArrayList(DIRECTIONS_KEY)!!
+        sharedViewModel.direction =
+            if (directions.isNotEmpty()) directions[sharedViewModel.directionCount] else sharedViewModel.direction
     }
 
     override fun onCreateView(
@@ -67,15 +68,33 @@ class StopsFragmentChild private constructor() : Fragment() {
         sharedViewModel.routeStopsListLiveData.observe(
             viewLifecycleOwner,
             { routeStops ->
+                this.routeStops = routeStops
                 updateUI(routeStops.filter {
-                    it.directionId == direction && it.dayId == day
+                    it.directionId == sharedViewModel.direction && it.dayId == day
                 })
             }
         )
     }
 
+    override fun onStart() {
+        super.onStart()
+        directionFab.setOnClickListener {
+
+            sharedViewModel.direction = if (sharedViewModel.directionCount + 1 < directions.size) {
+                directions[++sharedViewModel.directionCount] //go to next direction in list if list hasn't been exhausted
+            } else {
+                sharedViewModel.directionCount = 0 //if list has been exhausted go back to first element
+                directions[sharedViewModel.directionCount]
+            }
+
+            setDirectionImage()
+            updateUI(this.routeStops.filter { it.directionId == sharedViewModel.direction && it.dayId == day })
+        }
+    }
+
+
     private fun setDirectionImage() {
-        var drawable = when (direction) {
+        var drawable = when (sharedViewModel.direction) {
             1 -> ContextCompat.getDrawable(requireContext(), R.drawable.ic_arrow_down)
             2 -> ContextCompat.getDrawable(requireContext(), R.drawable.ic_arrow_up)
             3 -> ContextCompat.getDrawable(requireContext(), R.drawable.ic_arrow_left)
@@ -112,10 +131,10 @@ class StopsFragmentChild private constructor() : Fragment() {
 
 
     companion object {
-        fun newInstance(day: Int, direction: Int): StopsFragmentChild {
+        fun newInstance(day: Int, directions: ArrayList<Int>): StopsFragmentChild {
             val args = Bundle().apply {
                 putInt(DAY_KEY, day)
-                putInt(DIRECTION_KEY, direction)
+                putIntegerArrayList(DIRECTIONS_KEY, directions)
             }
             return StopsFragmentChild().apply {
                 arguments = args
@@ -184,7 +203,8 @@ class StopsFragmentChild private constructor() : Fragment() {
                 viewLifecycleOwner,
                 { tripStop ->
                     var tmp = ""
-                    for (i in tripStop.sortedBy { it.stopSequence }.subList(0, minOf(tripStop.size, 5))) {
+                    for (i in tripStop.sortedBy { it.stopSequence }
+                        .subList(0, minOf(tripStop.size, 5))) {
 //                        for (i in tripStop.sortedWith(compareBy {it.stopSequence}, {it.arrivalTime} )) {
                         tmp += "${
                             i.arrivalTime.toString().substring(11, 16)

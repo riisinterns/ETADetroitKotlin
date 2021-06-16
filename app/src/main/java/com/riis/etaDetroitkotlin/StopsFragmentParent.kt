@@ -55,34 +55,37 @@ class StopsFragmentParent : Fragment() {
         //set tab menu color
         appBarLayout.setBackgroundColor(Color.parseColor(sharedViewModel.currentCompany?.brandColor))
 
-        //TODO DISPLAY ROUTE NOT RUNNING IF ROUTE STOPS EMPTY
-        //get all possible values of directions and days
-        val days = routeStops.map { it.dayId }.distinct()
-        val directions = routeStops.map { it.directionId }.distinct()
 
-        // populate the swipeable fragments
-        val direction = if (directions.isEmpty()) 0 else directions[0]
-        stopViewPageAdapter = StopViewPageAdapter(this, days, direction)
-        viewPager.adapter = stopViewPageAdapter
+        if(routeStops.isNotEmpty()) {
+            //get all possible values of directions and days
+            val days = routeStops.map { it.dayId }.distinct()
+            val directions = routeStops.map { it.directionId }.distinct()
 
-        //puts them in tabs and sets text of tab to the day of operation it filters by
-        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
-            val day =
-                this.days.filter { it.id == days[position] } // since all id's are unique, this will return singleton
-            tab.text = day[0].day.uppercase() //access the string corresponding to day id
-        }.attach()
+            // populate the swipeable fragments
+            stopViewPageAdapter = StopViewPageAdapter(this, days, directions as ArrayList<Int>)
+            viewPager.adapter = stopViewPageAdapter
+
+            //puts them in tabs and sets text of tab to the day of operation it filters by
+            TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+                val day =
+                    this.days.filter { it.id == days[position] } // since all id's are unique, this will return singleton
+                tab.text = day[0].day.uppercase() //access the string corresponding to day id
+            }.attach()
+        }else{
+            //TODO DISPLAY ROUTE NOT RUNNING IF ROUTE STOPS EMPTY
+        }
     }
 
     private inner class StopViewPageAdapter(
         fragment: Fragment,
         private var days: List<Int>,
-        private var defaultDirection: Int
+        private var directions: ArrayList<Int>
     ) : FragmentStateAdapter(fragment) {
 
         override fun getItemCount() = days.size
 
         override fun createFragment(position: Int): Fragment {
-            return StopsFragmentChild.newInstance(days[position], defaultDirection)
+            return StopsFragmentChild.newInstance(days[position], directions)
         }
 
     }

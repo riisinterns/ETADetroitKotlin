@@ -25,4 +25,17 @@
             android:layout_height="match_parent"
             android:elevation="10dp" />
 
+    <TextView
+        android:id="@+id/NoRouteLbl"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="1dp"
+        android:background="@color/white"
+        android:gravity="center"
+        android:text="@string/noRoute"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/ReflexBlue"
+        android:textSize="24sp"
+        android:textStyle="normal"/>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
