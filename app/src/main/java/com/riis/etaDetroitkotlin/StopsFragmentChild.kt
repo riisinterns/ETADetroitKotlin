@@ -40,6 +40,7 @@ class StopsFragmentChild : Fragment() {
     private var day = 0
     private var directions: List<Int> = mutableListOf()
     private lateinit var routeStops: List<RouteStops>
+    private var tripStopsPosition = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -186,21 +187,25 @@ class StopsFragmentChild : Fragment() {
                 viewLifecycleOwner,
                 { tripStop ->
                     val sortedTripStops = tripStop.sortedBy { it.arrivalTime }
-                    val difference: Long = sortedTripStops[0].arrivalTime?.time!! - Date(Calendar.getInstance().timeInMillis).time
-                    val seconds = difference / 1000
-                    val minutes = seconds / 60
-                    val hours = minutes / 60
 
-                    currentTime.text = "(${
-                        sortedTripStops[0].arrivalTime.toString()
-                            .substring(11, 16)
-                    })"
+                    for (i in 0..sortedTripStops.size){
+                        val difference: Long = sortedTripStops[i].arrivalTime?.time!! - Date(Calendar.getInstance().timeInMillis).time
 
-                    arrivalTimeLabel.text = "Next Stop: $hours:${minutes % 60}"
+                        if (difference > 0) {
+                            val seconds = difference / 1000
+                            val minutes = seconds / 60
+                            val hours = minutes / 60
+                            currentTime.text = "(${
+                                sortedTripStops[i].arrivalTime.toString()
+                                    .substring(11, 16)
+                            })"
 
-                    Log.d(TAG, "$minutes")
+                            arrivalTimeLabel.text = "Next Stop: $hours:${minutes % 60}"
+                            tripStopsPosition = i
+                            break
+                        }
 
-
+                    }
                 }
             )
         }
@@ -223,8 +228,10 @@ class StopsFragmentChild : Fragment() {
                 viewLifecycleOwner,
                 { tripStop ->
                     var tmp = ""
-                    for (i in tripStop.sortedBy { it.arrivalTime }) {
-//                        for (i in tripStop.sortedBy { it.arrivalTime }.subList(0, minOf(tripStop.size, 5))) {
+                    val sortedTripStops = tripStop.sortedBy { it.arrivalTime }
+//                    for (i in tripStop.sortedBy { it.arrivalTime }) {
+//                    for (i in tripStop.subList(0, minOf(tripStop.size, 5))) {
+                    for (i in sortedTripStops.subList(minOf(tripStopsPosition, tripStop.size), tripStop.size)) {
                         tmp += "${
                             i.arrivalTime.toString().substring(11, 16)
                         }......${i.stopSequence}\n"
