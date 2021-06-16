@@ -5,8 +5,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.appbar.AppBarLayout
@@ -14,6 +16,7 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.riis.etaDetroitkotlin.model.DaysOfOperation
 import com.riis.etaDetroitkotlin.model.RouteStops
+import org.w3c.dom.Text
 
 class StopsFragmentParent : Fragment() {
 
@@ -63,6 +66,7 @@ class StopsFragmentParent : Fragment() {
             val dirArg: ArrayList<Int> = ArrayList(directions)
 
             // populate the swipeable fragments
+            tabLayout.setSelectedTabIndicatorColor(Color.WHITE)
             stopViewPageAdapter = StopViewPageAdapter(this, days, dirArg)
             viewPager.adapter = stopViewPageAdapter
 
@@ -72,8 +76,20 @@ class StopsFragmentParent : Fragment() {
                     this.days.filter { it.id == days[position] } // since all id's are unique, this will return singleton
                 tab.text = day[0].day.uppercase() //access the string corresponding to day id
             }.attach()
-        }else{
-            //TODO DISPLAY ROUTE NOT RUNNING IF ROUTE STOPS EMPTY
+
+        }else{ //when route
+
+            val days: List<Int> = listOf(0)
+            val dirArg: ArrayList<Int> = ArrayList(listOf(0))
+
+            // populate the swipeable fragments
+            tabLayout.setSelectedTabIndicatorColor(Color.parseColor(sharedViewModel.currentCompany?.brandColor))
+            stopViewPageAdapter = StopViewPageAdapter(this, days, dirArg)
+            viewPager.adapter = stopViewPageAdapter
+
+            //puts them in tabs and sets text of tab to the day of operation it filters by
+            TabLayoutMediator(tabLayout, viewPager){_,_->}.attach()
+
         }
     }
 
