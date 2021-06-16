@@ -2,7 +2,6 @@ package com.riis.etaDetroitkotlin
 
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,14 +16,9 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.riis.etaDetroitkotlin.model.Company
 import com.riis.etaDetroitkotlin.model.RouteStops
 import com.riis.etaDetroitkotlin.model.Stops
-import java.lang.Integer.max
 import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
-import kotlin.math.abs
 
 private const val TAG = "StopsFragment"
 private const val DAY_KEY = "day_key"
@@ -96,14 +90,13 @@ class StopsFragmentChild : Fragment() {
             sharedViewModel.direction = if (sharedViewModel.directionCount + 1 < directions.size) {
                 directions[++sharedViewModel.directionCount] //go to next direction in list if list hasn't been exhausted
             } else {
-                sharedViewModel.directionCount = 0 //if list has been exhausted go back to first element
+                sharedViewModel.directionCount =
+                    0 //if list has been exhausted go back to first element
                 directions[sharedViewModel.directionCount]
             }
 
             setDirectionImage()
-            routeStops = routeStops.filter { it.directionId == 1 && it.dayId == 1 }
-//            updateUI(this.routeStops.filter { it.directionId == sharedViewModel.direction && it.dayId == day })
-            updateUI(routeStops)
+            updateUI(this.routeStops.filter { it.directionId == sharedViewModel.direction && it.dayId == day })
         }
     }
 
@@ -193,8 +186,9 @@ class StopsFragmentChild : Fragment() {
                 { tripStop ->
                     val sortedTripStops = tripStop.sortedBy { it.arrivalTime }
 
-                    for (i in 0..sortedTripStops.size){
-                        val difference: Long = sortedTripStops[i].arrivalTime?.time!! - Date(Calendar.getInstance().timeInMillis).time
+                    for (i in 0..sortedTripStops.size) {
+                        val difference: Long =
+                            sortedTripStops[i].arrivalTime?.time!! - Date(Calendar.getInstance().timeInMillis).time
 
                         if (difference > 0) {
                             val seconds = difference / 1000
@@ -235,7 +229,7 @@ class StopsFragmentChild : Fragment() {
                     var tmp = ""
                     val sortedTripStops = tripStop.sortedBy { it.arrivalTime }
                     val tripStopsPosition = tripStopsPositions[stopItem.id]
-//                    for (i in sortedTripStops.subList(tripStopsPosition % sortedTripStops.size, (tripStopsPosition + 5) % sortedTripStops.size)) {
+
                     for (i in tripStopsPosition!!..(tripStopsPosition + 4)) {
                         val tmpTripStop = sortedTripStops[i % sortedTripStops.size]
                         tmp += "${

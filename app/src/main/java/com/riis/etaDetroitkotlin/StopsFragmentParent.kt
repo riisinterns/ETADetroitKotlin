@@ -59,10 +59,10 @@ class StopsFragmentParent : Fragment() {
         appBarLayout.setBackgroundColor(Color.parseColor(sharedViewModel.currentCompany?.brandColor))
 
 
-        if(routeStops.isNotEmpty()) {
+        if (routeStops.isNotEmpty()) {
             //get all possible values of directions and days
             val days = routeStops.map { it.dayId }.distinct()
-            val directions:List<Int> = routeStops.map { it.directionId }.distinct()
+            val directions: List<Int> = routeStops.map { it.directionId }.distinct()
             val dirArg: ArrayList<Int> = ArrayList(directions)
 
             // populate the swipeable fragments

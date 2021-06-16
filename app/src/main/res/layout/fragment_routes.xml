@@ -10,13 +10,13 @@
             android:layout_height="wrap_content">
 
         <ImageView
-            android:id="@+id/busImgView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
-            android:contentDescription="@string/transportation_desc"
-            android:scaleType="fitStart"
-            android:transitionName="bus_transition" />
+                android:id="@+id/busImgView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/transportation_desc"
+                android:scaleType="fitStart"
+                android:transitionName="bus_transition" />
 
     </FrameLayout>
 
