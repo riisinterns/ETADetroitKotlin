@@ -2,6 +2,7 @@ package com.riis.etaDetroitkotlin
 
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,6 +21,10 @@ import com.riis.etaDetroitkotlin.model.Company
 import com.riis.etaDetroitkotlin.model.RouteStops
 import com.riis.etaDetroitkotlin.model.Stops
 import java.lang.Integer.max
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
+import kotlin.math.abs
 
 private const val TAG = "StopsFragment"
 private const val DAY_KEY = "day_key"
@@ -88,7 +93,9 @@ class StopsFragmentChild : Fragment() {
             }
 
             setDirectionImage()
-            updateUI(this.routeStops.filter { it.directionId == sharedViewModel.direction && it.dayId == day })
+            routeStops = routeStops.filter { it.directionId == 1 && it.dayId == 1 }
+//            updateUI(this.routeStops.filter { it.directionId == sharedViewModel.direction && it.dayId == day })
+            updateUI(routeStops)
         }
     }
 
@@ -150,6 +157,7 @@ class StopsFragmentChild : Fragment() {
 
         private val stopName: TextView = view.findViewById(R.id.stop_name)
         private val currentTime: TextView = view.findViewById(R.id.current_time)
+        private val arrivalTimeLabel: TextView = view.findViewById(R.id.arrival_time_label)
 
         private var dynamicLinearLayout =
             view.findViewById(R.id.dynamic_linear_layout) as LinearLayout
@@ -177,10 +185,22 @@ class StopsFragmentChild : Fragment() {
             sharedViewModel.getTripStops(stopItem.id).observe(
                 viewLifecycleOwner,
                 { tripStop ->
+                    val sortedTripStops = tripStop.sortedBy { it.arrivalTime }
+                    val difference: Long = sortedTripStops[0].arrivalTime?.time!! - Date(Calendar.getInstance().timeInMillis).time
+                    val seconds = difference / 1000
+                    val minutes = seconds / 60
+                    val hours = minutes / 60
+
                     currentTime.text = "(${
-                        tripStop.sortedBy { it.stopSequence }[0].arrivalTime.toString()
+                        sortedTripStops[0].arrivalTime.toString()
                             .substring(11, 16)
                     })"
+
+                    arrivalTimeLabel.text = "Next Stop: $hours:${minutes % 60}"
+
+                    Log.d(TAG, "$minutes")
+
+
                 }
             )
         }
@@ -203,9 +223,8 @@ class StopsFragmentChild : Fragment() {
                 viewLifecycleOwner,
                 { tripStop ->
                     var tmp = ""
-                    for (i in tripStop.sortedBy { it.stopSequence }
-                        .subList(0, minOf(tripStop.size, 5))) {
-//                        for (i in tripStop.sortedWith(compareBy {it.stopSequence}, {it.arrivalTime} )) {
+                    for (i in tripStop.sortedBy { it.arrivalTime }) {
+//                        for (i in tripStop.sortedBy { it.arrivalTime }.subList(0, minOf(tripStop.size, 5))) {
                         tmp += "${
                             i.arrivalTime.toString().substring(11, 16)
                         }......${i.stopSequence}\n"
