@@ -62,7 +62,7 @@
 
     <string name="loadingRoutes">Loading Routes...</string>
 
-    <string name="noRoute">No Route for the selected Day</string>
+    <string name="noRoute">This Route is Not Currently Being Offered</string>
     <string name="route_number">Route Number</string>
     <string name="route_name">Route Name</string>
     <string name="arrow_desc">Arrow pointing right</string>
