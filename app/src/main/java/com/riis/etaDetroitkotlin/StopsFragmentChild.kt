@@ -229,12 +229,12 @@ class StopsFragmentChild : Fragment() {
                 { tripStop ->
                     var tmp = ""
                     val sortedTripStops = tripStop.sortedBy { it.arrivalTime }
-//                    for (i in tripStop.sortedBy { it.arrivalTime }) {
-//                    for (i in tripStop.subList(0, minOf(tripStop.size, 5))) {
-                    for (i in sortedTripStops.subList(minOf(tripStopsPosition, tripStop.size), tripStop.size)) {
+//                    for (i in sortedTripStops.subList(tripStopsPosition % sortedTripStops.size, (tripStopsPosition + 5) % sortedTripStops.size)) {
+                    for (i in tripStopsPosition..(tripStopsPosition + 4)) {
+                        val tmpTripStop = sortedTripStops[i % sortedTripStops.size]
                         tmp += "${
-                            i.arrivalTime.toString().substring(11, 16)
-                        }......${i.stopSequence}\n"
+                            tmpTripStop.arrivalTime.toString().substring(11, 16)
+                        }......${tmpTripStop.stopSequence}\n"
                     }
                     allArrivalTimes.text = tmp
                 }
