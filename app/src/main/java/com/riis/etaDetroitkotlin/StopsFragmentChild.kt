@@ -35,6 +35,7 @@ class StopsFragmentChild : Fragment() {
     private lateinit var stopsRecyclerView: RecyclerView
     private lateinit var adapter: StopAdapter
     private lateinit var directionFab: FloatingActionButton
+    private lateinit var noRoutesTextView: TextView
     private val sharedViewModel: SharedViewModel by activityViewModels()
     private var stopsVisibility: HashMap<Int, Int> = hashMapOf()
     private var tripStopsPositions: HashMap<Int, Int> = hashMapOf()
@@ -45,9 +46,8 @@ class StopsFragmentChild : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        //not null, only can create fragment by calling NewInstance()
-        this.day = arguments?.getInt(DAY_KEY)!!
-        this.directions = arguments?.getIntegerArrayList(DIRECTIONS_KEY)!!
+        day = arguments?.getInt(DAY_KEY)!!
+        directions = arguments?.getIntegerArrayList(DIRECTIONS_KEY)!!
         sharedViewModel.direction =
             if (directions.isNotEmpty()) directions[sharedViewModel.directionCount] else sharedViewModel.direction
     }
@@ -60,6 +60,7 @@ class StopsFragmentChild : Fragment() {
 
         stopsRecyclerView = view.findViewById(R.id.stops_recycler_view)
         directionFab = view.findViewById(R.id.fab)
+        noRoutesTextView = view.findViewById(R.id.NoRouteLbl)
         stopsRecyclerView.layoutManager = LinearLayoutManager(context)
 
         setDirectionImage()
@@ -71,15 +72,21 @@ class StopsFragmentChild : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        sharedViewModel.routeStopsListLiveData.observe(
-            viewLifecycleOwner,
-            { routeStops ->
-                this.routeStops = routeStops
-                updateUI(routeStops.filter {
-                    it.directionId == sharedViewModel.direction && it.dayId == day
-                })
-            }
-        )
+        if(day != 0 && sharedViewModel.direction != 0) {
+            sharedViewModel.routeStopsListLiveData.observe(
+                viewLifecycleOwner,
+                { routeStops ->
+                    this.routeStops = routeStops
+                    updateUI(routeStops.filter {
+                        it.directionId == sharedViewModel.direction && it.dayId == day
+                    })
+                }
+            )
+        }else{
+            stopsRecyclerView.visibility = View.GONE
+            directionFab.visibility = View.GONE
+            noRoutesTextView.visibility = View.VISIBLE
+        }
     }
 
     override fun onStart() {
@@ -118,9 +125,7 @@ class StopsFragmentChild : Fragment() {
             )
             directionFab.setImageDrawable(drawable)
         } else {
-            directionFab.visibility =
-                View.INVISIBLE //use the fab in constraint layout, cannot set to gone
-            directionFab.isEnabled = false
+            directionFab.visibility = View.GONE
         }
     }
 
