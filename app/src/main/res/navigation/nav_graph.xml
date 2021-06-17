@@ -52,7 +52,7 @@
 
     </fragment>
 
-    <!-- ========================= StopsFragment ============================== -->
+    <!-- ========================= StopsFragmentParent ============================== -->
     <fragment
             android:id="@+id/stopsFragmentParent"
             android:name="com.riis.etaDetroitkotlin.StopsFragmentParent"
