@@ -1,6 +1,7 @@
 package com.riis.etaDetroitkotlin.fragment
 
 import android.annotation.SuppressLint
+import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -36,7 +37,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
-class DirectionResponse(val routes: List<GeneratedRoutes>)
+class DirectionResponse(val routes: List<GeneratedRoutes>, val status: String)
 class GeneratedRoutes(val copyrights: String, val fare: TextData? = null, val legs: List<Legs>)
 class Legs(val arrival_time: TextData, val departure_time: TextData, val distance: TextData, val duration: TextData, val steps: List<Steps>)
 class Steps(val distance: TextData, val duration: TextData, val html_instructions: String, val travel_mode: String, val transit_details: TransitDetails? = null)
@@ -161,8 +162,14 @@ class RoutePlannerFragment : Fragment() {
 
 
                 activity?.runOnUiThread{
-                    copyrightTextView.text = directionResponse.routes[0].copyrights // required by Google to use their api
-                    routesRecyclerView!!.adapter = RouteResultAdapter(directionResponse)
+                    if(directionResponse.status == "OK"){
+                        copyrightTextView.setTextColor(Color.BLACK)
+                        copyrightTextView.text = directionResponse.routes[0].copyrights // required by Google to use their api
+                        routesRecyclerView!!.adapter = RouteResultAdapter(directionResponse)
+                    }else{
+                        copyrightTextView.text = "Sorry, we could not generate any transit routes for the information given"
+                        copyrightTextView.setTextColor(Color.RED)
+                    }
                 }
             }
 
