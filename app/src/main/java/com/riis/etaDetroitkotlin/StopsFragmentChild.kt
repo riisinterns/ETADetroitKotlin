@@ -43,8 +43,7 @@ class StopsFragmentChild : Fragment() {
 
         day = arguments?.getInt(DAY_KEY)!!
         directions = arguments?.getIntegerArrayList(DIRECTIONS_KEY)!!
-        sharedViewModel.direction =
-            if (directions.isNotEmpty()) directions[sharedViewModel.directionCount] else sharedViewModel.direction
+        sharedViewModel.direction = directions[sharedViewModel.directionCount]
     }
 
     override fun onCreateView(
