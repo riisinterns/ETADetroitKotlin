@@ -2,6 +2,7 @@ package com.riis.etaDetroitkotlin
 
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -186,32 +187,36 @@ class StopsFragmentChild : Fragment() {
                 { tripStop ->
                     val sortedTripStops = tripStop.sortedBy { it.arrivalTime }
 
-                    for (i in sortedTripStops.indices) {
-                        val difference: Long =
-                            sortedTripStops[i].arrivalTime?.time!! - Date(Calendar.getInstance().timeInMillis).time
+                    if (sortedTripStops.size > 1) {
+                        for (i in sortedTripStops.indices) {
+                            val difference: Long =
+                                sortedTripStops[i].arrivalTime?.time!! - Date(Calendar.getInstance().timeInMillis).time
 
-                        if (difference > 0) {
-                            val seconds = difference / 1000
-                            val minutes = seconds / 60
-                            val hours = minutes / 60
-                            currentTime.text = "(${
-                                sortedTripStops[i].arrivalTime.toString()
-                                    .substring(11, 16)
-                            })"
+                            if (difference > 0) {
+                                val seconds = difference / 1000
+                                val minutes = seconds / 60
+                                currentTime.text = "(${
+                                    sortedTripStops[i].arrivalTime.toString()
+                                        .substring(11, 16)
+                                })"
 
-                            arrivalTimeLabel.text = "Next Stop: $minutes Minutes"
-                            tripStopsPositions[stopItem.id] = i
-                            break
+                                arrivalTimeLabel.text = "Next Stop: $minutes Minutes"
+                                tripStopsPositions[stopItem.id] = i
+                                break
+                            }
+
                         }
-
+                    } else {
+                        currentTime.text = ""
+                        arrivalTimeLabel.text = "No Stop Times Found"
                     }
                 }
+
             )
         }
 
         override fun onClick(view: View) {
             allArrivalTimes.text = null
-
             if (dynamicLinearLayout.visibility == View.GONE) {
                 dynamicLinearLayout.visibility = View.VISIBLE
                 setArrivalTimes()
@@ -226,17 +231,21 @@ class StopsFragmentChild : Fragment() {
             sharedViewModel.getTripStops(stopItem.id).observe(
                 viewLifecycleOwner,
                 { tripStop ->
-                    var tmp = ""
-                    val sortedTripStops = tripStop.sortedBy { it.arrivalTime }
-                    val tripStopsPosition = tripStopsPositions[stopItem.id]
+                    if (tripStop.size > 1) {
+                        var tmp = ""
+                        val sortedTripStops = tripStop.sortedBy { it.arrivalTime }
+                        val tripStopsPosition = tripStopsPositions[stopItem.id]
 
-                    for (i in tripStopsPosition!!..(tripStopsPosition + 4)) {
-                        val tmpTripStop = sortedTripStops[i % sortedTripStops.size]
-                        tmp += "${
-                            tmpTripStop.arrivalTime.toString().substring(11, 16)
-                        }......${tmpTripStop.stopSequence}\n"
+                        for (i in tripStopsPosition!!..(tripStopsPosition + 4)) {
+                            val tmpTripStop = sortedTripStops[i % sortedTripStops.size]
+                            tmp += "${
+                                tmpTripStop.arrivalTime.toString().substring(11, 16)
+                            }......${tmpTripStop.stopSequence}\n"
+                        }
+                        allArrivalTimes.text = tmp
+                    } else {
+                        allArrivalTimes.text = "No Stop Times Found"
                     }
-                    allArrivalTimes.text = tmp
                 }
             )
         }
