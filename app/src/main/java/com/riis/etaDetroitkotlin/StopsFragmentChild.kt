@@ -2,23 +2,33 @@ package com.riis.etaDetroitkotlin
 
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.*
 import android.view.inputmethod.EditorInfo
+import android.widget.Filter
+import android.widget.Filterable
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.graphics.toColorInt
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.riis.etaDetroitkotlin.model.RouteStops
+import com.riis.etaDetroitkotlin.model.Routes
 import com.riis.etaDetroitkotlin.model.Stops
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.*
 
 private const val TAG = "StopsFragment"
@@ -37,6 +47,7 @@ class StopsFragmentChild : Fragment() {
     private var day = 0
     private var directions: List<Int> = mutableListOf()
     private lateinit var routeStops: List<RouteStops>
+    private var searchTerm = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -127,8 +138,16 @@ class StopsFragmentChild : Fragment() {
 
             //when the query text is changed by the user
             override fun onQueryTextChange(s: String): Boolean {
-                //adapter?.filter?.filter(s)
-                Log.d(TAG, s)
+//                val handler = object: Handler(Looper.getMainLooper()) {
+//
+//                }
+                lifecycleScope.launch {
+                    withContext(Dispatchers.Main) {
+                        val handler = Handler(Looper.getMainLooper())
+                        handler.post { adapter.filter.filter(s) }
+                    }
+                }
+
                 return false
             }
         })
@@ -196,6 +215,8 @@ class StopsFragmentChild : Fragment() {
         private var dynamicLinearLayout =
             view.findViewById(R.id.dynamic_linear_layout) as LinearLayout
 
+        private var staticConstraintLayout: ConstraintLayout = view.findViewById(R.id.static_constraint_layout)
+
         init {
             itemView.setOnClickListener(this) //setting a click listener on each itemView
             dynamicLinearLayout.visibility = View.GONE
@@ -207,14 +228,18 @@ class StopsFragmentChild : Fragment() {
             stopName.text = stopItem.name
             allArrivalTimes.text = null
 
+
             if (stopItem.id !in stopsVisibility) {
                 stopsVisibility[stopItem.id] = View.GONE
             }
+
             dynamicLinearLayout.visibility = stopsVisibility[stopItem.id]!!
 
-            if (dynamicLinearLayout.visibility == View.VISIBLE) {
-                setArrivalTimes()
-            }
+            if (stopName.text.contains(searchTerm))
+
+                if (dynamicLinearLayout.visibility == View.VISIBLE) {
+                    setArrivalTimes()
+                }
 
             sharedViewModel.getTripStops(stopItem.id).observe(
                 viewLifecycleOwner,
@@ -238,7 +263,6 @@ class StopsFragmentChild : Fragment() {
                                 tripStopsPositions[stopItem.id] = i
                                 break
                             }
-
                         }
                     } else {
                         currentTime.text = ""
@@ -283,11 +307,12 @@ class StopsFragmentChild : Fragment() {
                 }
             )
         }
-
     }
 
     private inner class StopAdapter(var routeStopsList: List<RouteStops>)//accepts a list of RouteStops objects from model layer
-        : RecyclerView.Adapter<StopsFragmentChild.StopHolder>() {
+        : RecyclerView.Adapter<StopsFragmentChild.StopHolder>(), Filterable {
+
+        var routeStopsFilterList: List<RouteStops> = routeStopsList
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int)
                 : StopsFragmentChild.StopHolder {
@@ -295,16 +320,68 @@ class StopsFragmentChild : Fragment() {
             return StopHolder(itemView)
         }
 
-        override fun getItemCount() = routeStopsList.size
+        override fun getItemCount() = routeStopsFilterList.size
 
         override fun onBindViewHolder(holder: StopsFragmentChild.StopHolder, position: Int) {
-            val routeStop = routeStopsList[position]
+            val routeStop = routeStopsFilterList[position]
             sharedViewModel.getStopLiveData(routeStop.stopId).observe(
                 viewLifecycleOwner,
                 { stop ->
                     holder.bind(stop)
                 }
             )
+        }
+
+        override fun getFilter(): Filter {
+            return object : Filter() { //A filter constrains data with a filtering pattern
+
+                //If the user has typed text into the SearchView, that text becomes a constraint to filter results from the list of Routes objects
+                var resultList: MutableList<RouteStops> = mutableListOf()
+                fun addRouteStop(routeStop: RouteStops) {
+                    resultList.add(routeStop)
+                }
+                override fun performFiltering(constraint: CharSequence?): FilterResults {
+                    val search = constraint.toString()
+
+                    //if there is no search query, return all results from the list of Routes objects
+                    if (search.isEmpty()) {
+                        routeStopsFilterList = routeStopsList
+                    } else {
+                       resultList = mutableListOf()
+
+                        //If a search query exists, check to see if it contains any of the names or route numbers from the list of Routes object.
+                        //If a match is made to a route, add that route to the resultList
+                        for (routeStop in routeStopsFilterList) {
+
+                            sharedViewModel.getStopLiveData(routeStop.stopId).observe(
+                                viewLifecycleOwner,
+                                { stop ->
+                                    if (stop.name.lowercase().contains(search.lowercase())) {
+                                        Log.d(TAG, "LOL")
+                                        addRouteStop(routeStop)
+                                    }
+                                }
+                            )
+                        }
+                        routeStopsFilterList = resultList //update the filtered list of routes
+                    }
+                    //return the filtered list of Routes object inside of a FilterResults object
+
+                    val filteredResults = FilterResults()
+                    filteredResults.values = routeStopsFilterList
+                    return filteredResults
+                }
+
+                //updating routeFilterList after each search query
+                @Suppress("UNCHECKED_CAST")
+                override fun publishResults(
+                    constraint: CharSequence?,
+                    results: FilterResults?
+                ) {
+                    routeStopsFilterList = results?.values as List<RouteStops>
+                    notifyDataSetChanged()
+                }
+            }
         }
     }
 }
