@@ -41,7 +41,8 @@ class GeneratedRoutes(val copyrights: String, val fare: TextData? = null, val le
 class Legs(val arrival_time: TextData, val departure_time: TextData, val distance: TextData, val duration: TextData, val steps: List<Steps>)
 class Steps(val distance: TextData, val duration: TextData, val html_instructions: String, val travel_mode: String, val transit_details: TransitDetails? = null)
 class TransitDetails(val departure_time: TextData, val arrival_time: TextData, val num_stops: String, val line: Line)
-class Line(val short_name: String)
+class Line(val short_name: String, val agencies: List<Agency>)
+class Agency(val name: String, val phone: String, val url: String)
 class TextData(val text: String);
 
 class RoutePlannerFragment : Fragment() {

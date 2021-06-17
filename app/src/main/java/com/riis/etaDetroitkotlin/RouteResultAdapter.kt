@@ -36,6 +36,7 @@ class RouteResultViewHolder(v: View) : RecyclerView.ViewHolder(v){
     private val durationTextView: TextView = itemView.findViewById(R.id.durationTextView)
     private val fareTextView: TextView = itemView.findViewById(R.id.fareTextView)
     private val distanceTextView: TextView = itemView.findViewById(R.id.distanceTextView)
+    private val agencyLineTextView: TextView = itemView.findViewById(R.id.agencyLineTextView)
 
     @SuppressLint("SetTextI18n")
     fun bind(routeGen: GeneratedRoutes) {
@@ -44,12 +45,13 @@ class RouteResultViewHolder(v: View) : RecyclerView.ViewHolder(v){
         for(step in this.routeGen.legs[0].steps){
             if(step.travel_mode == "TRANSIT"){
                 transitDetailsTextView.text = "${step.transit_details?.departure_time!!.text} ${step.transit_details.line.short_name}\n ${step.html_instructions}"
+                agencyLineTextView.text = step.transit_details.line.agencies[0].name
             }
         }
         timeFrameTextView.text = "${this.routeGen.legs[0].departure_time.text} - ${this.routeGen.legs[0].arrival_time.text}"
         durationTextView.text = this.routeGen.legs[0].duration.text
-        if (this.routeGen.fare != null) fareTextView.text = "fare: " + this.routeGen.fare?.text else fareTextView.text = "fare: 0.00"
-        distanceTextView.text = "distance: " + this.routeGen.legs[0].distance.text
+        if (this.routeGen.fare != null) fareTextView.text = this.routeGen.fare?.text else fareTextView.text = "0.00"
+        distanceTextView.text = this.routeGen.legs[0].distance.text
 
     }
 }
