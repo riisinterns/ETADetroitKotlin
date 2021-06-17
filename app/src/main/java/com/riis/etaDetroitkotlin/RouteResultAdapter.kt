@@ -44,7 +44,7 @@ class RouteResultViewHolder(v: View) : RecyclerView.ViewHolder(v){
 
         for(step in this.routeGen.legs[0].steps){
             if(step.travel_mode == "TRANSIT"){
-                transitDetailsTextView.text = "${step.transit_details?.line?.short_name}\n ${step.html_instructions}"
+                transitDetailsTextView.text = "${step.transit_details?.line?.short_name} ${step.html_instructions}"
                 agencyLineTextView.text = step.transit_details?.line!!.agencies[0].name
                 timeFrameTextView.text = "${step.transit_details.departure_time.text} - ${this.routeGen.legs[0].arrival_time.text}"
             }
