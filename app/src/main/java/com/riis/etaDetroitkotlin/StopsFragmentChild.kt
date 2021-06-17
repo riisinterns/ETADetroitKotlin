@@ -186,7 +186,7 @@ class StopsFragmentChild : Fragment() {
                 { tripStop ->
                     val sortedTripStops = tripStop.sortedBy { it.arrivalTime }
 
-                    for (i in 0..sortedTripStops.size) {
+                    for (i in sortedTripStops.indices) {
                         val difference: Long =
                             sortedTripStops[i].arrivalTime?.time!! - Date(Calendar.getInstance().timeInMillis).time
 
@@ -199,7 +199,7 @@ class StopsFragmentChild : Fragment() {
                                     .substring(11, 16)
                             })"
 
-                            arrivalTimeLabel.text = "Next Stop: $hours:${minutes % 60}"
+                            arrivalTimeLabel.text = "Next Stop: $minutes Minutes"
                             tripStopsPositions[stopItem.id] = i
                             break
                         }
