@@ -25,49 +25,72 @@ private const val TAG = "StopsFragment"
 private const val DAY_KEY = "day_key"
 private const val DIRECTIONS_KEY = "directions_key"
 
+//This fragment is a child fragment that will be displayed within the StopsFragmentParent's ViewPager.
+//It contains a recycler view that displays a list of bus stops and their associated timings
+
 class StopsFragmentChild : Fragment() {
 
+    //CLASS VARIABLES
+    //---------------
     private lateinit var stopsRecyclerView: RecyclerView
     private lateinit var adapter: StopAdapter
     private lateinit var directionFab: FloatingActionButton
     private lateinit var noRoutesTextView: TextView
-    private val sharedViewModel: SharedViewModel by activityViewModels()
     private var stopsVisibility: HashMap<Int, Int> = hashMapOf()
     private var tripStopsPositions: HashMap<Int, Int> = hashMapOf()
     private var day = 0
     private var directions: List<Int> = mutableListOf()
     private lateinit var routeStops: List<RouteStops>
 
+    //links the fragment to a viewModel shared with MainActivity and other fragments
+    private val sharedViewModel: SharedViewModel by activityViewModels()
+
+    //CREATING AND INITIALIZING THE FRAGMENT
+    //--------------------------------------
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        day = arguments?.getInt(DAY_KEY)!!
-        directions = arguments?.getIntegerArrayList(DIRECTIONS_KEY)!!
-        sharedViewModel.direction = directions[sharedViewModel.directionCount]
+        //retrieving the arguments from the bundle associated with DAY_KEY and DIRECTIONS_KEY keys
+        day = arguments?.getInt(DAY_KEY)!! //retrieves the dayId provided by the StopsParentFragment
+        directions = arguments?.getIntegerArrayList(DIRECTIONS_KEY)!! //retrieves the directions list provided by the StopsParentFragment
+
+        //sharedViewModel.direction represents the directionId that dictates the arrow direction of the directionFab FloatingActionButton.
+        //It is initially set to zero and acts as the index for the directions list
+        sharedViewModel.direction = directions[sharedViewModel.directionCount] //sets sharedViewModel.direction to the first directionId in the directions list
+
+        //NOTE: In the case that there are no bus stops for the selected route, the parent fragment passes a value of zero for the dayId
+        // ... and a directions list with a single value of zero. This results in day = 0 and sharedViewModel.direction = 0.
     }
 
+    //CREATING THE FRAGMENT VIEW
+    //--------------------------
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        //inflating the fragment_stops_child layout as the fragment view
         val view = inflater.inflate(R.layout.fragment_stops_child, container, false)
 
+        //referencing layout views using their resource ids
         stopsRecyclerView = view.findViewById(R.id.stops_recycler_view)
         directionFab = view.findViewById(R.id.fab)
         noRoutesTextView = view.findViewById(R.id.NoRouteLbl)
         stopsRecyclerView.layoutManager = LinearLayoutManager(context)
 
-        setDirectionImage()
-        setUpAppBar()
-
+        setDirectionImage() //update directionFab UI
+        setUpAppBar() //setup the AppBar UI
         setHasOptionsMenu(true) //allows this fragment to be able to add its own menu options to the Main Activity's app bar
 
         return view
     }
 
+    //UPDATING THE UI BASED ON NEW MODEL DATA
+    //---------------------------------------
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        //if there exists at least one bus stop for the selected route:
         if(day != 0 && sharedViewModel.direction != 0) {
             sharedViewModel.routeStopsListLiveData.observe(
                 viewLifecycleOwner,
@@ -78,7 +101,7 @@ class StopsFragmentChild : Fragment() {
                     })
                 }
             )
-        }else{
+        }else{ //if there are no bus stops for the selected route:
             stopsRecyclerView.visibility = View.GONE
             directionFab.visibility = View.GONE
             noRoutesTextView.visibility = View.VISIBLE
