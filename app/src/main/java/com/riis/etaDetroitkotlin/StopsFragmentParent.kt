@@ -3,9 +3,6 @@ package com.riis.etaDetroitkotlin
 import android.graphics.Color
 import android.os.Bundle
 import android.view.*
-import android.view.inputmethod.EditorInfo
-import android.widget.TextView
-import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -15,6 +12,7 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.riis.etaDetroitkotlin.model.DaysOfOperation
+import com.riis.etaDetroitkotlin.model.RouteStopInfo
 import com.riis.etaDetroitkotlin.model.RouteStops
 import org.w3c.dom.Text
 
@@ -61,22 +59,16 @@ class StopsFragmentParent : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewPager = view.findViewById(R.id.pager)
 
-        //Gett
-        sharedViewModel.daysOfOperationLiveData.observe(viewLifecycleOwner, {
-            days = it
+        sharedViewModel.routeStopsInfoListLiveData.observe( //we only observe routestops until days has been initialized
+            viewLifecycleOwner,
+            { routeStopsInfo ->
+                updateUI(routeStopsInfo)
+            })
 
-            sharedViewModel.routeStopsListLiveData.observe( //we only observe routestops until days has been initialized
-                viewLifecycleOwner,
-                { routeStops ->
-                    updateUI(routeStops)
-                })
-        })
 
     }
 
-
-
-        private fun updateUI(routeStops: List<RouteStops>) {
+    private fun updateUI(routeStops: List<RouteStopInfo>) {
 
         //set tab menu color
         appBarLayout.setBackgroundColor(Color.parseColor(sharedViewModel.currentCompany?.brandColor))
@@ -84,23 +76,23 @@ class StopsFragmentParent : Fragment() {
 
         if (routeStops.isNotEmpty()) {
             //get all possible values of directions and days
-            val days = routeStops.map { it.dayId }.distinct()
+            val daysLabel = routeStops.map { it.day }.distinct()
+            val daysNumeric = routeStops.map { it.dayId }.distinct()
             val directions: List<Int> = routeStops.map { it.directionId }.distinct()
             val dirArg: ArrayList<Int> = ArrayList(directions)
 
             // populate the swipeable fragments
             tabLayout.setSelectedTabIndicatorColor(Color.WHITE)
-            stopViewPageAdapter = StopViewPageAdapter(this, days, dirArg)
+            stopViewPageAdapter = StopViewPageAdapter(this, daysNumeric, dirArg)
             viewPager.adapter = stopViewPageAdapter
 
             //puts them in tabs and sets text of tab to the day of operation it filters by
             TabLayoutMediator(tabLayout, viewPager) { tab, position ->
-                val day =
-                    this.days.filter { it.id == days[position] } // since all id's are unique, this will return singleton
-                tab.text = day[0].day.uppercase() //access the string corresponding to day id
+                tab.text =
+                    daysLabel[position].uppercase() //access the string corresponding to day id
             }.attach()
 
-        }else{ //when route
+        } else { //when route
 
             val days: List<Int> = listOf(0)
             val dirArg: ArrayList<Int> = ArrayList(listOf(0))
@@ -111,7 +103,7 @@ class StopsFragmentParent : Fragment() {
             viewPager.adapter = stopViewPageAdapter
 
             //puts them in tabs and sets text of tab to the day of operation it filters by
-            TabLayoutMediator(tabLayout, viewPager){_,_->}.attach()
+            TabLayoutMediator(tabLayout, viewPager) { _, _ -> }.attach()
 
         }
     }
