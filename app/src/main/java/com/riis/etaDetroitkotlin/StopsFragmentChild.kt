@@ -2,12 +2,13 @@ package com.riis.etaDetroitkotlin
 
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.util.Log
+import android.view.*
+import android.view.inputmethod.EditorInfo
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.graphics.toColorInt
@@ -58,6 +59,8 @@ class StopsFragmentChild : Fragment() {
         setDirectionImage()
         setUpAppBar()
 
+        setHasOptionsMenu(true) //allows this fragment to be able to add its own menu options to the Main Activity's app bar
+
         return view
     }
 
@@ -96,6 +99,39 @@ class StopsFragmentChild : Fragment() {
             setDirectionImage()
             updateUI(this.routeStopsInfo.filter { it.directionId == sharedViewModel.direction && it.dayId == day })
         }
+    }
+
+    //ADDING MENU OPTIONS TO THE APP BAR PROVIDED BY MAIN ACTIVITY
+    //------------------------------------------------------------
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(
+            R.menu.search_menu,
+            menu
+        ) //search_menu.xml displays a search icon (magnifying glass) in the top right of the app bar
+
+        //creating and configuring the search bar
+        val searchIcon = menu.findItem(R.id.search_icon)
+        val searchView =
+            searchIcon?.actionView as SearchView //SearchView widget implements an action view for entering search queries
+        searchView.imeOptions =
+            EditorInfo.IME_ACTION_DONE //replaces the user's carriage return button in their on-screen keyboard
+        // with a "Done" action button (may appear as a check mark)
+
+        //handling interactions with the search bar
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            //when user clicks submit button after entering query...
+            override fun onQueryTextSubmit(s: String): Boolean {
+                return false //return false to let the SearchView handle the submission by launching any associated intent
+            }
+
+            //when the query text is changed by the user
+            override fun onQueryTextChange(s: String): Boolean {
+                //adapter?.filter?.filter(s)
+                Log.d(TAG, s)
+                return false
+            }
+        })
+
     }
 
 
