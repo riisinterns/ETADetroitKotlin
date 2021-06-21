@@ -296,7 +296,7 @@ class StopsFragmentChild : Fragment() {
 
             //Obtaining an updated list of TripStops objects from the database that are associated with the itemView's stopId, and update its UI accordingly.
             // A TripStop object stores an arrival time for a particular bus stop (stopId).
-            sharedViewModel.getArrivalTimes(routeStopInfoItem.stopId).observe(
+            sharedViewModel.getArrivalTimes(routeStopInfoItem.routeId, routeStopInfoItem.directionId, routeStopInfoItem.dayId, routeStopInfoItem.stopId).observe(
                 viewLifecycleOwner,
                 { tripStop ->
                     //sorting the list of TripStops objects using their arrivalTime attribute (Date object), from earliest to latest
@@ -359,7 +359,7 @@ class StopsFragmentChild : Fragment() {
         //setting the bus arrival times that are displayed in an itemView's dynamicLinearLayout
         fun setArrivalTimes() {
             //Obtaining an updated list of TripStops objects from the database that are associated with the itemView's stopId
-            sharedViewModel.getArrivalTimes(routeStopInfoItem.stopId).observe(
+            sharedViewModel.getArrivalTimes(routeStopInfoItem.routeId, routeStopInfoItem.directionId, routeStopInfoItem.dayId, routeStopInfoItem.stopId).observe(
                 viewLifecycleOwner,
                 { tripStop ->
                     if (tripStop.size > 1) {
@@ -465,6 +465,9 @@ class StopsFragmentChild : Fragment() {
     //WHEN THE FRAGMENT IS NO LONGER IN USE
     override fun onDestroy() {
         super.onDestroy()
-        searchView.isIconified = false //close the searchView
+        if (this::searchView.isInitialized){
+            searchView.isIconified = false //close the searchView if not already closed
+        }
+
     }
 }
