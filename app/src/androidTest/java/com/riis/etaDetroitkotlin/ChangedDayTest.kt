@@ -20,6 +20,7 @@ import org.junit.runner.RunWith
  * selected by default, then it clicks each tab and verifies that they are selected.
  *
  *  Created by csollars 3/4/19
+ *  Updated by josebgs on 6/21/21
  *
  */
 
@@ -28,7 +29,7 @@ import org.junit.runner.RunWith
 class ChangeDayTest {
 
     @get:Rule
-    var mActivityTestRule: ActivityScenarioRule<MainActivity> =
+    var mActivityScenarioRule: ActivityScenarioRule<MainActivity> =
         ActivityScenarioRule(MainActivity::class.java)
 
     @Test
