@@ -1,7 +1,9 @@
- package com.riis.etaDetroitkotlin
+package com.riis.etaDetroitkotlin
 
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.*
 import android.view.inputmethod.EditorInfo
@@ -11,14 +13,22 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.graphics.toColorInt
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.riis.etaDetroitkotlin.model.RouteStops
+import com.riis.etaDetroitkotlin.model.Routes
+import com.riis.etaDetroitkotlin.model.Stops
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import com.riis.etaDetroitkotlin.model.RouteStopInfo
 import java.util.*
 
@@ -40,8 +50,8 @@ class StopsFragmentChild : Fragment() {
     private lateinit var noRoutesTextView: TextView
     private var stopsVisibility: HashMap<Int, Int> = hashMapOf()
     private var tripStopsPositions: HashMap<Int, Int> = hashMapOf()
-    private var day = 0
-    private var directions: List<Int> = mutableListOf()
+    private var day: Int? = 0
+    private var directions: List<Int>? = mutableListOf()
     private lateinit var routeStopsInfo: List<RouteStopInfo>
 
     //links the fragment to a viewModel shared with MainActivity and other fragments
@@ -53,14 +63,12 @@ class StopsFragmentChild : Fragment() {
         super.onCreate(savedInstanceState)
 
         //retrieving the arguments from the bundle associated with the keys DAY_KEY and DIRECTIONS_KEY
-        day = arguments?.getInt(DAY_KEY)!! //retrieves the dayId provided by the StopsParentFragment
-        directions =
-            arguments?.getIntegerArrayList(DIRECTIONS_KEY)!! //retrieves the list of directionIds provided by the StopsParentFragment
+        day = arguments?.getInt(DAY_KEY)
+        directions = arguments?.getIntegerArrayList(DIRECTIONS_KEY)
 
         //sharedViewModel.direction represents the directionId that dictates the arrow direction of the directionFab FloatingActionButton.
         //It is initially set to zero and acts as the index for the directions list
-        sharedViewModel.direction =
-            directions[sharedViewModel.directionCount] //sets sharedViewModel.direction to the first directionId in the directions list
+        sharedViewModel.direction = directions?.get(sharedViewModel.directionCount) ?: 0
 
         //NOTE: In the case that there are no bus stops for the selected route, the parent fragment passes a value of zero for the dayId
         // ... and a directions list with a single value of zero. This results in day = 0 and sharedViewModel.direction = 0.
@@ -127,16 +135,17 @@ class StopsFragmentChild : Fragment() {
     //---------------------------------
     override fun onStart() {
         super.onStart()
-
         directionFab.setOnClickListener { //When the directionFab floating action button is clicked:
+            val listExhausted = sharedViewModel.directionCount + 1 < (directions?.size ?: -1)
 
             //go to next direction in the directions list if the list hasn't been exhausted. Then save the directionId to the sharedViewModel
-            sharedViewModel.direction = if (sharedViewModel.directionCount + 1 < directions.size) {
-                directions[++sharedViewModel.directionCount]
+            sharedViewModel.direction = if (listExhausted) {
+                directions?.get(++sharedViewModel.directionCount) ?: 0
             } else {
                 //if the directions list has been exhausted, go back to first direction in the list and save its directionId to the sharedViewModel
-                sharedViewModel.directionCount = 0
-                directions[sharedViewModel.directionCount]
+                sharedViewModel.directionCount =
+                    0 //if list has been exhausted go back to first element
+                directions?.get(sharedViewModel.directionCount) ?: 0
             }
             setDirectionImage() //update the directionFab floating action button UI
 
@@ -251,6 +260,8 @@ class StopsFragmentChild : Fragment() {
         private var dynamicLinearLayout =
             view.findViewById(R.id.dynamic_linear_layout) as LinearLayout
 
+        private var staticConstraintLayout: ConstraintLayout = view.findViewById(R.id.static_constraint_layout)
+
         //initializing the viewHolder
         init {
             itemView.setOnClickListener(this) //setting a click listener on each itemView
@@ -285,7 +296,7 @@ class StopsFragmentChild : Fragment() {
 
             //Obtaining an updated list of TripStops objects from the database that are associated with the itemView's stopId, and update its UI accordingly.
             // A TripStop object stores an arrival time for a particular bus stop (stopId).
-            sharedViewModel.getTripStops(routeStopInfoItem.stopId).observe(
+            sharedViewModel.getArrivalTimes(routeStopInfoItem.stopId).observe(
                 viewLifecycleOwner,
                 { tripStop ->
                     //sorting the list of TripStops objects using their arrivalTime attribute (Date object), from earliest to latest
@@ -348,7 +359,7 @@ class StopsFragmentChild : Fragment() {
         //setting the bus arrival times that are displayed in an itemView's dynamicLinearLayout
         fun setArrivalTimes() {
             //Obtaining an updated list of TripStops objects from the database that are associated with the itemView's stopId
-            sharedViewModel.getTripStops(routeStopInfoItem.stopId).observe(
+            sharedViewModel.getArrivalTimes(routeStopInfoItem.stopId).observe(
                 viewLifecycleOwner,
                 { tripStop ->
                     if (tripStop.size > 1) {
@@ -376,7 +387,6 @@ class StopsFragmentChild : Fragment() {
                 }
             )
         }
-
     }
 
     private inner class StopAdapter(var routeStopInfoList: List<RouteStopInfo>)//accepts a list of RouteStops objects from model layer

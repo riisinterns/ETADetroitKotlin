@@ -10,7 +10,7 @@ android {
     buildToolsVersion "30.0.3"
 
     defaultConfig {
-        applicationId "com.riis.horoscope"
+        applicationId "com.riis.etaDetroitkotlin"
         minSdkVersion 22
         targetSdkVersion 30
         versionCode 1
@@ -65,20 +65,31 @@ dependencies {
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.coordinatorlayout:coordinatorlayout:1.1.0'
     implementation 'androidx.viewpager2:viewpager2:1.0.0'
+    implementation 'com.android.volley:volley:1.2.0'
+
+    implementation 'com.google.maps.android:android-maps-utils:2.2.3'
+    implementation 'com.google.android.gms:play-services-maps:17.0.1'
+    implementation 'com.google.android.libraries.places:places:2.4.0'
+
+
+    implementation 'com.squareup.okhttp3:okhttp:4.9.0'
+    implementation 'com.google.code.gson:gson:2.8.6'
 
 
     kapt 'androidx.room:room-compiler:2.4.0-alpha02'
 
+    // Dependencies for local unit tests
+    testImplementation "org.hamcrest:hamcrest-all:$hamcrestVersion"
+    testImplementation "junit:junit:$junitVersion"
 
-    testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
-    implementation 'com.google.maps.android:android-maps-utils:2.2.3'
-    implementation 'com.google.android.gms:play-services-maps:17.0.1'
+    // AndroidX Test - Instrumented testing
+    androidTestImplementation "androidx.test.ext:junit:$androidXTestExtKotlinRunnerVersion"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espressoVersion"
 
-    implementation "com.google.android.material:material:1.4.0-rc01"
-    implementation 'com.google.android.libraries.places:places:2.4.0'
+    // AndroidX Test - JVM testing
+    testImplementation "androidx.test.ext:junit-ktx:$androidXTestExtKotlinRunnerVersion"
+    testImplementation "androidx.test:core-ktx:$androidXTestCoreVersion"
+    testImplementation "org.robolectric:robolectric:$robolectricVersion"
 
-    implementation("com.squareup.okhttp3:okhttp:4.9.0")
-    implementation 'com.google.code.gson:gson:2.8.6'
+    testImplementation "androidx.arch.core:core-testing:$archTestingVersion"
 }

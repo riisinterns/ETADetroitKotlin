@@ -26,7 +26,7 @@ import com.riis.etaDetroitkotlin.R
 import com.riis.etaDetroitkotlin.SharedViewModel
 import com.riis.etaDetroitkotlin.model.Company
 
-private val TAG = "DEBUG"
+private const val TAG = "DEBUG"
 
 
 private val checkBoxCompanyNames: MutableMap<Int, String> = HashMap()
@@ -106,8 +106,7 @@ class RouteMapFragment : Fragment(), View.OnClickListener {
         qlineCheckbox.setOnClickListener(this)
         peopleMoverCheckbox.setOnClickListener(this)
 
-        dialog = RouteLoadingDialog(activity as Activity)
-
+        dialog = RouteLoadingDialog()
 
         sharedViewModel.companyListLiveData.observe(
             viewLifecycleOwner,
@@ -137,7 +136,7 @@ class RouteMapFragment : Fragment(), View.OnClickListener {
 
     override fun onClick(v: View?) {
         val layer = busRoutes[checkBoxCompanyNames[v?.id]]
-        val box = v?.findViewById<CheckBox>(v!!.id)
+        val box = v?.findViewById<CheckBox>(v.id)
 
         if (box != null) {
             if (box.isChecked) {
