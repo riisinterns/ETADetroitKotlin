@@ -33,8 +33,12 @@ class SharedViewModel : ViewModel() {
             busRepository.getStopsInfoOnRoute(route.id)
         }
 
-    fun getTripStops(stopId: Int): LiveData<List<TripStops>> {
-        return busRepository.getTripStops(stopId)
+//    fun getTripStops(stopId: Int): LiveData<List<TripStops>> {
+//        return busRepository.getTripStops(stopId)
+//    }
+
+    fun getArrivalTimes(routeId: Int, directionId: Int, dayId: Int, stopId: Int): LiveData<List<TripStops>> {
+       return busRepository.getArrivalTimes(routeId, directionId, dayId, stopId)
     }
 
     val currentCompany: Company?

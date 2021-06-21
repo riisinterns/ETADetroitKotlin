@@ -217,6 +217,14 @@ class StopsFragmentChild : Fragment() {
         //binding the viewHolder's Stop object to date of another from the model layer
         fun bind(routeStopInfo: RouteStopInfo) {
             routeStopInfoItem = routeStopInfo
+//            sharedViewModel.getArrivalTimes(routeStopInfoItem.routeId, routeStopInfoItem.directionId, routeStopInfoItem.dayId, routeStopInfoItem.stopId).observe(
+//                viewLifecycleOwner,
+//                { tripStop ->
+//
+//                    Log.d(TAG, tripStop.toString())
+//
+//                }
+//            )
             stopName.text = routeStopInfoItem.name
             allArrivalTimes.text = null
 
@@ -230,7 +238,7 @@ class StopsFragmentChild : Fragment() {
                     setArrivalTimes()
                 }
 
-            sharedViewModel.getTripStops(routeStopInfoItem.stopId).observe(
+            sharedViewModel.getArrivalTimes(routeStopInfoItem.routeId, routeStopInfoItem.directionId, routeStopInfoItem.dayId, routeStopInfoItem.stopId).observe(
                 viewLifecycleOwner,
                 { tripStop ->
                     val sortedTripStops = tripStop.sortedBy { it.arrivalTime }
@@ -275,7 +283,7 @@ class StopsFragmentChild : Fragment() {
         }
 
         fun setArrivalTimes() {
-            sharedViewModel.getTripStops(routeStopInfoItem.stopId).observe(
+            sharedViewModel.getArrivalTimes(routeStopInfoItem.routeId, routeStopInfoItem.directionId, routeStopInfoItem.dayId, routeStopInfoItem.stopId).observe(
                 viewLifecycleOwner,
                 { tripStop ->
                     if (tripStop.size > 1) {
