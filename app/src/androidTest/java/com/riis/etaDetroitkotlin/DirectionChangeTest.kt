@@ -47,13 +47,14 @@ class DirectionChangeTest {
             .perform(click())
 
         // locate the first stop
-        onView(allOf(withIndex(withId(R.id.stop_name), 0)))
+        var stop = onView(allOf(withIndex(withId(R.id.stop_name), 0)))
             .check(matches(isDisplayed()))
 
         // click the arrow icon
         onView(allOf(withId(R.id.fab), isDisplayed()))
             .perform(click())
-            .check(doesNotExist())
+
+        stop.check(doesNotExist())
         // verify the first stop is no longer visible on the screen
 
         pressBack()
@@ -66,13 +67,13 @@ class DirectionChangeTest {
             .perform(click())
 
         // locate the first stop
-        onView(allOf(withIndex(withId(R.id.stop_name), 0)))
+        stop = onView(allOf(withIndex(withId(R.id.stop_name), 0)))
             .check(matches(isDisplayed()))
 
         // click the arrow icon
         onView(allOf(withId(R.id.fab), isDisplayed()))
             .perform(click())
-            .check(doesNotExist())
+        stop.check(doesNotExist())
         // verify the first stop is no longer visible on screen
 
 
@@ -85,17 +86,17 @@ class DirectionChangeTest {
         onView(allOf(withId(R.id.route_number), withText("ROUTE 461")))
             .perform(click())
 
-        onView(allOf(withIndex(withId(R.id.stop_name), 0)))
+        stop = onView(allOf(withIndex(withId(R.id.stop_name), 0)))
             .check(matches(isDisplayed()))
 
         onView(allOf(withId(R.id.fab), isDisplayed()))
             .perform(click())
 
-            .check(doesNotExist())
+        stop.check(doesNotExist())
     }
 
-    fun withIndex(matcher: Matcher<View?>, index: Int): Matcher<View?> {
-        return object : TypeSafeMatcher<View?>() {
+    fun withIndex(matcher: Matcher<View>, index: Int): Matcher<View> {
+        return object : TypeSafeMatcher<View>() {
             var currentIndex = 0
             override fun describeTo(description: Description) {
                 description.appendText("with index: ")
@@ -103,7 +104,7 @@ class DirectionChangeTest {
                 matcher.describeTo(description)
             }
 
-            override fun matchesSafely(view: View?): Boolean {
+            override fun matchesSafely(view: View): Boolean {
                 return matcher.matches(view) && currentIndex++ == index
             }
         }
