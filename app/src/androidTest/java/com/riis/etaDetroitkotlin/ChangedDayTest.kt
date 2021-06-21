@@ -86,31 +86,31 @@ class ChangeDayTest {
 
         // verify the weekday tab is selected by default
         onView(allOf(withText("WEEKDAY"), isDisplayed()))
-        .check(matches(isSelected()))
+            .check(matches(isSelected()))
 
         // click saturday tab
         onView(allOf(withText("SATURDAY"), isDisplayed()))
-        .perform(click())
+            .perform(click())
 
         // verify saturday tab is selected
-       onView(allOf(withText("SATURDAY"), isDisplayed()))
-        .check(matches(isSelected()))
+        onView(allOf(withText("SATURDAY"), isDisplayed()))
+            .check(matches(isSelected()))
 
         // click sunday tab
         onView(allOf(withText("SUNDAY"), isDisplayed()))
-        .perform(click())
+            .perform(click())
 
         // verify sunday tab is selected
         onView(allOf(withText("SUNDAY"), isDisplayed()))
-        .check(matches(isSelected()))
+            .check(matches(isSelected()))
 
         // click weekday tab
         onView(allOf(withText("WEEKDAY"), isDisplayed()))
-        .perform(click())
+            .perform(click())
 
         // verify weekday tab is selected
         onView(allOf(withText("WEEKDAY"), isDisplayed()))
-        .check(matches(isSelected()))
+            .check(matches(isSelected()))
 
         // navigate back to homepage
         pressBack()
@@ -118,38 +118,38 @@ class ChangeDayTest {
 
         // click smart bus
         onView(allOf(withId(R.id.company_name), withText("FAST"), isDisplayed()))
-        .perform(click())
+            .perform(click())
 
         // click route 125
         onView(allOf(withId(R.id.route_number), withText("ROUTE 461")))
-        .perform(click())
+            .perform(click())
 
         // verify the weekday tab is selected by default
         onView(allOf(withText("WEEKDAY"), isDisplayed()))
-        .check(matches(isSelected()))
+            .check(matches(isSelected()))
 
         // click saturday tab
         onView(allOf(withText("SATURDAY"), isDisplayed()))
-        .perform(click())
+            .perform(click())
 
         // verify saturday tab is selected
         onView(allOf(withText("SATURDAY"), isDisplayed()))
-        .check(matches(isSelected()))
+            .check(matches(isSelected()))
 
         // click sunday tab
         onView(allOf(withText("SUNDAY"), isDisplayed()))
-        .perform(click())
+            .perform(click())
 
         // verify sunday tab is selected
         onView(allOf(withText("SUNDAY"), isDisplayed()))
-        .check(matches(isSelected()))
+            .check(matches(isSelected()))
 
         // click weekday tab
         onView(allOf(withText("WEEKDAY"), isDisplayed()))
-        .perform(click())
+            .perform(click())
 
         // verify weekday tab is selected
         onView(allOf(withText("WEEKDAY"), isDisplayed()))
-        .check(matches(isSelected()))
+            .check(matches(isSelected()))
     }
 }
