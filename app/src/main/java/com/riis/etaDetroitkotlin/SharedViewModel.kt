@@ -28,7 +28,7 @@ class SharedViewModel : ViewModel() {
         }
 
     var routeStopsInfoListLiveData: LiveData<List<RouteStopInfo>> =
-        //switches the RouteStops (observed in StopFragment) based of the Route that gets saved
+        //switches the RouteStopsInfo (observed in StopFragmentChild) based of the Route that gets saved
         Transformations.switchMap(routeContainer) { route ->
             busRepository.getStopsInfoOnRoute(route.id)
         }
