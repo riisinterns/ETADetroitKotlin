@@ -33,16 +33,16 @@ class StopsFragmentChild : Fragment() {
     private val sharedViewModel: SharedViewModel by activityViewModels()
     private var stopsVisibility: HashMap<Int, Int> = hashMapOf()
     private var tripStopsPositions: HashMap<Int, Int> = hashMapOf()
-    private var day = 0
-    private var directions: List<Int> = mutableListOf()
+    private var day: Int? = 0
+    private var directions: List<Int>? = mutableListOf()
     private lateinit var routeStopsInfo: List<RouteStopInfo>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        day = arguments?.getInt(DAY_KEY)!!
-        directions = arguments?.getIntegerArrayList(DIRECTIONS_KEY)!!
-        sharedViewModel.direction = directions[sharedViewModel.directionCount]
+        day = arguments?.getInt(DAY_KEY)
+        directions = arguments?.getIntegerArrayList(DIRECTIONS_KEY)
+        sharedViewModel.direction = directions?.get(sharedViewModel.directionCount) ?: 0
     }
 
     override fun onCreateView(
@@ -87,13 +87,14 @@ class StopsFragmentChild : Fragment() {
     override fun onStart() {
         super.onStart()
         directionFab.setOnClickListener {
+            val listExhausted = sharedViewModel.directionCount + 1 < (directions?.size ?: -1)
 
-            sharedViewModel.direction = if (sharedViewModel.directionCount + 1 < directions.size) {
-                directions[++sharedViewModel.directionCount] //go to next direction in list if list hasn't been exhausted
+            sharedViewModel.direction = if (listExhausted) {
+                directions?.get(++sharedViewModel.directionCount) ?: 0//go to next direction in list if list hasn't been exhausted
             } else {
                 sharedViewModel.directionCount =
                     0 //if list has been exhausted go back to first element
-                directions[sharedViewModel.directionCount]
+                directions?.get(sharedViewModel.directionCount) ?: 0
             }
 
             setDirectionImage()
@@ -285,7 +286,7 @@ class StopsFragmentChild : Fragment() {
 
     }
 
-    private inner class StopAdapter(var routeStopInfoList: List<RouteStopInfo>)//accepts a list of RouteStops objects from model layer
+    private inner class StopAdapter(var routeStopInfoList: List<RouteStopInfo>)//accepts a list of RouteStopInfo objects from model layer
         : RecyclerView.Adapter<StopsFragmentChild.StopHolder>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int)
