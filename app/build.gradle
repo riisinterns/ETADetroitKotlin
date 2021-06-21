@@ -10,7 +10,7 @@ android {
     buildToolsVersion "30.0.3"
 
     defaultConfig {
-        applicationId "com.riis.horoscope"
+        applicationId "com.riis.etaDetroitkotlin"
         minSdkVersion 22
         targetSdkVersion 30
         versionCode 1
