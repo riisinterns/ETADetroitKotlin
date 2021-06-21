@@ -9,10 +9,10 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
+import org.hamcrest.Matchers.allOf
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.hamcrest.Matchers.allOf
 
 
 /**
@@ -22,9 +22,11 @@ import org.hamcrest.Matchers.allOf
  *  Created by csollars 3/4/19
  *
  */
-@LargeTest
+
 @RunWith(AndroidJUnit4::class)
+@LargeTest
 class ChangeDayTest {
+
     @get:Rule
     var mActivityTestRule: ActivityScenarioRule<MainActivity> =
         ActivityScenarioRule(MainActivity::class.java)
@@ -38,7 +40,7 @@ class ChangeDayTest {
 
 
         // click route 125
-        onView(allOf(withId(R.id.route_number), withText("125")))
+        onView(allOf(withId(R.id.route_number), withText("ROUTE 125")))
             .perform(click())
 
         // verify the weekday tab is selected by default
@@ -78,7 +80,7 @@ class ChangeDayTest {
             .perform(click())
 
         // click route 001
-        onView(allOf(withId(R.id.route_number), withText("1")))
+        onView(allOf(withId(R.id.route_number), withText("ROUTE 1")))
             .perform(click())
 
         // verify the weekday tab is selected by default
@@ -118,7 +120,7 @@ class ChangeDayTest {
         .perform(click())
 
         // click route 125
-        onView(allOf(withId(R.id.route_number), withText("461")))
+        onView(allOf(withId(R.id.route_number), withText("ROUTE 461")))
         .perform(click())
 
         // verify the weekday tab is selected by default
