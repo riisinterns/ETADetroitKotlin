@@ -20,8 +20,9 @@ class BusRepository private constructor(context: Context) {
     fun getCompanies(): LiveData<List<Company>> = busDao.getCompanies()
     fun getRoutes(companyId: Int): LiveData<List<Routes>> = busDao.getRoutes(companyId)
     fun getStopsInfoOnRoute(routeId: Int): LiveData<List<RouteStopInfo>> = busDao.getStopsInfoOnRoute(routeId)
-    fun getTripStops(stopId: Int): LiveData<List<TripStops>> = busDao.getTripStops(stopId)
-    fun getTrips(tripId: Int): LiveData<Trips> = busDao.getTrips(tripId)
+//    fun getTripStops(stopId: Int): LiveData<List<TripStops>> = busDao.getTripStops(stopId)
+//    fun getTrips(tripId: Int): LiveData<Trips> = busDao.getTrips(tripId)
+    fun getArrivalTimes(routeId: Int, directionId: Int, dayId: Int, stopId: Int): LiveData<List<TripStops>> = busDao.getArrivalTimes(routeId, directionId, dayId, stopId)
 
     companion object {
         private var INSTANCE: BusRepository? = null
