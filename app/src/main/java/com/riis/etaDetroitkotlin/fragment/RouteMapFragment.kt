@@ -14,6 +14,7 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -31,7 +32,7 @@ private const val TAG = "DEBUG"
 
 private val checkBoxCompanyNames: MutableMap<Int, String> = HashMap()
 private var busRoutes: MutableMap<String, GeoJsonLayer> = HashMap()
-private lateinit var dialog: RouteLoadingDialog
+//private lateinit var dialog: RouteLoadingDialog
 
 class RouteMapFragment : Fragment(), View.OnClickListener {
 
@@ -106,7 +107,7 @@ class RouteMapFragment : Fragment(), View.OnClickListener {
         qlineCheckbox.setOnClickListener(this)
         peopleMoverCheckbox.setOnClickListener(this)
 
-        dialog = RouteLoadingDialog()
+        //dialog = RouteLoadingDialog()
 
         sharedViewModel.companyListLiveData.observe(
             viewLifecycleOwner,
@@ -124,7 +125,7 @@ class RouteMapFragment : Fragment(), View.OnClickListener {
         Runnable {
         override fun run() {
             layer.addLayerToMap()
-            dialog.dismissDialog()
+            //dialog.dismissDialog()
         }
     }
 
@@ -140,7 +141,11 @@ class RouteMapFragment : Fragment(), View.OnClickListener {
 
         if (box != null) {
             if (box.isChecked) {
-                checkBoxCompanyNames[v.id]?.let { dialog.startLoadingDialog(it) }
+                checkBoxCompanyNames[v.id]?.let {
+
+                    val action = RouteMapFragmentDirections.routeMapToRouteLoading(route=it)
+                    this.findNavController().navigate(action)
+                    }
                 showLayer(layer!!)
             } else {
                 layer!!.removeLayerFromMap()

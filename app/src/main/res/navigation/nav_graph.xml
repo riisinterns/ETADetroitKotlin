@@ -41,6 +41,10 @@
             android:label="Route Map"
             tools:layout="@layout/fragment_route_map">
 
+        <action
+            android:id="@+id/routeMap_to_routeLoading"
+            app:destination="@id/routeLoading_dest" />
+
     </fragment>
 
     <!-- ======================= RoutePlannerFragment ========================= -->
@@ -52,10 +56,23 @@
 
     </fragment>
 
-    <!-- ========================= StopsFragmentParent ============================== -->
+    <!-- ======================= StopsFragmentParent ========================== -->
     <fragment
             android:id="@+id/stopsFragmentParent"
             android:name="com.riis.etaDetroitkotlin.StopsFragmentParent"
             android:label="StopsFragmentParent" />
+
+    <!-- ======================== RouteLoadingDialog ========================== -->
+    <dialog
+        android:id="@+id/routeLoading_dest"
+        android:name="com.riis.etaDetroitkotlin.fragment.RouteLoadingDialog"
+        android:label="RouteLoadingDialog">
+
+        <argument
+            android:name="route"
+            app:argType="string" />
+
+    </dialog>
+
 
 </navigation>
