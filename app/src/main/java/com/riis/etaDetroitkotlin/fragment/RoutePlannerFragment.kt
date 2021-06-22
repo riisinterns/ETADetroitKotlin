@@ -39,9 +39,29 @@ import kotlin.collections.ArrayList
 
 class DirectionResponse(val routes: List<GeneratedRoutes>, val status: String)
 class GeneratedRoutes(val copyrights: String, val fare: TextData? = null, val legs: List<Legs>)
-class Legs(val arrival_time: TextData, val departure_time: TextData, val distance: TextData, val duration: TextData, val steps: List<Steps>)
-class Steps(val distance: TextData, val duration: TextData, val html_instructions: String, val travel_mode: String, val transit_details: TransitDetails? = null)
-class TransitDetails(val departure_time: TextData, val arrival_time: TextData, val num_stops: String, val line: Line)
+class Legs(
+    val arrival_time: TextData,
+    val departure_time: TextData,
+    val distance: TextData,
+    val duration: TextData,
+    val steps: List<Steps>
+)
+
+class Steps(
+    val distance: TextData,
+    val duration: TextData,
+    val html_instructions: String,
+    val travel_mode: String,
+    val transit_details: TransitDetails? = null
+)
+
+class TransitDetails(
+    val departure_time: TextData,
+    val arrival_time: TextData,
+    val num_stops: String,
+    val line: Line
+)
+
 class Line(val short_name: String, val agencies: List<Agency>)
 class Agency(val name: String, val phone: String, val url: String)
 class TextData(val text: String);
@@ -94,7 +114,12 @@ class RoutePlannerFragment : Fragment() {
             val time = "$currentDate $currentTime"
 //            Log.i(TAG, "$time ----> ${milliseconds(time)}")
 
-            getApiDirectionData(departureLocationQuery.text.toString(), arrivalLocationQuery.text.toString(), milliseconds(time).toString(), apiKey)
+            getApiDirectionData(
+                departureLocationQuery.text.toString(),
+                arrivalLocationQuery.text.toString(),
+                milliseconds(time).toString(),
+                apiKey
+            )
             routesRecyclerView?.layoutManager = LinearLayoutManager(context)
 
         }
@@ -103,7 +128,10 @@ class RoutePlannerFragment : Fragment() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 //if there is some text in the field do this
-                if (s?.isNotEmpty() == true) autocompleteLocation(s.toString(), departureLocationQuery)
+                if (s?.isNotEmpty() == true) autocompleteLocation(
+                    s.toString(),
+                    departureLocationQuery
+                )
             }
 
             override fun afterTextChanged(s: Editable?) {}
@@ -114,7 +142,10 @@ class RoutePlannerFragment : Fragment() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 //if there is some text in the field do this
-                if (s?.isNotEmpty() == true) autocompleteLocation(s.toString(), arrivalLocationQuery)
+                if (s?.isNotEmpty() == true) autocompleteLocation(
+                    s.toString(),
+                    arrivalLocationQuery
+                )
             }
 
             override fun afterTextChanged(s: Editable?) {}
@@ -161,13 +192,15 @@ class RoutePlannerFragment : Fragment() {
                 val directionResponse = gson.fromJson(body, DirectionResponse::class.java)
 
 
-                activity?.runOnUiThread{
-                    if(directionResponse.status == "OK"){
+                activity?.runOnUiThread {
+                    if (directionResponse.status == "OK") {
                         copyrightTextView.setTextColor(Color.BLACK)
-                        copyrightTextView.text = directionResponse.routes[0].copyrights // required by Google to use their api
+                        copyrightTextView.text =
+                            directionResponse.routes[0].copyrights // required by Google to use their api
                         routesRecyclerView?.adapter = RouteResultAdapter(directionResponse)
-                    }else{
-                        copyrightTextView.text = "Sorry, we could not generate any transit routes for the information given"
+                    } else {
+                        copyrightTextView.text =
+                            "Sorry, we could not generate any transit routes for the information given"
                         copyrightTextView.setTextColor(Color.RED)
                     }
                 }

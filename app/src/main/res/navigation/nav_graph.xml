@@ -42,8 +42,8 @@
             tools:layout="@layout/fragment_route_map">
 
         <action
-            android:id="@+id/routeMap_to_routeLoading"
-            app:destination="@id/routeLoading_dest" />
+                android:id="@+id/routeMap_to_routeLoading"
+                app:destination="@id/routeLoading_dest" />
 
     </fragment>
 
@@ -64,13 +64,13 @@
 
     <!-- ======================== RouteLoadingDialog ========================== -->
     <dialog
-        android:id="@+id/routeLoading_dest"
-        android:name="com.riis.etaDetroitkotlin.fragment.RouteLoadingDialog"
-        android:label="RouteLoadingDialog">
+            android:id="@+id/routeLoading_dest"
+            android:name="com.riis.etaDetroitkotlin.fragment.RouteLoadingDialog"
+            android:label="RouteLoadingDialog">
 
         <argument
-            android:name="route"
-            app:argType="string" />
+                android:name="route"
+                app:argType="string" />
 
     </dialog>
 

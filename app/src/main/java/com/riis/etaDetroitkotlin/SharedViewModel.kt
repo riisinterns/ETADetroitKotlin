@@ -5,7 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.riis.etaDetroitkotlin.database.BusRepository
-import com.riis.etaDetroitkotlin.model.*
+import com.riis.etaDetroitkotlin.model.Company
+import com.riis.etaDetroitkotlin.model.RouteStopInfo
+import com.riis.etaDetroitkotlin.model.Routes
+import com.riis.etaDetroitkotlin.model.TripStops
 
 class SharedViewModel : ViewModel() {
 
@@ -37,8 +40,13 @@ class SharedViewModel : ViewModel() {
 //        return busRepository.getTripStops(stopId)
 //    }
 
-    fun getArrivalTimes(routeId: Int, directionId: Int, dayId: Int, stopId: Int): LiveData<List<TripStops>> {
-       return busRepository.getArrivalTimes(routeId, directionId, dayId, stopId)
+    fun getArrivalTimes(
+        routeId: Int,
+        directionId: Int,
+        dayId: Int,
+        stopId: Int
+    ): LiveData<List<TripStops>> {
+        return busRepository.getArrivalTimes(routeId, directionId, dayId, stopId)
     }
 
     val currentCompany: Company?

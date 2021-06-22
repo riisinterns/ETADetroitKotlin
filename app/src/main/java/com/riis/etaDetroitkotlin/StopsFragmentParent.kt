@@ -2,7 +2,9 @@ package com.riis.etaDetroitkotlin
 
 import android.graphics.Color
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -10,7 +12,6 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import com.riis.etaDetroitkotlin.model.DaysOfOperation
 import com.riis.etaDetroitkotlin.model.RouteStopInfo
 
 
@@ -80,14 +81,22 @@ class StopsFragmentParent : Fragment() {
               ... in the database, we need to filter through the provided list of RouteStopInfo objects and create lists of all the
               ... days, dayIds, and directionIds that are actually possible for this route.
              */
-            val daysLabel = routeStops.map { it.day }.distinct() //gets a list of unique (remove repetitions) names
-            val daysNumeric = routeStops.map { it.dayId }.distinct() // //gets a list of unique dayIds
-            val directions: List<Int> = routeStops.map { it.directionId }.distinct() //gets a list of unique directionIds
-            val dirArg: ArrayList<Int> = ArrayList(directions) //converting the directions list to an ArrayList
+            val daysLabel = routeStops.map { it.day }
+                .distinct() //gets a list of unique (remove repetitions) names
+            val daysNumeric =
+                routeStops.map { it.dayId }.distinct() // //gets a list of unique dayIds
+            val directions: List<Int> =
+                routeStops.map { it.directionId }.distinct() //gets a list of unique directionIds
+            val dirArg: ArrayList<Int> =
+                ArrayList(directions) //converting the directions list to an ArrayList
 
             // setting up the tab layout and viewPager
             tabLayout.setSelectedTabIndicatorColor(Color.WHITE) //sets the color of the thin bar that indicates which tab is selected
-            stopViewPageAdapter = StopViewPageAdapter(this, daysNumeric, dirArg) //creating an new instance of StopViewPageAdapter and initializing it
+            stopViewPageAdapter = StopViewPageAdapter(
+                this,
+                daysNumeric,
+                dirArg
+            ) //creating an new instance of StopViewPageAdapter and initializing it
             //... with all the possible dayIds and directionIds belonging to the currently selected route
             viewPager.adapter = stopViewPageAdapter //setting the ViewPager adapter
 
@@ -106,12 +115,16 @@ class StopsFragmentParent : Fragment() {
             val dirArg: ArrayList<Int> = ArrayList(listOf(0))
 
             tabLayout.setSelectedTabIndicatorColor(Color.parseColor(sharedViewModel.currentCompany?.brandColor)) //essentially hiding the SelectedTabIndicator
-            stopViewPageAdapter = StopViewPageAdapter(this, days, dirArg) //creating a new instance of StopViewPageAdapter and initializing it
+            stopViewPageAdapter = StopViewPageAdapter(
+                this,
+                days,
+                dirArg
+            ) //creating a new instance of StopViewPageAdapter and initializing it
             //...with the list of dayIds and list of directionIds
             viewPager.adapter = stopViewPageAdapter //setting the ViewPager adapter
 
             //Link the TabLayout and the ViewPager together.
-            TabLayoutMediator(tabLayout, viewPager){_,_->}.attach()
+            TabLayoutMediator(tabLayout, viewPager) { _, _ -> }.attach()
         }
     }
 

@@ -141,7 +141,7 @@ class RoutesFragment : Fragment() {
         : RecyclerView.ViewHolder(view), View.OnClickListener {
 
         private lateinit var routeItem: Routes //instantiating a new Route object to receive specific model layer data
-                                               // ... and use that to configure an itemView
+        // ... and use that to configure an itemView
 
         //referencing the itemView's child views from the list_item_route layout
         private val routeNumberTextView: TextView = itemView.findViewById(R.id.route_number)

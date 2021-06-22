@@ -2,8 +2,6 @@ package com.riis.etaDetroitkotlin
 
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.view.*
 import android.view.inputmethod.EditorInfo
@@ -19,16 +17,9 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.graphics.toColorInt
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.riis.etaDetroitkotlin.model.RouteStops
-import com.riis.etaDetroitkotlin.model.Routes
-import com.riis.etaDetroitkotlin.model.Stops
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import com.riis.etaDetroitkotlin.model.RouteStopInfo
 import java.util.*
 
@@ -224,7 +215,8 @@ class StopsFragmentChild : Fragment() {
             "${sharedViewModel.currentRoute?.name}"
 
         //accessing MainActivity's app bar and setting its color to the color of the currently selected Company
-        val appBarColor = ColorDrawable(sharedViewModel.currentCompany?.brandColor?.toColorInt()!!) //converts hex string -> int -> ColorDrawable
+        val appBarColor =
+            ColorDrawable(sharedViewModel.currentCompany?.brandColor?.toColorInt()!!) //converts hex string -> int -> ColorDrawable
         (requireActivity() as AppCompatActivity).supportActionBar?.setBackgroundDrawable(appBarColor)
     }
 
@@ -250,7 +242,7 @@ class StopsFragmentChild : Fragment() {
         RecyclerView.ViewHolder(view), View.OnClickListener {
 
         private lateinit var routeStopInfoItem: RouteStopInfo //instantiating a new RouteStopInfo object to receive specific model layer data
-                                                              // ... and use that to configure an itemView
+        // ... and use that to configure an itemView
 
         //referencing the itemView's child views from the list_item_stop layout
         private var allArrivalTimes: TextView = view.findViewById(R.id.all_arrival_times)
@@ -260,20 +252,24 @@ class StopsFragmentChild : Fragment() {
         private var dynamicLinearLayout =
             view.findViewById(R.id.dynamic_linear_layout) as LinearLayout
 
-        private var staticConstraintLayout: ConstraintLayout = view.findViewById(R.id.static_constraint_layout)
+        private var staticConstraintLayout: ConstraintLayout =
+            view.findViewById(R.id.static_constraint_layout)
 
         //initializing the viewHolder
         init {
             itemView.setOnClickListener(this) //setting a click listener on each itemView
-            dynamicLinearLayout.visibility = View.GONE //each itemView's expandable LinearLayout (for showing bus times) is initially invisible
+            dynamicLinearLayout.visibility =
+                View.GONE //each itemView's expandable LinearLayout (for showing bus times) is initially invisible
         }
 
         //Configuring the attributes of each itemView using a specific RouteStopInfo object from the model layer, chosen by the StopAdapter
         fun bind(routeStopInfo: RouteStopInfo) {
             routeStopInfoItem = routeStopInfo
 
-            stopName.text = routeStopInfoItem.name //setting and displaying each list item's bus stop name
-            allArrivalTimes.text = null //The textView displaying the bus arrival times is initially set to be empty
+            stopName.text =
+                routeStopInfoItem.name //setting and displaying each list item's bus stop name
+            allArrivalTimes.text =
+                null //The textView displaying the bus arrival times is initially set to be empty
 
             /*NOTE: When a user clicks on an item view, its dynamicLinearLayout expands to display a list of bus arrival times. However, when the user scrolls
                     ... such that the itemView is no longer on screen, it is destroyed. When the user scrolls to return the itemView to the screen, it is recreated
@@ -296,7 +292,12 @@ class StopsFragmentChild : Fragment() {
 
             //Obtaining an updated list of TripStops objects from the database that are associated with the itemView's stopId, and update its UI accordingly.
             // A TripStop object stores an arrival time for a particular bus stop (stopId).
-            sharedViewModel.getArrivalTimes(routeStopInfoItem.routeId, routeStopInfoItem.directionId, routeStopInfoItem.dayId, routeStopInfoItem.stopId).observe(
+            sharedViewModel.getArrivalTimes(
+                routeStopInfoItem.routeId,
+                routeStopInfoItem.directionId,
+                routeStopInfoItem.dayId,
+                routeStopInfoItem.stopId
+            ).observe(
                 viewLifecycleOwner,
                 { tripStop ->
                     //sorting the list of TripStops objects using their arrivalTime attribute (Date object), from earliest to latest
@@ -359,11 +360,17 @@ class StopsFragmentChild : Fragment() {
         //setting the bus arrival times that are displayed in an itemView's dynamicLinearLayout
         fun setArrivalTimes() {
             //Obtaining an updated list of TripStops objects from the database that are associated with the itemView's stopId
-            sharedViewModel.getArrivalTimes(routeStopInfoItem.routeId, routeStopInfoItem.directionId, routeStopInfoItem.dayId, routeStopInfoItem.stopId).observe(
+            sharedViewModel.getArrivalTimes(
+                routeStopInfoItem.routeId,
+                routeStopInfoItem.directionId,
+                routeStopInfoItem.dayId,
+                routeStopInfoItem.stopId
+            ).observe(
                 viewLifecycleOwner,
                 { tripStop ->
                     if (tripStop.size > 1) {
-                        var tmp = "" //temporary variable used to concatenate a list of arrival times to a single string
+                        var tmp =
+                            "" //temporary variable used to concatenate a list of arrival times to a single string
 
                         //sorting the list of TripStops objects using their arrivalTime attribute (Date object), from earliest to latest
                         val sortedTripStops = tripStop.sortedBy { it.arrivalTime }
@@ -380,7 +387,8 @@ class StopsFragmentChild : Fragment() {
                                 tmpTripStop.arrivalTime.toString().substring(11, 16)
                             }......${tmpTripStop.stopSequence}\n"
                         }
-                        allArrivalTimes.text = tmp //display the bus times inside of the textView housed within the itemView's dynamicLinearLayout
+                        allArrivalTimes.text =
+                            tmp //display the bus times inside of the textView housed within the itemView's dynamicLinearLayout
                     } else {
                         allArrivalTimes.text = "No Stop Times Found"
                     }
@@ -441,7 +449,8 @@ class StopsFragmentChild : Fragment() {
                                 resultList.add(stop)
                             }
                         }
-                        filteredRouteStopInfoList = resultList //update the filtered list of bus stops
+                        filteredRouteStopInfoList =
+                            resultList //update the filtered list of bus stops
                     }
                     //return the filtered list of RouteStopInfo object inside of a FilterResults object
                     val filteredResults = FilterResults()
@@ -462,10 +471,11 @@ class StopsFragmentChild : Fragment() {
             }
         }
     }
+
     //WHEN THE FRAGMENT IS NO LONGER IN USE
     override fun onDestroy() {
         super.onDestroy()
-        if (this::searchView.isInitialized){
+        if (this::searchView.isInitialized) {
             searchView.isIconified = false //close the searchView if not already closed
         }
 

@@ -29,19 +29,19 @@ class PeopleMoverRouteTest {
     fun peopleMoverRouteTest() {
 
         onView(allOf(withId(R.id.company_name), withText("People Mover"), isDisplayed()))
-        .perform(click())
+            .perform(click())
 
         onView(allOf(withId(R.id.stop_name), withText("Times Square")))
-        .check(matches(isDisplayed()))
+            .check(matches(isDisplayed()))
 
         onView(allOf(withId(R.id.stop_name), withText("Grand Circus")))
-        .check(matches(isDisplayed()))
+            .check(matches(isDisplayed()))
 
         onView(allOf(withId(R.id.stop_name), withText("Broadway")))
-        .check(matches(isDisplayed()))
+            .check(matches(isDisplayed()))
 
         onView(allOf(withContentDescription("Google Map"), isDisplayed()))
-        .check(matches(isDisplayed()))
+            .check(matches(isDisplayed()))
     }
 
 }

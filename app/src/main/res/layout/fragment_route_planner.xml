@@ -1,112 +1,111 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/form"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:clickable="true">
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/form"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true">
 
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/fromFieldHolder"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="16dp"
-        android:hint="Departing From"
-        app:endIconMode="clear_text"
-        app:layout_constraintBottom_toTopOf="@+id/textInputLayout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:startIconDrawable="@drawable/ic_location">
+            android:id="@+id/fromFieldHolder"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="16dp"
+            android:hint="Departing From"
+            app:endIconMode="clear_text"
+            app:layout_constraintBottom_toTopOf="@+id/textInputLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:startIconDrawable="@drawable/ic_location">
 
         <AutoCompleteTextView
-            android:id="@+id/fromField"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+                android:id="@+id/fromField"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInputLayout"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="32dp"
-        android:hint="Arriving At"
-        app:endIconMode="clear_text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fromFieldHolder"
-        app:startIconDrawable="@drawable/ic_location">
+            android:id="@+id/textInputLayout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="32dp"
+            android:hint="Arriving At"
+            app:endIconMode="clear_text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/fromFieldHolder"
+            app:startIconDrawable="@drawable/ic_location">
 
         <AutoCompleteTextView
-            android:id="@+id/toField"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+                android:id="@+id/toField"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/dateButton"
-        style="@style/Widget.MaterialComponents.Button.Icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Date"
-        app:icon="@drawable/ic_icon_calendar"
-        app:layout_constraintEnd_toStartOf="@+id/timeButton"
-        app:layout_constraintStart_toStartOf="@+id/textInputLayout"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />
+            android:id="@+id/dateButton"
+            style="@style/Widget.MaterialComponents.Button.Icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Date"
+            app:icon="@drawable/ic_icon_calendar"
+            app:layout_constraintEnd_toStartOf="@+id/timeButton"
+            app:layout_constraintStart_toStartOf="@+id/textInputLayout"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/timeButton"
-        style="@style/Widget.MaterialComponents.Button.Icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Time"
-        app:icon="@drawable/ic_icon_clock"
-        app:layout_constraintEnd_toEndOf="@+id/textInputLayout"
-        app:layout_constraintStart_toEndOf="@+id/dateButton"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />
+            android:id="@+id/timeButton"
+            style="@style/Widget.MaterialComponents.Button.Icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Time"
+            app:icon="@drawable/ic_icon_clock"
+            app:layout_constraintEnd_toEndOf="@+id/textInputLayout"
+            app:layout_constraintStart_toEndOf="@+id/dateButton"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/getRouteButton"
-        style="@style/Widget.MaterialComponents.Button.Icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="Get Route"
-        app:icon="@drawable/ic_route_map"
-        app:layout_constraintBottom_toTopOf="@+id/copyrightTextView"
-        app:layout_constraintEnd_toEndOf="@+id/timeButton"
-        app:layout_constraintStart_toStartOf="@+id/dateButton"
-        app:layout_constraintTop_toBottomOf="@+id/timeButton" />
+            android:id="@+id/getRouteButton"
+            style="@style/Widget.MaterialComponents.Button.Icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="Get Route"
+            app:icon="@drawable/ic_route_map"
+            app:layout_constraintBottom_toTopOf="@+id/copyrightTextView"
+            app:layout_constraintEnd_toEndOf="@+id/timeButton"
+            app:layout_constraintStart_toStartOf="@+id/dateButton"
+            app:layout_constraintTop_toBottomOf="@+id/timeButton" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/routesRecyclerView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/copyrightTextView" />
+            android:id="@+id/routesRecyclerView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/copyrightTextView" />
 
     <TextView
-        android:id="@+id/copyrightTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/routesRecyclerView"
-        app:layout_constraintEnd_toEndOf="@+id/getRouteButton"
-        app:layout_constraintStart_toStartOf="@+id/getRouteButton"
-        app:layout_constraintTop_toBottomOf="@+id/getRouteButton" />
+            android:id="@+id/copyrightTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/routesRecyclerView"
+            app:layout_constraintEnd_toEndOf="@+id/getRouteButton"
+            app:layout_constraintStart_toStartOf="@+id/getRouteButton"
+            app:layout_constraintTop_toBottomOf="@+id/getRouteButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

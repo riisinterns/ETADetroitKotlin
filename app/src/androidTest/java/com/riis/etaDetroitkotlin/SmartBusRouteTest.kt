@@ -19,22 +19,22 @@ class SmartBusRouteTest {
         ActivityScenarioRule(MainActivity::class.java)
 
     @Test
-    fun smartBusRouteTest(){
+    fun smartBusRouteTest() {
 
         onView(allOf(withId(R.id.company_name), withText("SmartBus"), isDisplayed()))
-        .perform(click())
+            .perform(click())
 
         onView(allOf(withId(R.id.route_name), withText("FORT ST-EUREKA RD"), isDisplayed()))
-        .check(matches(withText("FORT ST-EUREKA RD")))
+            .check(matches(withText("FORT ST-EUREKA RD")))
 
         onView(allOf(withId(R.id.route_name), withText("SOUTHSHORE"), isDisplayed()))
             .check(matches(withText("SOUTHSHORE")))
 
         onView(allOf(withId(R.id.route_name), withText("DOWNRIVER"), isDisplayed()))
-        .check(matches(withText("DOWNRIVER")))
+            .check(matches(withText("DOWNRIVER")))
 
         onView(allOf(withId(R.id.route_name), withText("MICHIGAN AVENUE LOCAL"), isDisplayed()))
-        .check(matches(withText("MICHIGAN AVENUE LOCAL")))
+            .check(matches(withText("MICHIGAN AVENUE LOCAL")))
 
         onView(allOf(withId(R.id.route_name), withText("FORD RD"), isDisplayed()))
             .check(matches(withText("FORD RD")))
