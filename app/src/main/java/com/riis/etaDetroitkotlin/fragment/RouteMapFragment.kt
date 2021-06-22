@@ -85,6 +85,8 @@ class RouteMapFragment : Fragment(), View.OnClickListener {
         savedInstanceState: Bundle?
     ): View? {
         progressDialog = ProgressDialog(context)
+        progressDialog.setCanceledOnTouchOutside(false)
+        progressDialog.setCancelable(false)
         return inflater.inflate(R.layout.fragment_route_map, container, false)
     }
 
