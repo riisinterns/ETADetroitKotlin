@@ -95,7 +95,7 @@ class RoutePlannerFragment : Fragment() {
 //            Log.i(TAG, "$time ----> ${milliseconds(time)}")
 
             getApiDirectionData(departureLocationQuery.text.toString(), arrivalLocationQuery.text.toString(), milliseconds(time).toString(), apiKey)
-            routesRecyclerView!!.layoutManager = LinearLayoutManager(context)
+            routesRecyclerView?.layoutManager = LinearLayoutManager(context)
 
         }
 
@@ -103,7 +103,7 @@ class RoutePlannerFragment : Fragment() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 //if there is some text in the field do this
-                if (s!!.isNotEmpty()) autocompleteLocation(s.toString(), departureLocationQuery)
+                if (s?.isNotEmpty() == true) autocompleteLocation(s.toString(), departureLocationQuery)
             }
 
             override fun afterTextChanged(s: Editable?) {}
@@ -114,7 +114,7 @@ class RoutePlannerFragment : Fragment() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 //if there is some text in the field do this
-                if (s!!.isNotEmpty()) autocompleteLocation(s.toString(), arrivalLocationQuery)
+                if (s?.isNotEmpty() == true) autocompleteLocation(s.toString(), arrivalLocationQuery)
             }
 
             override fun afterTextChanged(s: Editable?) {}
@@ -123,12 +123,12 @@ class RoutePlannerFragment : Fragment() {
     }
 
     @SuppressLint("SimpleDateFormat")
-    private fun milliseconds(date: String): Long {
+    private fun milliseconds(date: String): Long? {
         val parser = SimpleDateFormat("MMM dd, yyyy HH:mm")
         try {
             val mDate = parser.parse(date)
 
-            return mDate!!.time / 1000
+            return mDate?.time?.div(1000)
         } catch (e: ParseException) {
             Log.i(TAG, "SORRY IT DIDN'T WORK")
         }
@@ -165,7 +165,7 @@ class RoutePlannerFragment : Fragment() {
                     if(directionResponse.status == "OK"){
                         copyrightTextView.setTextColor(Color.BLACK)
                         copyrightTextView.text = directionResponse.routes[0].copyrights // required by Google to use their api
-                        routesRecyclerView!!.adapter = RouteResultAdapter(directionResponse)
+                        routesRecyclerView?.adapter = RouteResultAdapter(directionResponse)
                     }else{
                         copyrightTextView.text = "Sorry, we could not generate any transit routes for the information given"
                         copyrightTextView.setTextColor(Color.RED)
