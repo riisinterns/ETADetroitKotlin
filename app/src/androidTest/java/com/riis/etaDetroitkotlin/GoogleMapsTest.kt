@@ -101,7 +101,7 @@ class GoogleMapsTest {
             .check(matches(isDisplayed()))
     }
 
-    fun withIndex(matcher: Matcher<View>, index: Int): Matcher<View> {
+    private fun withIndex(matcher: Matcher<View>, index: Int): Matcher<View> {
         return object : TypeSafeMatcher<View>() {
             var currentIndex = 0
             override fun describeTo(description: Description) {
