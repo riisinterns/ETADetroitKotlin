@@ -29,12 +29,13 @@ import com.riis.etaDetroitkotlin.SharedViewModel
 import com.riis.etaDetroitkotlin.model.Company
 
 private const val TAG = "DEBUG"
-
+private const val REQUEST_DATE = 0
+private const val DIALOG_DATE = "DialogDate"
 
 private val checkBoxCompanyNames: MutableMap<Int, String> = HashMap()
 private var busRoutes: MutableMap<String, GeoJsonLayer> = HashMap()
-//private lateinit var dialog: RouteLoadingDialog
-private lateinit var progressDialog: ProgressDialog
+private lateinit var progressDialog: RouteLoadingDialog
+//private lateinit var progressDialog:
 
 class RouteMapFragment : Fragment(), View.OnClickListener {
 
@@ -84,9 +85,10 @@ class RouteMapFragment : Fragment(), View.OnClickListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        progressDialog = ProgressDialog(context)
-        progressDialog.setCanceledOnTouchOutside(false)
-        progressDialog.setCancelable(false)
+        //progressDialog = ProgressDialog(context)
+        //progressDialog = RouteLoadingDialog(context)
+        //progressDialog.setCanceledOnTouchOutside(false)
+        //progressDialog.setCancelable(false)
         return inflater.inflate(R.layout.fragment_route_map, container, false)
     }
 
@@ -127,7 +129,7 @@ class RouteMapFragment : Fragment(), View.OnClickListener {
     }
 
 
-    class LayerThread(private val layer: GeoJsonLayer, private val pd: ProgressDialog) :
+    class LayerThread(private val layer: GeoJsonLayer, private val pd: RouteLoadingDialog) :
         Runnable {
         override fun run() {
             layer.addLayerToMap()
@@ -135,7 +137,7 @@ class RouteMapFragment : Fragment(), View.OnClickListener {
         }
     }
 
-    private fun showLayer(layer: GeoJsonLayer, pd: ProgressDialog) {
+    private fun showLayer(layer: GeoJsonLayer, pd: RouteLoadingDialog) {
         val thread = LayerThread(layer, pd)
         val handler = Handler(Looper.getMainLooper())
         handler.postDelayed(thread, 1000)
@@ -147,7 +149,13 @@ class RouteMapFragment : Fragment(), View.OnClickListener {
 
         if (box != null) {
             if (box.isChecked) {
-                progressDialog.show()
+
+                checkBoxCompanyNames[v.id]?.let {
+                    progressDialog = RouteLoadingDialog(it)
+                }
+                //progressDialog.show
+                //progressDialog.show(checkBoxCompanyNames[v.id])
+                //checkBoxCompanyNames[v.id]?.let { RouteLoadingDialog.newInstance(it) }
 
 
                 showLayer(layer!!, progressDialog)
