@@ -2,21 +2,33 @@ package com.riis.etaDetroitkotlin
 
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.*
 import android.view.inputmethod.EditorInfo
+import android.widget.Filter
+import android.widget.Filterable
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.graphics.toColorInt
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.riis.etaDetroitkotlin.model.RouteStops
+import com.riis.etaDetroitkotlin.model.Routes
+import com.riis.etaDetroitkotlin.model.Stops
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import com.riis.etaDetroitkotlin.model.RouteStopInfo
 import java.util.*
 
@@ -127,8 +139,7 @@ class StopsFragmentChild : Fragment() {
 
             //when the query text is changed by the user
             override fun onQueryTextChange(s: String): Boolean {
-                //adapter?.filter?.filter(s)
-                Log.d(TAG, s)
+
                 return false
             }
         })
@@ -196,6 +207,8 @@ class StopsFragmentChild : Fragment() {
         private var dynamicLinearLayout =
             view.findViewById(R.id.dynamic_linear_layout) as LinearLayout
 
+        private var staticConstraintLayout: ConstraintLayout = view.findViewById(R.id.static_constraint_layout)
+
         init {
             itemView.setOnClickListener(this) //setting a click listener on each itemView
             dynamicLinearLayout.visibility = View.GONE
@@ -204,6 +217,14 @@ class StopsFragmentChild : Fragment() {
         //binding the viewHolder's Stop object to date of another from the model layer
         fun bind(routeStopInfo: RouteStopInfo) {
             routeStopInfoItem = routeStopInfo
+//            sharedViewModel.getArrivalTimes(routeStopInfoItem.routeId, routeStopInfoItem.directionId, routeStopInfoItem.dayId, routeStopInfoItem.stopId).observe(
+//                viewLifecycleOwner,
+//                { tripStop ->
+//
+//                    Log.d(TAG, tripStop.toString())
+//
+//                }
+//            )
             stopName.text = routeStopInfoItem.name
             allArrivalTimes.text = null
 
@@ -212,11 +233,12 @@ class StopsFragmentChild : Fragment() {
             }
             dynamicLinearLayout.visibility = stopsVisibility[routeStopInfoItem.stopId]!!
 
-            if (dynamicLinearLayout.visibility == View.VISIBLE) {
-                setArrivalTimes()
-            }
 
-            sharedViewModel.getTripStops(routeStopInfoItem.stopId).observe(
+                if (dynamicLinearLayout.visibility == View.VISIBLE) {
+                    setArrivalTimes()
+                }
+
+            sharedViewModel.getArrivalTimes(routeStopInfoItem.routeId, routeStopInfoItem.directionId, routeStopInfoItem.dayId, routeStopInfoItem.stopId).observe(
                 viewLifecycleOwner,
                 { tripStop ->
                     val sortedTripStops = tripStop.sortedBy { it.arrivalTime }
@@ -238,7 +260,6 @@ class StopsFragmentChild : Fragment() {
                                 tripStopsPositions[routeStopInfoItem.stopId] = i
                                 break
                             }
-
                         }
                     } else {
                         currentTime.text = ""
@@ -262,7 +283,7 @@ class StopsFragmentChild : Fragment() {
         }
 
         fun setArrivalTimes() {
-            sharedViewModel.getTripStops(routeStopInfoItem.stopId).observe(
+            sharedViewModel.getArrivalTimes(routeStopInfoItem.routeId, routeStopInfoItem.directionId, routeStopInfoItem.dayId, routeStopInfoItem.stopId).observe(
                 viewLifecycleOwner,
                 { tripStop ->
                     if (tripStop.size > 1) {
@@ -283,7 +304,6 @@ class StopsFragmentChild : Fragment() {
                 }
             )
         }
-
     }
 
     private inner class StopAdapter(var routeStopInfoList: List<RouteStopInfo>)//accepts a list of RouteStopInfo objects from model layer
@@ -301,5 +321,6 @@ class StopsFragmentChild : Fragment() {
             val routeStop = routeStopInfoList[position]
             holder.bind(routeStop)
         }
+
     }
 }
