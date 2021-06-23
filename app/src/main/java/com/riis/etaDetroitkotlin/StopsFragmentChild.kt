@@ -1,14 +1,13 @@
 package com.riis.etaDetroitkotlin
 
+import android.content.res.Configuration
+import android.content.res.Resources
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.view.inputmethod.EditorInfo
-import android.widget.Filter
-import android.widget.Filterable
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -19,9 +18,13 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.riis.etaDetroitkotlin.model.RouteStopInfo
 import java.util.*
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.model.*
 
 private const val TAG = "StopsFragment"
 private const val DAY_KEY = "day_key"
@@ -44,9 +47,40 @@ class StopsFragmentChild : Fragment() {
     private var day: Int? = 0
     private var directions: List<Int>? = mutableListOf()
     private lateinit var routeStopsInfo: List<RouteStopInfo>
+    private lateinit var mapFragment :SupportMapFragment
+    private var latitude = 42.3482862
+    private var longitude = -83.068969
+    private var markerTitle = "Detroit"
 
     //links the fragment to a viewModel shared with MainActivity and other fragments
     private val sharedViewModel: SharedViewModel by activityViewModels()
+
+    private val callback = OnMapReadyCallback { googleMap ->
+        val isDarkThemeOn =
+            resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK === Configuration.UI_MODE_NIGHT_YES
+        var mapTheme = R.raw.light_mode_map
+        if (isDarkThemeOn) mapTheme = R.raw.dark_mode_map
+
+        try {
+            val success = googleMap.setMapStyle(
+                MapStyleOptions.loadRawResourceStyle(
+                    context,
+                    mapTheme
+                )
+            )
+            if (!success) {
+                Log.e(TAG, "Style parsing failed.")
+            }
+        } catch (e: Resources.NotFoundException) {
+            Log.e(TAG, "Can't find style. Error: ", e)
+        }
+
+        googleMap.clear()
+        val point = LatLng(latitude, longitude)
+        googleMap.addMarker(MarkerOptions().position(point).title(markerTitle)).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.map_stop_marker))
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point, 14F))
+
+    }
 
     //CREATING AND INITIALIZING THE FRAGMENT
     //--------------------------------------
@@ -92,6 +126,8 @@ class StopsFragmentChild : Fragment() {
     //---------------------------------------
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        mapFragment = (childFragmentManager.findFragmentById(R.id.stops_map) as SupportMapFragment?)!!
+        mapFragment.getMapAsync(callback)
 
         //if there exists at least one bus stop for the selected route:
         if (day != 0 && sharedViewModel.direction != 0) {
@@ -252,8 +288,6 @@ class StopsFragmentChild : Fragment() {
         private var dynamicLinearLayout =
             view.findViewById(R.id.dynamic_linear_layout) as LinearLayout
 
-        private var staticConstraintLayout: ConstraintLayout =
-            view.findViewById(R.id.static_constraint_layout)
 
         //initializing the viewHolder
         init {
@@ -353,6 +387,11 @@ class StopsFragmentChild : Fragment() {
             } else {
                 dynamicLinearLayout.visibility = View.GONE
             }
+
+            latitude = routeStopInfoItem.latitude
+            longitude = routeStopInfoItem.longitude
+            markerTitle = routeStopInfoItem.name
+            mapFragment.getMapAsync(callback)
             //update the itemView's dynamicLinearLayout visibility record in the stopsVisibility hashmap
             stopsVisibility[routeStopInfoItem.stopId] = dynamicLinearLayout.visibility
         }

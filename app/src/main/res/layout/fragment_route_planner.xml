@@ -113,7 +113,7 @@
     <FrameLayout
         android:id="@+id/ddotColorBar"
         android:layout_width="0dp"
-        android:layout_height="5dp"
+        android:layout_height="3dp"
         android:layout_alignParentStart="true"
         android:layout_marginTop="8dp"
         android:background="@color/ETAHeader"
