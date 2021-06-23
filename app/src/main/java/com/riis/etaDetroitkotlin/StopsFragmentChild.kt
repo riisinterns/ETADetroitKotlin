@@ -295,7 +295,7 @@ class StopsFragmentChild : Fragment() {
                             val tmpTripStop = sortedTripStops[i % sortedTripStops.size]
                             tmp += "${
                                 tmpTripStop.arrivalTime.toString().substring(11, 16)
-                            }......${tmpTripStop.stopSequence}\n"
+                            }\n"
                         }
                         allArrivalTimes.text = tmp
                     } else {
