@@ -1,6 +1,7 @@
 package com.riis.etaDetroitkotlin.fragment
 
 import android.annotation.SuppressLint
+import android.content.pm.ActivityInfo
 import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
@@ -90,6 +91,7 @@ class RoutePlannerFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
+//        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
         return inflater.inflate(R.layout.fragment_route_planner, container, false)
     }
 
@@ -194,7 +196,6 @@ class RoutePlannerFragment : Fragment() {
 
                 activity?.runOnUiThread {
                     if (directionResponse.status == "OK") {
-                        copyrightTextView.setTextColor(Color.BLACK)
                         copyrightTextView.text =
                             directionResponse.routes[0].copyrights // required by Google to use their api
                         routesRecyclerView?.adapter = RouteResultAdapter(directionResponse)

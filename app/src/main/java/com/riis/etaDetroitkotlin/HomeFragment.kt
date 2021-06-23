@@ -46,7 +46,7 @@ class HomeFragment : Fragment() {
         //RecyclerView setup (Grid Layout)
         companyRecyclerView = view.findViewById(R.id.company_recycler_view) as RecyclerView
         companyRecyclerView.layoutManager =
-            GridLayoutManager(context, 2) //second parameter specifies number of columns in grid
+            GridLayoutManager(context, 1) //second parameter specifies number of columns in grid
 
         return view
     }
@@ -106,7 +106,7 @@ class HomeFragment : Fragment() {
             val resID: Int = requireContext().resources.getIdentifier(
                 companyItem.busImgUrl,
                 "drawable",
-                context!!.packageName
+                context?.packageName
             )
             companyImageView.setImageResource(resID)
 

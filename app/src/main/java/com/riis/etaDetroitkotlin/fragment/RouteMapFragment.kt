@@ -1,5 +1,7 @@
 package com.riis.etaDetroitkotlin.fragment
 
+import android.app.ProgressDialog
+import android.content.res.Configuration
 import android.content.res.Resources
 import android.os.Bundle
 import android.os.Handler
@@ -38,12 +40,16 @@ class RouteMapFragment : Fragment(), View.OnClickListener {
 
 
     private val callback = OnMapReadyCallback { googleMap ->
+        val isDarkThemeOn =
+            resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK === Configuration.UI_MODE_NIGHT_YES
+        var mapTheme = R.raw.light_mode_map
+        if (isDarkThemeOn) mapTheme = R.raw.dark_mode_map
 
         try {
             val success = googleMap.setMapStyle(
                 MapStyleOptions.loadRawResourceStyle(
                     context,
-                    R.raw.darkstyle
+                    mapTheme
                 )
             )
             if (!success) {
@@ -137,6 +143,7 @@ class RouteMapFragment : Fragment(), View.OnClickListener {
 
         if (box != null) {
             if (box.isChecked) {
+//                progressDialog.show()
 
                 checkBoxCompanyNames[v.id]?.let {
                     val fragmentManager = fragmentManager
