@@ -2,19 +2,18 @@ package com.riis.etaDetroitkotlin
 
 import android.graphics.Color
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import com.riis.etaDetroitkotlin.model.DaysOfOperation
 import com.riis.etaDetroitkotlin.model.RouteStopInfo
-import com.riis.etaDetroitkotlin.model.RouteStops
-import org.w3c.dom.Text
+
 
 /*The StopsFragmentParent is a container fragment that holds the StopsFragmentChild fragment. It is able to switch between different
   ... screens shown by the child fragment corresponding to the following categories: Weekday, Saturday, and Sunday.
@@ -27,7 +26,6 @@ class StopsFragmentParent : Fragment() {
 
     //CLASS VARIABLES
     //---------------
-    private lateinit var days: List<DaysOfOperation>
     private lateinit var tabLayout: TabLayout
     private lateinit var appBarLayout: AppBarLayout
     private lateinit var stopViewPageAdapter: StopViewPageAdapter
@@ -59,56 +57,80 @@ class StopsFragmentParent : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewPager = view.findViewById(R.id.pager)
 
-        sharedViewModel.routeStopsInfoListLiveData.observe( //we only observe routestops until days has been initialized
+        //Retrieving an updated list of all of the RouteStopInfo objects that are associated with the currently selected route.
+        //Each RouteStopInfo object holds information describing a bus stop including its name, location, days of operation, and direction
+        sharedViewModel.routeStopsInfoListLiveData.observe(
             viewLifecycleOwner,
             { routeStopsInfo ->
-                updateUI(routeStopsInfo)
+                updateUI(routeStopsInfo) //update the UI using the observed list of RouteStopInfo objects
             })
-
 
     }
 
+    //FUNCTION TO UPDATE UI
+    //---------------------
     private fun updateUI(routeStops: List<RouteStopInfo>) {
 
         //set tab menu color
         appBarLayout.setBackgroundColor(Color.parseColor(sharedViewModel.currentCompany?.brandColor))
 
-
+        //If the currently selected route has bus stops (list of RouteStopInfo objects is not empty):
         if (routeStops.isNotEmpty()) {
-            //get all possible values of directions and days
-            val daysLabel = routeStops.map { it.day }.distinct()
-            val daysNumeric = routeStops.map { it.dayId }.distinct()
-            val directions: List<Int> = routeStops.map { it.directionId }.distinct()
-            val dirArg: ArrayList<Int> = ArrayList(directions)
 
-            // populate the swipeable fragments
-            tabLayout.setSelectedTabIndicatorColor(Color.WHITE)
-            stopViewPageAdapter = StopViewPageAdapter(this, daysNumeric, dirArg)
-            viewPager.adapter = stopViewPageAdapter
+            /*NOTE: Since the currently selected route may not have all of the days of operation or directions that are available
+              ... in the database, we need to filter through the provided list of RouteStopInfo objects and create lists of all the
+              ... days, dayIds, and directionIds that are actually possible for this route.
+             */
+            val daysLabel = routeStops.map { it.day }
+                .distinct() //gets a list of unique (remove repetitions) names
+            val daysNumeric =
+                routeStops.map { it.dayId }.distinct() // //gets a list of unique dayIds
+            val directions: List<Int> =
+                routeStops.map { it.directionId }.distinct() //gets a list of unique directionIds
+            val dirArg: ArrayList<Int> =
+                ArrayList(directions) //converting the directions list to an ArrayList
 
-            //puts them in tabs and sets text of tab to the day of operation it filters by
+            // setting up the tab layout and viewPager
+            tabLayout.setSelectedTabIndicatorColor(Color.WHITE) //sets the color of the thin bar that indicates which tab is selected
+            stopViewPageAdapter = StopViewPageAdapter(
+                this,
+                daysNumeric,
+                dirArg
+            ) //creating an new instance of StopViewPageAdapter and initializing it
+            //... with all the possible dayIds and directionIds belonging to the currently selected route
+            viewPager.adapter = stopViewPageAdapter //setting the ViewPager adapter
+
+            //Creating a mediator that links the selected tab in the tab layout with the position of its associated child fragments in the ViewPager.
             TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+                //setting the text of the tab associated with the current ViewPager position with the string
+                // ... in the daysLabel list whose index position matches the ViewPager position
                 tab.text =
-                    daysLabel[position].uppercase() //access the string corresponding to day id
+                    daysLabel[position].uppercase() //tab text will appear as uppercase
             }.attach()
 
-        } else { //when route
+        } else { //If the currently selected route does not have any bus stops:
 
+            //the list of dayIds and directionIds both simply hold a single integer value of zero
             val days: List<Int> = listOf(0)
             val dirArg: ArrayList<Int> = ArrayList(listOf(0))
 
-            // populate the swipeable fragments
-            tabLayout.setSelectedTabIndicatorColor(Color.parseColor(sharedViewModel.currentCompany?.brandColor))
-            stopViewPageAdapter = StopViewPageAdapter(this, days, dirArg)
-            viewPager.adapter = stopViewPageAdapter
+            tabLayout.setSelectedTabIndicatorColor(Color.parseColor(sharedViewModel.currentCompany?.brandColor)) //essentially hiding the SelectedTabIndicator
+            stopViewPageAdapter = StopViewPageAdapter(
+                this,
+                days,
+                dirArg
+            ) //creating a new instance of StopViewPageAdapter and initializing it
+            //...with the list of dayIds and list of directionIds
+            viewPager.adapter = stopViewPageAdapter //setting the ViewPager adapter
 
-            //puts them in tabs and sets text of tab to the day of operation it filters by
+            //Link the TabLayout and the ViewPager together.
             TabLayoutMediator(tabLayout, viewPager) { _, _ -> }.attach()
-
         }
     }
 
+    //Class for creating the ViewPager adapter
     private inner class StopViewPageAdapter(
+        //takes in a Fragment object, list of dayIds, and a list of directionIds
         fragment: Fragment,
         private var days: List<Int>,
         private var directions: ArrayList<Int>
@@ -116,6 +138,8 @@ class StopsFragmentParent : Fragment() {
 
         override fun getItemCount() = days.size
 
+        //creates a new StopsFragmentChild fragment using a single dayId (selected day of operation) and all of the directionIds for the current route
+        //The StopViewPageAdapter will populate the ViewPager with child fragments, each with its own position.
         override fun createFragment(position: Int): Fragment {
             return StopsFragmentChild.newInstance(days[position], directions)
         }

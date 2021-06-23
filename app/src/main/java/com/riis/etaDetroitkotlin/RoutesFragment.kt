@@ -137,10 +137,11 @@ class RoutesFragment : Fragment() {
     //VIEW HOLDER CLASS FOR RECYCLER VIEW
     //-----------------------------------
     private inner class RouteHolder(view: View)
-    //When given a view, it is used as a reusable blueprint for creating itemViews
+    //When given a view from the RouteAdapter, it is used as a reusable blueprint for creating itemViews
         : RecyclerView.ViewHolder(view), View.OnClickListener {
 
-        private lateinit var routeItem: Routes //instantiating a new Route object to later receive model layer data
+        private lateinit var routeItem: Routes //instantiating a new Route object to receive specific model layer data
+        // ... and use that to configure an itemView
 
         //referencing the itemView's child views from the list_item_route layout
         private val routeNumberTextView: TextView = itemView.findViewById(R.id.route_number)
@@ -150,12 +151,11 @@ class RoutesFragment : Fragment() {
             itemView.setOnClickListener(this) //setting a click listener on each itemView
         }
 
-        //binding the viewHolder's Company object to date of another from the model layer
+        //Configuring the attributes of each itemView using a specific Routes object from the model layer, chosen by the RouteAdapter
         fun bind(route: Routes) {
             routeItem = route
 
-            //updating the itemView attributes using the received data
-
+            //setting and displaying each list item's name and route number
             routeNumberTextView.text =
                 getString(R.string.route_item_subtitle, routeItem.number.toString())
             routeNameTextView.text = routeItem.name
@@ -204,7 +204,7 @@ class RoutesFragment : Fragment() {
                 override fun performFiltering(constraint: CharSequence?): FilterResults {
                     val search = constraint.toString()
 
-                    //if there is no search query, return all results from the list of Routes objects
+                    //if there is no search query, return all results from the unfiltered list of Routes objects
                     if (search.isEmpty()) {
                         routeFilterList = routeList
                     } else {

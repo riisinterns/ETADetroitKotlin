@@ -1,41 +1,43 @@
 package com.riis.etaDetroitkotlin.fragment
 
-import android.app.Activity
+import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.os.Bundle
 import android.view.LayoutInflater
-import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
-import com.riis.etaDetroitkotlin.R
+import com.riis.etaDetroitkotlin.databinding.LoadingDialogBinding
+import java.util.*
 
-class RouteLoadingDialog(): DialogFragment() {
+class RouteLoadingDialog(val route: String) : DialogFragment() {
 
-    private lateinit var dialog: AlertDialog
-    private lateinit var routeText: TextView
+    private var _binding: LoadingDialogBinding? = null
+    private val binding get() = _binding!!
 
-    fun startLoadingDialog(route: String) {
+
+    //CREATING THE DIALOG
+    //---------------------
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        _binding = LoadingDialogBinding.inflate(LayoutInflater.from(context))
+
         val builder = AlertDialog.Builder(requireActivity())
-        var inflater: LayoutInflater? = activity?.layoutInflater
-
-        var myView = inflater?.inflate(R.layout.loading_dialog, null)
-
-        builder.setView(myView)
+        builder.setView(binding.root)
         builder.setCancelable(false)
-        dialog = builder.create()
 
-        if (myView != null) {
-            routeText = myView.findViewById(R.id.textView)
-        }
-        routeText.text = "Loading $route..."
+
+        val dialog: Dialog = builder.create()
+        dialog.setCanceledOnTouchOutside(false)
+
+        binding.textView.text = "Loading $route..."
 
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-        dialog.show()
+        return dialog
     }
 
-    fun dismissDialog() {
-        dialog.dismiss()
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
-
 }

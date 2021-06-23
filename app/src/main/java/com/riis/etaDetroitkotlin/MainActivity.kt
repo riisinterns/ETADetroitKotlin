@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             drawerMenu //giving the app bar access to a drawerLayout
         )
 
-        //enabling the app bar and side navigation view to work with the nav graph
+        //enabling the app bar and side navigation view to work with the nav controller
         setActionBar(navController, appBarConfig)
         setupNavigationMenu(navController)
 
@@ -83,7 +83,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     //HANDLING NAVIGATION USING "UP" BUTTON IN ACTION BAR
     //---------------------------------------------------
-    //This method is called whenever the user chooses to navigate Up within your application's activity hierarchy from the action bar.
+    //This method is called whenever the user chooses to navigate Up within your application's destination hierarchy using the action bar.
     override fun onSupportNavigateUp(): Boolean {
         // tells the navController how to navigate based on the state of the app bar
         return findNavController(R.id.nav_host_fragment).navigateUp(appBarConfig)

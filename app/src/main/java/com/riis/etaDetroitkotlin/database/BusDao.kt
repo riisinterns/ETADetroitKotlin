@@ -24,5 +24,10 @@ interface BusDao {
     fun getTrips(tripId: Int): LiveData<Trips>
 
     @Query("SELECT S.stop_id, TS.arrival_time, stop_sequence, TS.trip_id FROM route_stops RS, stops S, days_of_operation D, routes R, trip_stops TS, directions DIR, trips T WHERE RS.stop_id = S.stop_id  and RS.route_id = (:routeId) and D.id = RS.day_id and RS.route_id = R.id and TS.stop_id = RS.stop_id and DIR.id = RS.direction_id and RS.direction_id = (:directionId) and RS.day_id = (:dayId) and rs.stop_id = (:stopId) and T.route_id = RS.route_id and T.direction_id = RS.direction_id and T.id = TS.trip_id")
-    fun getArrivalTimes(routeId: Int, directionId: Int, dayId: Int, stopId: Int): LiveData<List<TripStops>>
+    fun getArrivalTimes(
+        routeId: Int,
+        directionId: Int,
+        dayId: Int,
+        stopId: Int
+    ): LiveData<List<TripStops>>
 }

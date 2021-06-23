@@ -1,6 +1,7 @@
 package com.riis.etaDetroitkotlin.fragment
 
-import android.app.Activity
+import android.app.ProgressDialog
+import android.content.res.Configuration
 import android.content.res.Resources
 import android.os.Bundle
 import android.os.Handler
@@ -28,23 +29,27 @@ import com.riis.etaDetroitkotlin.model.Company
 
 private const val TAG = "DEBUG"
 
-
 private val checkBoxCompanyNames: MutableMap<Int, String> = HashMap()
 private var busRoutes: MutableMap<String, GeoJsonLayer> = HashMap()
-private lateinit var dialog: RouteLoadingDialog
+private lateinit var progressDialog: RouteLoadingDialog
 
 class RouteMapFragment : Fragment(), View.OnClickListener {
 
     private lateinit var listOfCompanies: List<Company>
     private val sharedViewModel: SharedViewModel by activityViewModels()
 
+
     private val callback = OnMapReadyCallback { googleMap ->
+        val isDarkThemeOn =
+            resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK === Configuration.UI_MODE_NIGHT_YES
+        var mapTheme = R.raw.light_mode_map
+        if (isDarkThemeOn) mapTheme = R.raw.dark_mode_map
 
         try {
             val success = googleMap.setMapStyle(
                 MapStyleOptions.loadRawResourceStyle(
                     context,
-                    R.raw.darkstyle
+                    mapTheme
                 )
             )
             if (!success) {
@@ -106,8 +111,6 @@ class RouteMapFragment : Fragment(), View.OnClickListener {
         qlineCheckbox.setOnClickListener(this)
         peopleMoverCheckbox.setOnClickListener(this)
 
-        dialog = RouteLoadingDialog()
-
         sharedViewModel.companyListLiveData.observe(
             viewLifecycleOwner,
             { companyList ->
@@ -120,18 +123,18 @@ class RouteMapFragment : Fragment(), View.OnClickListener {
     }
 
 
-    class LayerThread(private val layer: GeoJsonLayer) :
+    class LayerThread(private val layer: GeoJsonLayer, private val pd: RouteLoadingDialog) :
         Runnable {
         override fun run() {
             layer.addLayerToMap()
-            dialog.dismissDialog()
+            pd.dismiss()
         }
     }
 
-    private fun showLayer(layer: GeoJsonLayer) {
-        val thread = LayerThread(layer)
+    private fun showLayer(layer: GeoJsonLayer, pd: RouteLoadingDialog) {
+        val thread = LayerThread(layer, pd)
         val handler = Handler(Looper.getMainLooper())
-        handler.post(thread)
+        handler.postDelayed(thread, 1000)
     }
 
     override fun onClick(v: View?) {
@@ -140,8 +143,16 @@ class RouteMapFragment : Fragment(), View.OnClickListener {
 
         if (box != null) {
             if (box.isChecked) {
-                checkBoxCompanyNames[v.id]?.let { dialog.startLoadingDialog(it) }
-                showLayer(layer!!)
+//                progressDialog.show()
+
+                checkBoxCompanyNames[v.id]?.let {
+                    val fragmentManager = fragmentManager
+
+                    progressDialog = RouteLoadingDialog(it)
+                    fragmentManager?.let { it1 -> progressDialog.show(it1, it) }
+                }
+
+                showLayer(layer!!, progressDialog)
             } else {
                 layer!!.removeLayerFromMap()
             }

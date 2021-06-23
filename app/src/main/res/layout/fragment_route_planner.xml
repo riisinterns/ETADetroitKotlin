@@ -58,6 +58,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
+        android:backgroundTint="@color/ETAHeader"
         android:text="Date"
         app:icon="@drawable/ic_icon_calendar"
         app:layout_constraintEnd_toStartOf="@+id/timeButton"
@@ -70,6 +71,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
+        android:backgroundTint="@color/ETAHeader"
         android:text="Time"
         app:icon="@drawable/ic_icon_clock"
         app:layout_constraintEnd_toEndOf="@+id/textInputLayout"
@@ -83,6 +85,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
+        android:backgroundTint="@color/ETAHeader"
         android:text="Get Route"
         app:icon="@drawable/ic_route_map"
         app:layout_constraintBottom_toTopOf="@+id/copyrightTextView"
@@ -97,16 +100,26 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/copyrightTextView" />
+        app:layout_constraintTop_toBottomOf="@+id/ddotColorBar" />
 
     <TextView
         android:id="@+id/copyrightTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/routesRecyclerView"
         app:layout_constraintEnd_toEndOf="@+id/getRouteButton"
         app:layout_constraintStart_toStartOf="@+id/getRouteButton"
         app:layout_constraintTop_toBottomOf="@+id/getRouteButton" />
+
+    <FrameLayout
+        android:id="@+id/ddotColorBar"
+        android:layout_width="0dp"
+        android:layout_height="3dp"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="8dp"
+        android:background="@color/ETAHeader"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/copyrightTextView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

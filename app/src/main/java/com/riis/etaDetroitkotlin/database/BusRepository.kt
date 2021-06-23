@@ -3,7 +3,10 @@ package com.riis.etaDetroitkotlin.database
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.room.Room
-import com.riis.etaDetroitkotlin.model.*
+import com.riis.etaDetroitkotlin.model.Company
+import com.riis.etaDetroitkotlin.model.RouteStopInfo
+import com.riis.etaDetroitkotlin.model.Routes
+import com.riis.etaDetroitkotlin.model.TripStops
 
 private const val DATABASE_NAME = "eta_detroit.sqlite"
 private const val DATABASE_PATH = "databases/eta_detroit.sqlite"
@@ -19,10 +22,17 @@ class BusRepository private constructor(context: Context) {
 
     fun getCompanies(): LiveData<List<Company>> = busDao.getCompanies()
     fun getRoutes(companyId: Int): LiveData<List<Routes>> = busDao.getRoutes(companyId)
-    fun getStopsInfoOnRoute(routeId: Int): LiveData<List<RouteStopInfo>> = busDao.getStopsInfoOnRoute(routeId)
-//    fun getTripStops(stopId: Int): LiveData<List<TripStops>> = busDao.getTripStops(stopId)
+    fun getStopsInfoOnRoute(routeId: Int): LiveData<List<RouteStopInfo>> =
+        busDao.getStopsInfoOnRoute(routeId)
+
+    //    fun getTripStops(stopId: Int): LiveData<List<TripStops>> = busDao.getTripStops(stopId)
 //    fun getTrips(tripId: Int): LiveData<Trips> = busDao.getTrips(tripId)
-    fun getArrivalTimes(routeId: Int, directionId: Int, dayId: Int, stopId: Int): LiveData<List<TripStops>> = busDao.getArrivalTimes(routeId, directionId, dayId, stopId)
+    fun getArrivalTimes(
+        routeId: Int,
+        directionId: Int,
+        dayId: Int,
+        stopId: Int
+    ): LiveData<List<TripStops>> = busDao.getArrivalTimes(routeId, directionId, dayId, stopId)
 
     companion object {
         private var INSTANCE: BusRepository? = null
