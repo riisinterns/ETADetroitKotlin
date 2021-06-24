@@ -57,7 +57,7 @@ class StopsFragmentChild : Fragment() {
 
     private val callback = OnMapReadyCallback { googleMap ->
         val isDarkThemeOn =
-            resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK === Configuration.UI_MODE_NIGHT_YES
+            resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
         var mapTheme = R.raw.light_mode_map
         if (isDarkThemeOn) mapTheme = R.raw.dark_mode_map
 
