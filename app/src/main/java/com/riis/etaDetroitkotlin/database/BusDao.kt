@@ -40,4 +40,16 @@ interface BusDao {
 
     @Insert
     fun addCompany(company: Company)
+
+    @Insert
+    fun addStop(stop: Stops)
+
+    @Insert
+    fun addDirection(direction: Directions)
+
+    @Insert
+    fun addDaysOfOperation(daysOfOperation: DaysOfOperation)
+
+    @Insert
+    fun addRouteStop(routeStop: RouteStops)
 }

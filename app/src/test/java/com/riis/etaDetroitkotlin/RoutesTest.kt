@@ -45,7 +45,7 @@ class RoutesTest {
 
     @Test
     @Throws(Exception::class)
-    fun writeRouteAndReadList() {
+    fun writeRouteAndCompanyThenReadList() {
         val company = Company(2, "DDOT", "#054839", "ddot_bus")
         val route = Routes(53, 1, company.id, "VERNOR", "Rosa Parks Transit Center to Michgan & Schaefer")
         busDao.addCompany(company)
