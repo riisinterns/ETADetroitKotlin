@@ -77,7 +77,7 @@ class StopsFragmentChild : Fragment() {
 
         googleMap.clear()
         val point = LatLng(latitude, longitude)
-        googleMap.addMarker(MarkerOptions().position(point).title(markerTitle)).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.map_stop_marker))
+        googleMap.addMarker(MarkerOptions().position(point).title(markerTitle))
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point, 14F))
 
     }
@@ -217,10 +217,10 @@ class StopsFragmentChild : Fragment() {
     private fun setDirectionImage() {
         //getting the correct arrow image drawable based on the directionId currently saved to the shared view model
         var drawable = when (sharedViewModel.direction) {
-            1 -> ContextCompat.getDrawable(requireContext(), R.drawable.ic_arrow_down)
-            2 -> ContextCompat.getDrawable(requireContext(), R.drawable.ic_arrow_up)
-            3 -> ContextCompat.getDrawable(requireContext(), R.drawable.ic_arrow_left)
-            4 -> ContextCompat.getDrawable(requireContext(), R.drawable.ic_arrow_right)
+            1 -> ContextCompat.getDrawable(requireContext(), R.drawable.ic_arrow_south)
+            2 -> ContextCompat.getDrawable(requireContext(), R.drawable.ic_arrow_north)
+            3 -> ContextCompat.getDrawable(requireContext(), R.drawable.ic_arrow_west)
+            4 -> ContextCompat.getDrawable(requireContext(), R.drawable.ic_arrow_east)
             else -> null
         }
 

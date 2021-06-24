@@ -63,7 +63,7 @@
         android:layout_marginEnd="14dp"
         android:layout_marginBottom="350dp"
         android:contentDescription="TODO"
-        android:src="@drawable/ic_arrow_up"
+        android:src="@drawable/ic_arrow_north"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
