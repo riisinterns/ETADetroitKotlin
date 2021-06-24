@@ -21,7 +21,7 @@ import java.io.IOException
 import java.util.*
 
 @RunWith(AndroidJUnit4::class)
-@Config(manifest=Config.NONE)
+@Config(manifest = Config.NONE)
 class TripStopsTest {
     private lateinit var busDao: BusDao
     private lateinit var db: BusDatabase
@@ -33,7 +33,8 @@ class TripStopsTest {
     fun createDb() {
         val context = ApplicationProvider.getApplicationContext<Context>()
         db = Room.inMemoryDatabaseBuilder(
-            context, BusDatabase::class.java).allowMainThreadQueries().build()
+            context, BusDatabase::class.java
+        ).allowMainThreadQueries().build()
         busDao = db.busDao()
     }
 
@@ -57,7 +58,8 @@ class TripStopsTest {
     @Throws(Exception::class)
     fun writeRouteAndCompanyThenReadList() {
         val company = Company(2, "DDOT", "#054839", "ddot_bus")
-        val route = Routes(53, 1, company.id, "VERNOR", "Rosa Parks Transit Center to Michgan & Schaefer")
+        val route =
+            Routes(53, 1, company.id, "VERNOR", "Rosa Parks Transit Center to Michgan & Schaefer")
         val stop = Stops(23, "Washington & Michigan", 42.331399, -83.051226)
         val daysOfOperation = DaysOfOperation(1, "weekday")
         val direction = Directions(4, "Eastbound")
@@ -74,7 +76,8 @@ class TripStopsTest {
         busDao.addTrips(trip)
         busDao.addTripStop(tripStop)
 
-        val tripsStopLiveData: LiveData<List<TripStops>> = busDao.getTripStops(route.id, direction.id, daysOfOperation.id, stop.id)
+        val tripsStopLiveData: LiveData<List<TripStops>> =
+            busDao.getTripStops(route.id, direction.id, daysOfOperation.id, stop.id)
         tripsStopLiveData.observeForever { tripStops ->
             assertThat(tripStops[0].tripId, `is`(trip.id))
             assertThat(tripStops[0].stopId, `is`(stop.id))

@@ -20,7 +20,7 @@ import org.robolectric.annotation.Config
 import java.io.IOException
 
 @RunWith(AndroidJUnit4::class)
-@Config(manifest=Config.NONE)
+@Config(manifest = Config.NONE)
 class RouteStopInfoTest {
     private lateinit var busDao: BusDao
     private lateinit var db: BusDatabase
@@ -32,7 +32,8 @@ class RouteStopInfoTest {
     fun createDb() {
         val context = ApplicationProvider.getApplicationContext<Context>()
         db = Room.inMemoryDatabaseBuilder(
-            context, BusDatabase::class.java).allowMainThreadQueries().build()
+            context, BusDatabase::class.java
+        ).allowMainThreadQueries().build()
         busDao = db.busDao()
     }
 
@@ -46,7 +47,8 @@ class RouteStopInfoTest {
     @Throws(Exception::class)
     fun writeDataThenReadRouteStopInfoList() {
         val company = Company(2, "DDOT", "#054839", "ddot_bus")
-        val route = Routes(53, 1, company.id, "VERNOR", "Rosa Parks Transit Center to Michgan & Schaefer")
+        val route =
+            Routes(53, 1, company.id, "VERNOR", "Rosa Parks Transit Center to Michgan & Schaefer")
         val stop = Stops(23, "Washington & Michigan", 42.331399, -83.051226)
         val daysOfOperation = DaysOfOperation(1, "weekday")
         val direction = Directions(3, "Westbound")
