@@ -2,6 +2,7 @@ package com.riis.etaDetroitkotlin.database
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
+import androidx.room.Insert
 import androidx.room.Query
 import com.riis.etaDetroitkotlin.model.*
 
@@ -27,4 +28,7 @@ interface BusDao {
         dayId: Int,
         stopId: Int
     ): LiveData<List<TripStops>>
+
+    @Insert
+    fun addCompany(company: Company)
 }
