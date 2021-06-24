@@ -45,7 +45,7 @@ class HomeFragment : Fragment() {
         //RecyclerView setup (Grid Layout)
         companyRecyclerView = view.findViewById(R.id.company_recycler_view) as RecyclerView
         companyRecyclerView.layoutManager =
-            GridLayoutManager(context, 1) //second parameter specifies number of columns in grid
+            GridLayoutManager(context, 2) //second parameter specifies number of columns in grid
 
         return view
     }
