@@ -9,6 +9,7 @@ import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.SearchView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -216,23 +217,23 @@ class StopsFragmentChild : Fragment() {
     //Function to set the UI of the directionFab floating action button
     private fun setDirectionImage() {
         //getting the correct arrow image drawable based on the directionId currently saved to the shared view model
-        var drawable = when (sharedViewModel.direction) {
-            1 -> ContextCompat.getDrawable(requireContext(), R.drawable.ic_arrow_south)
-            2 -> ContextCompat.getDrawable(requireContext(), R.drawable.ic_arrow_north)
-            3 -> ContextCompat.getDrawable(requireContext(), R.drawable.ic_arrow_west)
-            4 -> ContextCompat.getDrawable(requireContext(), R.drawable.ic_arrow_east)
+        val drawable = when (sharedViewModel.direction) {
+            1 -> AppCompatResources.getDrawable(requireContext(), R.drawable.ic_arrow_south)
+            2 -> AppCompatResources.getDrawable(requireContext(), R.drawable.ic_arrow_north)
+            3 -> AppCompatResources.getDrawable(requireContext(), R.drawable.ic_arrow_west)
+            4 -> AppCompatResources.getDrawable(requireContext(), R.drawable.ic_arrow_east)
             else -> null
         }
 
         //If a drawable exist, use it to set the image drawable of directionFab
         if (drawable != null) {
-            drawable = DrawableCompat.wrap(drawable)
+            val wrappedDrawable = DrawableCompat.wrap(drawable)
             //tinting the arrow portion of the drawable with a white color
             DrawableCompat.setTint(
-                drawable,
-                ContextCompat.getColor(requireContext(), R.color.white)
+                wrappedDrawable,
+                ContextCompat.getColor(requireContext(), R.color.busTint)
             )
-            directionFab.setImageDrawable(drawable)
+            directionFab.setImageDrawable(wrappedDrawable)
         } else {
             directionFab.visibility = View.GONE
         }
