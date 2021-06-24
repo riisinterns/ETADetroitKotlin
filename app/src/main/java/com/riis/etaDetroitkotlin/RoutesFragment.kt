@@ -28,6 +28,7 @@ class RoutesFragment : Fragment() {
     //---------------
     private lateinit var routeRecyclerView: RecyclerView
     private lateinit var busPhotoImageView: ImageView
+    private lateinit var busRouteView: View
     private var adapter: RouteAdapter? = null
 
     //links the fragment to a viewModel shared with MainActivity and other fragments
@@ -49,6 +50,9 @@ class RoutesFragment : Fragment() {
 
         //inflating the fragment_home layout as the fragment view
         val view = inflater.inflate(R.layout.fragment_routes, container, false)
+
+        busRouteView = view.findViewById(R.id.busRouteView)
+        busRouteView.setBackgroundColor(Color.parseColor(sharedViewModel.currentCompany?.brandColor))
 
         //RecyclerView setup (Grid Layout)
         routeRecyclerView = view.findViewById(R.id.route_recycler_view) as RecyclerView
