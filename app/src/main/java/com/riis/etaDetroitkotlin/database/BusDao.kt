@@ -30,5 +30,14 @@ interface BusDao {
     ): LiveData<List<TripStops>>
 
     @Insert
+    fun addRoute(route: Routes)
+
+    @Insert
+    fun addTrips(trips: Trips)
+
+    @Insert
+    fun addTripStop(tripStop: TripStops)
+
+    @Insert
     fun addCompany(company: Company)
 }
