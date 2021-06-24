@@ -64,9 +64,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         //enabling the app bar and side navigation view to work with the nav controller
         setActionBar(navController, appBarConfig)
         setupNavigationMenu(navController)
-
     }
-
 
     //ACTION BAR AND SIDE NAVIGATION SETUP FUNCTIONS
     //----------------------------------------------
@@ -92,7 +90,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     //HANDLING NAVIGATION WHEN AN ITEM IS SELECTED FROM THE SIDE NAVIGATION MENU (drawer_menu.xml)
     //--------------------------------------------------------------------------------------------
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-
         drawerMenu.closeDrawers() //closes the side nav
 
         //If the selected menu item is part of the "primary group" in the drawer menu layout ...
@@ -127,7 +124,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     navController.navigate(R.id.routes_dest, null, null)
                 }
             }
-
         }
 
         return true

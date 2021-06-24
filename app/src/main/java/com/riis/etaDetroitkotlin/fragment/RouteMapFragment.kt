@@ -1,6 +1,5 @@
 package com.riis.etaDetroitkotlin.fragment
 
-import android.app.ProgressDialog
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.os.Bundle
@@ -119,9 +118,7 @@ class RouteMapFragment : Fragment(), View.OnClickListener {
                 }
             }
         )
-
     }
-
 
     class LayerThread(private val layer: GeoJsonLayer, private val pd: RouteLoadingDialog) :
         Runnable {
@@ -143,8 +140,6 @@ class RouteMapFragment : Fragment(), View.OnClickListener {
 
         if (box != null) {
             if (box.isChecked) {
-//                progressDialog.show()
-
                 checkBoxCompanyNames[v.id]?.let {
                     val fragmentManager = fragmentManager
 

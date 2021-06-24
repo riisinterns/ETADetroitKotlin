@@ -25,8 +25,6 @@ class BusRepository private constructor(context: Context) {
     fun getStopsInfoOnRoute(routeId: Int): LiveData<List<RouteStopInfo>> =
         busDao.getStopsInfoOnRoute(routeId)
 
-    //    fun getTripStops(stopId: Int): LiveData<List<TripStops>> = busDao.getTripStops(stopId)
-//    fun getTrips(tripId: Int): LiveData<Trips> = busDao.getTrips(tripId)
     fun getArrivalTimes(
         routeId: Int,
         directionId: Int,

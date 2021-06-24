@@ -28,7 +28,6 @@ class HomeFragment : Fragment() {
     //----------------------
     private lateinit var companyRecyclerView: RecyclerView
 
-
     //links the fragment to a viewModel shared with MainActivity and other fragments
     private val sharedViewModel: SharedViewModel by activityViewModels()
 
@@ -46,7 +45,7 @@ class HomeFragment : Fragment() {
         //RecyclerView setup (Grid Layout)
         companyRecyclerView = view.findViewById(R.id.company_recycler_view) as RecyclerView
         companyRecyclerView.layoutManager =
-            GridLayoutManager(context, 1) //second parameter specifies number of columns in grid
+            GridLayoutManager(context, 2) //second parameter specifies number of columns in grid
 
         return view
     }
@@ -74,7 +73,6 @@ class HomeFragment : Fragment() {
 
         postponeEnterTransition()
         view?.doOnPreDraw { startPostponedEnterTransition() }
-
         companyRecyclerView.adapter = CompanyAdapter(companies)
     }
 
