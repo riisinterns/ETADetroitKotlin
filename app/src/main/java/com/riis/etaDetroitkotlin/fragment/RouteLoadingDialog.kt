@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.riis.etaDetroitkotlin.databinding.LoadingDialogBinding
-import java.util.*
 
 class RouteLoadingDialog(val route: String) : DialogFragment() {
 
