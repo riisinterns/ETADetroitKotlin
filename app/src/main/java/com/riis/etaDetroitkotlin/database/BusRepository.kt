@@ -30,7 +30,7 @@ class BusRepository private constructor(context: Context) {
         directionId: Int,
         dayId: Int,
         stopId: Int
-    ): LiveData<List<TripStops>> = busDao.getArrivalTimes(routeId, directionId, dayId, stopId)
+    ): LiveData<List<TripStops>> = busDao.getTripStops(routeId, directionId, dayId, stopId)
 
     companion object {
         private var INSTANCE: BusRepository? = null
