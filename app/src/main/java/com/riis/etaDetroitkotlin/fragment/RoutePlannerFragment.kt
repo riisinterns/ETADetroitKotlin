@@ -1,7 +1,6 @@
 package com.riis.etaDetroitkotlin.fragment
 
 import android.annotation.SuppressLint
-import android.content.pm.ActivityInfo
 import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
@@ -82,16 +81,11 @@ class RoutePlannerFragment : Fragment() {
     private var apiKey: String = "AIzaSyBVQ6Je04mW9TapTvsJoGOn5xVrw2xaFAY"
     private val TAG = "DEBUG"
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-//        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
         return inflater.inflate(R.layout.fragment_route_planner, container, false)
     }
 
@@ -110,11 +104,7 @@ class RoutePlannerFragment : Fragment() {
         dateButton.setOnClickListener { (openDatePicker()) }
         timeButton.setOnClickListener { (openTimePicker()) }
         getRouteButton.setOnClickListener {
-//            Toast.makeText(context, "from ${departureLocationQuery.text} to ${arrivalLocationQuery.text}", Toast.LENGTH_LONG).show()
-//            Log.i(TAG, "from ${departureLocationQuery.text} to ${arrivalLocationQuery.text}")
-
             val time = "$currentDate $currentTime"
-//            Log.i(TAG, "$time ----> ${milliseconds(time)}")
 
             getApiDirectionData(
                 departureLocationQuery.text.toString(),
@@ -188,7 +178,6 @@ class RoutePlannerFragment : Fragment() {
 
             override fun onResponse(call: Call, response: Response) {
                 val body = response.body?.string()
-//                if (body != null) Log.i(TAG, body)
                 val gson = GsonBuilder().create()
 
                 val directionResponse = gson.fromJson(body, DirectionResponse::class.java)
@@ -283,7 +272,6 @@ class RoutePlannerFragment : Fragment() {
                     list["${prediction.getPrimaryText(null)} ${
                         prediction.getSecondaryText(null).toString()
                     }"] = prediction.placeId
-//                    Log.i(TAG, list.toString())
                 }
 
                 val adapter =

@@ -7,10 +7,12 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.view.inputmethod.EditorInfo
-import android.widget.*
+import android.widget.Filter
+import android.widget.Filterable
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.graphics.toColorInt
@@ -19,12 +21,15 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MapStyleOptions
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.riis.etaDetroitkotlin.model.RouteStopInfo
 import java.util.*
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.model.*
 
 private const val TAG = "StopsFragment"
 private const val DAY_KEY = "day_key"
@@ -47,7 +52,7 @@ class StopsFragmentChild : Fragment() {
     private var day: Int? = 0
     private var directions: List<Int>? = mutableListOf()
     private lateinit var routeStopsInfo: List<RouteStopInfo>
-    private lateinit var mapFragment :SupportMapFragment
+    private lateinit var mapFragment: SupportMapFragment
     private var latitude = 42.3482862
     private var longitude = -83.068969
     private var markerTitle = "Detroit"
@@ -77,7 +82,8 @@ class StopsFragmentChild : Fragment() {
 
         googleMap.clear()
         val point = LatLng(latitude, longitude)
-        googleMap.addMarker(MarkerOptions().position(point).title(markerTitle)).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.map_stop_marker))
+        googleMap.addMarker(MarkerOptions().position(point).title(markerTitle))
+            .setIcon(BitmapDescriptorFactory.fromResource(R.drawable.map_stop_marker))
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point, 14F))
 
     }
@@ -126,7 +132,8 @@ class StopsFragmentChild : Fragment() {
     //---------------------------------------
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mapFragment = (childFragmentManager.findFragmentById(R.id.stops_map) as SupportMapFragment?)!!
+        mapFragment =
+            (childFragmentManager.findFragmentById(R.id.stops_map) as SupportMapFragment?)!!
         mapFragment.getMapAsync(callback)
 
         //if there exists at least one bus stop for the selected route:

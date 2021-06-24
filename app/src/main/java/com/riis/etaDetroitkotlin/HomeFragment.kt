@@ -28,7 +28,6 @@ class HomeFragment : Fragment() {
     //----------------------
     private lateinit var companyRecyclerView: RecyclerView
 
-
     //links the fragment to a viewModel shared with MainActivity and other fragments
     private val sharedViewModel: SharedViewModel by activityViewModels()
 
@@ -74,7 +73,6 @@ class HomeFragment : Fragment() {
 
         postponeEnterTransition()
         view?.doOnPreDraw { startPostponedEnterTransition() }
-
         companyRecyclerView.adapter = CompanyAdapter(companies)
     }
 
