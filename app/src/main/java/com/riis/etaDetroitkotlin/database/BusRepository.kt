@@ -7,18 +7,19 @@ import com.riis.etaDetroitkotlin.model.Company
 import com.riis.etaDetroitkotlin.model.RouteStopInfo
 import com.riis.etaDetroitkotlin.model.Routes
 import com.riis.etaDetroitkotlin.model.TripStops
+import org.jetbrains.annotations.TestOnly
 
 private const val DATABASE_NAME = "eta_detroit.sqlite"
 private const val DATABASE_PATH = "databases/eta_detroit.sqlite"
 
 class BusRepository private constructor(context: Context) {
-    private val database: BusDatabase = Room.databaseBuilder(
+    private var database: BusDatabase = Room.databaseBuilder(
         context.applicationContext,
         BusDatabase::class.java,
         DATABASE_NAME
     ).createFromAsset(DATABASE_PATH).build()
 
-    private val busDao = database.busDao()
+    private var busDao = database.busDao()
 
     fun getCompanies(): LiveData<List<Company>> = busDao.getCompanies()
     fun getRoutes(companyId: Int): LiveData<List<Routes>> = busDao.getRoutes(companyId)
@@ -44,5 +45,15 @@ class BusRepository private constructor(context: Context) {
         fun get(): BusRepository {
             return INSTANCE ?: throw IllegalStateException("NOT INITIALIZED")
         }
+    }
+
+    @TestOnly
+    fun setDatabase(busDatabase: BusDatabase) {
+        database = busDatabase
+    }
+
+    @TestOnly
+    fun setBusDao(dao: BusDao) {
+        busDao = dao
     }
 }

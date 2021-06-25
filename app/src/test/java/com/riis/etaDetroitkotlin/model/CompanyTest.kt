@@ -1,19 +1,16 @@
-package com.riis.etaDetroitkotlin
+package com.riis.etaDetroitkotlin.model
 
 import android.content.Context
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.riis.etaDetroitkotlin.database.BusDao
 import com.riis.etaDetroitkotlin.database.BusDatabase
-import com.riis.etaDetroitkotlin.model.Company
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
@@ -24,9 +21,6 @@ import java.io.IOException
 class CompanyTest {
     private lateinit var busDao: BusDao
     private lateinit var db: BusDatabase
-
-    @get:Rule
-    var instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @Before
     fun createDb() {
