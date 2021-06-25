@@ -90,7 +90,7 @@ class StopsFragmentChild : Fragment() {
             latitude = routeStop.latitude
             longitude = routeStop.longitude
             moveMapToLocation(LatLng(latitude, longitude), true)
-            updateUI(routeStops)
+            updateUI()
         }
 
     }
@@ -158,9 +158,7 @@ class StopsFragmentChild : Fragment() {
                     //filter the routeStopsInfo list to only keep RouteStopInfo objects whose directionId and dayId match their respective ids
                     // ... currently saved to the SharedViewModel. Then update the UI using the filtered list.
 
-                    updateUI(routeStopsInfo.filter {
-                        it.directionId == sharedViewModel.direction && it.dayId == day
-                    })
+                    updateUI()
                 }
             )
         } else { //if there are no bus stops for the selected route:
@@ -193,7 +191,7 @@ class StopsFragmentChild : Fragment() {
             setDirectionImage() //update the directionFab floating action button UI
 
             //update the recycler view with the recently saved directionId as a filter
-            updateUI(this.routeStopsInfo.filter { it.directionId == sharedViewModel.direction && it.dayId == day })
+            updateUI()
         }
     }
 
@@ -262,11 +260,12 @@ class StopsFragmentChild : Fragment() {
     }
 
     //Function to update the recycler view UI when the list of RouteStopInfo objects changes
-    private fun updateUI(routeStops: List<RouteStopInfo>) {
+    private fun updateUI() {
         if (mapReady) {
+            val routeStops = routeStopsInfo.filter { it.directionId == sharedViewModel.direction && it.dayId == day}
             gMap.clear()
             addMarkers(routeStops)
-            adapter = StopAdapter(routeStops, this.markers)
+            adapter = StopAdapter(routeStops, markers)
             stopsRecyclerView.adapter = adapter
         }
     }
