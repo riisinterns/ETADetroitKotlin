@@ -20,6 +20,6 @@ class BusTypeConverter {
 
     @TypeConverter
     fun fromDate(date: Date?): String {
-        return date.toString()
+        return "${"%02d".format(date?.hours)}:${"%02d".format(date?.minutes)}:${"%02d".format(date?.seconds)}"
     }
 }
