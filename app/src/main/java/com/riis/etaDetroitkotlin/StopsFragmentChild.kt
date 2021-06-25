@@ -3,6 +3,8 @@ package com.riis.etaDetroitkotlin
 import android.content.Context
 import android.content.res.Configuration
 import android.content.res.Resources
+import android.annotation.SuppressLint
+import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
@@ -23,8 +25,10 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
@@ -35,6 +39,11 @@ import java.util.*
 private const val TAG = "StopsFragment"
 private const val DAY_KEY = "day_key"
 private const val DIRECTIONS_KEY = "directions_key"
+private const val STATUS_KEY = "status_key"
+private const val EMPTY_STATUS = -1
+private const val DEFAULT_LATITUDE = 42.3482862
+private const val DEFAULT_LONGITUDE = -83.068969
+private const val ERROR_LOADING_ARGS = 0
 
 //This fragment is a child fragment that will be displayed within the StopsFragmentParent's ViewPager.
 //It contains a recycler view that displays a list of bus stops for the currently selected route and their associated timings
@@ -50,43 +59,48 @@ class StopsFragmentChild : Fragment() {
     private lateinit var noRoutesTextView: TextView
     private var stopsVisibility: HashMap<Int, Int> = hashMapOf()
     private var tripStopsPositions: HashMap<Int, Int> = hashMapOf()
-    private var day: Int? = 0
+    private var day: Int? = ERROR_LOADING_ARGS
     private var directions: List<Int>? = mutableListOf()
+    private var status: Int? = ERROR_LOADING_ARGS
     private lateinit var routeStopsInfo: List<RouteStopInfo>
     private lateinit var mapFragment: SupportMapFragment
-    private var latitude = 42.3482862
-    private var longitude = -83.068969
-    private var markerTitle = "Detroit"
+    private var latitude = DEFAULT_LATITUDE
+    private var longitude = DEFAULT_LONGITUDE
+    private lateinit var gMap: GoogleMap
+    private var markers = mutableListOf<Marker?>()
+    private var mapReady = false
 
     //links the fragment to a viewModel shared with MainActivity and other fragments
     private val sharedViewModel: SharedViewModel by activityViewModels()
 
     private val callback = OnMapReadyCallback { googleMap ->
-        val isDarkThemeOn =
-            resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
-        var mapTheme = R.raw.light_mode_map
-        if (isDarkThemeOn) mapTheme = R.raw.dark_mode_map
+        mapReady = true
+        gMap = googleMap
+        gMap.mapType = GoogleMap.MAP_TYPE_NORMAL
+        gMap.isTrafficEnabled = false
+        gMap.uiSettings.isMyLocationButtonEnabled = false
+        gMap.uiSettings.isZoomControlsEnabled = false
+        gMap.uiSettings.isMapToolbarEnabled = false
+        gMap.uiSettings.isRotateGesturesEnabled = false
+        gMap.uiSettings.isScrollGesturesEnabled = true
+        gMap.uiSettings.isZoomGesturesEnabled = true
+        gMap.uiSettings.isTiltGesturesEnabled = false
 
-        try {
-            val success = googleMap.setMapStyle(
-                MapStyleOptions.loadRawResourceStyle(
-                    context as Context,
-                    mapTheme
-                )
-            )
-            if (!success) {
-                Log.e(TAG, "Style parsing failed.")
-            }
-        } catch (e: Resources.NotFoundException) {
-            Log.e(TAG, "Can't find style. Error: ", e)
+        if(status == EMPTY_STATUS) {
+            latitude = DEFAULT_LATITUDE
+            longitude = DEFAULT_LONGITUDE
+            moveMapToLocation(LatLng(latitude, longitude), true)
+        } else {
+            val routeStops = this.routeStopsInfo.filter { it.directionId == sharedViewModel.direction && it.dayId == day }
+            val routeStop = routeStops[0]
+            latitude = routeStop.latitude
+            longitude = routeStop.longitude
+            moveMapToLocation(LatLng(latitude, longitude), true)
+            updateUI()
         }
 
-        googleMap.clear()
-        val point = LatLng(latitude, longitude)
-        googleMap.addMarker(MarkerOptions().position(point).title(markerTitle))
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point, 14F))
-
     }
+
 
     //CREATING AND INITIALIZING THE FRAGMENT
     //--------------------------------------
@@ -96,10 +110,12 @@ class StopsFragmentChild : Fragment() {
         //retrieving the arguments from the bundle associated with the keys DAY_KEY and DIRECTIONS_KEY
         day = arguments?.getInt(DAY_KEY)
         directions = arguments?.getIntegerArrayList(DIRECTIONS_KEY)
+        status = arguments?.getInt(STATUS_KEY)
 
         //sharedViewModel.direction represents the directionId that dictates the arrow direction of the directionFab FloatingActionButton.
         //It is initially set to zero and acts as the index for the directions list
-        sharedViewModel.direction = directions?.get(sharedViewModel.directionCount) ?: 0
+        sharedViewModel.direction =
+            directions?.get(sharedViewModel.directionCount) ?: ERROR_LOADING_ARGS
 
         //NOTE: In the case that there are no bus stops for the selected route, the parent fragment passes a value of zero for the dayId
         // ... and a directions list with a single value of zero. This results in day = 0 and sharedViewModel.direction = 0.
@@ -120,11 +136,12 @@ class StopsFragmentChild : Fragment() {
         directionFab = view.findViewById(R.id.fab)
         noRoutesTextView = view.findViewById(R.id.NoRouteLbl)
         stopsRecyclerView.layoutManager = LinearLayoutManager(context)
+        mapFragment = (childFragmentManager.findFragmentById(R.id.stops_map) as SupportMapFragment)
+        mapFragment.getMapAsync(callback)
 
         setDirectionImage() //update directionFab UI
         setUpAppBar() //setup the AppBar UI
         setHasOptionsMenu(true) //allows this fragment to be able to add its own menu options to the Main Activity's app bar
-
         return view
     }
 
@@ -132,12 +149,9 @@ class StopsFragmentChild : Fragment() {
     //---------------------------------------
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mapFragment =
-            (childFragmentManager.findFragmentById(R.id.stops_map) as SupportMapFragment?)!!
-        mapFragment.getMapAsync(callback)
 
         //if there exists at least one bus stop for the selected route:
-        if (day != 0 && sharedViewModel.direction != 0) {
+        if (status !=  EMPTY_STATUS) {
 
             //Retrieving an updated list of all of the RouteStopInfo objects that are associated with the currently selected route.
             //Each RouteStopInfo object holds information describing a bus stop including its name, location, days of operation, and direction
@@ -149,9 +163,8 @@ class StopsFragmentChild : Fragment() {
 
                     //filter the routeStopsInfo list to only keep RouteStopInfo objects whose directionId and dayId match their respective ids
                     // ... currently saved to the SharedViewModel. Then update the UI using the filtered list.
-                    updateUI(routeStopsInfo.filter {
-                        it.directionId == sharedViewModel.direction && it.dayId == day
-                    })
+
+                    updateUI()
                 }
             )
         } else { //if there are no bus stops for the selected route:
@@ -170,21 +183,21 @@ class StopsFragmentChild : Fragment() {
     override fun onStart() {
         super.onStart()
         directionFab.setOnClickListener { //When the directionFab floating action button is clicked:
-            val listExhausted = sharedViewModel.directionCount + 1 < (directions?.size ?: -1)
+            val listExhausted = sharedViewModel.directionCount + 1 < (directions?.size ?: ERROR_LOADING_ARGS)
 
             //go to next direction in the directions list if the list hasn't been exhausted. Then save the directionId to the sharedViewModel
             sharedViewModel.direction = if (listExhausted) {
-                directions?.get(++sharedViewModel.directionCount) ?: 0
+                directions?.get(++sharedViewModel.directionCount) ?: ERROR_LOADING_ARGS
             } else {
                 //if the directions list has been exhausted, go back to first direction in the list and save its directionId to the sharedViewModel
                 sharedViewModel.directionCount =
                     0 //if list has been exhausted go back to first element
-                directions?.get(sharedViewModel.directionCount) ?: 0
+                directions?.get(sharedViewModel.directionCount) ?: ERROR_LOADING_ARGS
             }
             setDirectionImage() //update the directionFab floating action button UI
 
             //update the recycler view with the recently saved directionId as a filter
-            updateUI(this.routeStopsInfo.filter { it.directionId == sharedViewModel.direction && it.dayId == day })
+            updateUI()
         }
     }
 
@@ -220,6 +233,13 @@ class StopsFragmentChild : Fragment() {
 
     }
 
+    private fun moveMapToLocation(location: LatLng, zoom: Boolean) {
+        when(zoom){
+            false -> gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 10f))
+            true -> gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 15f))
+        }
+    }
+
     //Function to set the UI of the directionFab floating action button
     private fun setDirectionImage() {
         //getting the correct arrow image drawable based on the directionId currently saved to the shared view model
@@ -246,9 +266,37 @@ class StopsFragmentChild : Fragment() {
     }
 
     //Function to update the recycler view UI when the list of RouteStopInfo objects changes
-    private fun updateUI(routeStops: List<RouteStopInfo>) {
-        adapter = StopAdapter(routeStops)
-        stopsRecyclerView.adapter = adapter
+    private fun updateUI() {
+        if (mapReady) {
+            val routeStops = routeStopsInfo.filter { it.directionId == sharedViewModel.direction && it.dayId == day}
+            gMap.clear()
+            addMarkers(routeStops)
+            adapter = StopAdapter(routeStops, markers)
+            stopsRecyclerView.adapter = adapter
+        }
+    }
+
+    private fun addMarkers(routeStops: List<RouteStopInfo>) {
+        for (routeStop in routeStops) {
+            addMarker(routeStop)
+        }
+    }
+
+    private fun addMarker(routeStop: RouteStopInfo) {
+        val position = LatLng(routeStop.latitude, routeStop.longitude)
+        val marker = gMap.addMarker(
+            MarkerOptions()
+                .position(position)
+                .title(routeStop.name)
+                .icon(getMarkerIcon(sharedViewModel.currentCompany?.brandColor))
+        )
+        markers.add(marker)
+    }
+
+    private fun getMarkerIcon(brandColor: String?): BitmapDescriptor? {
+        val hsv = FloatArray(3)
+        Color.colorToHSV(Color.parseColor(brandColor), hsv)
+        return BitmapDescriptorFactory.defaultMarker(hsv[0])
     }
 
     //Function to update the app bar UI
@@ -265,11 +313,12 @@ class StopsFragmentChild : Fragment() {
 
     //Function that can be accessed by other fragments to create a new instance of this fragment and initialize it with arguments
     companion object {
-        fun newInstance(day: Int, directions: ArrayList<Int>): StopsFragmentChild {
+        fun newInstance(day: Int, directions: ArrayList<Int>, status: Int): StopsFragmentChild {
             //accepts a dayId and list of directionIds as arguments and saves them to the bundle using specific keys
             val args = Bundle().apply {
                 putInt(DAY_KEY, day)
                 putIntegerArrayList(DIRECTIONS_KEY, directions)
+                putInt(STATUS_KEY, status)
             }
             //sets the fragment's arguments to the bundle arguments
             return StopsFragmentChild().apply {
@@ -292,6 +341,7 @@ class StopsFragmentChild : Fragment() {
         private val stopName: TextView = view.findViewById(R.id.stop_name)
         private val currentTime: TextView = view.findViewById(R.id.current_time)
         private val arrivalTimeLabel: TextView = view.findViewById(R.id.arrival_time_label)
+        private lateinit var markerItem: Marker
         private var dynamicLinearLayout =
             view.findViewById(R.id.dynamic_linear_layout) as LinearLayout
 
@@ -304,8 +354,12 @@ class StopsFragmentChild : Fragment() {
         }
 
         //Configuring the attributes of each itemView using a specific RouteStopInfo object from the model layer, chosen by the StopAdapter
-        fun bind(routeStopInfo: RouteStopInfo) {
+        fun bind(routeStopInfo: RouteStopInfo, marker: Marker?) {
             routeStopInfoItem = routeStopInfo
+
+            if (marker != null) {
+                markerItem = marker
+            }
 
             stopName.text =
                 routeStopInfoItem.name //setting and displaying each list item's bus stop name
@@ -397,8 +451,10 @@ class StopsFragmentChild : Fragment() {
 
             latitude = routeStopInfoItem.latitude
             longitude = routeStopInfoItem.longitude
-            markerTitle = routeStopInfoItem.name
-            mapFragment.getMapAsync(callback)
+            val clickedPosition = LatLng(latitude, longitude)
+            markerItem.showInfoWindow()
+            moveMapToLocation(clickedPosition, true)
+
             //update the itemView's dynamicLinearLayout visibility record in the stopsVisibility hashmap
             stopsVisibility[routeStopInfoItem.stopId] = dynamicLinearLayout.visibility
         }
@@ -443,7 +499,7 @@ class StopsFragmentChild : Fragment() {
         }
     }
 
-    private inner class StopAdapter(var routeStopInfoList: List<RouteStopInfo>)//accepts a list of RouteStops objects from model layer
+    private inner class StopAdapter(var routeStopInfoList: List<RouteStopInfo>, var markerList: List<Marker?>)//accepts a list of RouteStops objects from model layer
         : RecyclerView.Adapter<StopsFragmentChild.StopHolder>(), Filterable {
 
         //This list will hold RouteStopInfo objects that have been filtered through a search query. It is initialized using ...
@@ -465,7 +521,8 @@ class StopsFragmentChild : Fragment() {
         //binds the viewHolder with a RouteStopInfo object from a given position in filteredRouteStopInfoList
         override fun onBindViewHolder(holder: StopsFragmentChild.StopHolder, position: Int) {
             val routeStop = filteredRouteStopInfoList[position]
-            holder.bind(routeStop)
+            val marker = markerList[position]
+            holder.bind(routeStop, marker)
         }
 
         //creates a filter for the adapter.
