@@ -67,13 +67,27 @@ class SharedViewModelTest : TestCase() {
         Thread.sleep(100)
     }
 
-    fun testGetRouteListLiveData() {}
+    @Test
+    fun testGetRouteListLiveData() {
+        val company = Company(2, "DDOT", "#054839", "ddot_bus")
+        val route =
+            Routes(53, 1, company.id, "VERNOR", "Rosa Parks Transit Center to Michgan & Schaefer")
+        busDao.addCompany(company)
+        busDao.addRoute(route)
 
-    fun testSetRouteListLiveData() {}
+        viewModel.routeListLiveData.observeForever { r ->
+            assertThat(r[0].id, `is`(53))
+            assertThat(r[0].number, `is`(1))
+            assertThat(r[0].companyId, `is`(2))
+            assertThat(r[0].name, `is`("VERNOR"))
+            assertThat(r[0].description, `is`("Rosa Parks Transit Center to Michgan & Schaefer"))
+        }
+        Thread.sleep(100)
+    }
+
 
     fun testGetRouteStopsInfoListLiveData() {}
 
-    fun testSetRouteStopsInfoListLiveData() {}
 
     @Test
     fun testGetArrivalTimes() {
@@ -105,10 +119,6 @@ class SharedViewModelTest : TestCase() {
         }
         Thread.sleep(100)
     }
-
-    fun testGetCurrentCompany() {}
-
-    fun testGetCurrentRoute() {}
 
     @Test
     fun testSaveCompany() {
