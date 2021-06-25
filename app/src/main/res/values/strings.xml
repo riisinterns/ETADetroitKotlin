@@ -71,4 +71,5 @@
 
     <string name="no_stop_times_found">No Stop Times Found</string>
     <string name="next_stop">Next Stop: %d Minutes</string>
+    <string name="unable_to_generate_route">Sorry, we could not generate any transit routes for the information given</string>
 </resources>
