@@ -75,7 +75,7 @@ class StopsFragmentParent : Fragment() {
         appBarLayout.setBackgroundColor(Color.parseColor(sharedViewModel.currentCompany?.brandColor))
 
         //If the currently selected route has bus stops (list of RouteStopInfo objects is not empty):
-        if (routeStops.isNotEmpty()) {
+        if (!routeStops.isNullOrEmpty()) {
 
             /*NOTE: Since the currently selected route may not have all of the days of operation or directions that are available
               ... in the database, we need to filter through the provided list of RouteStopInfo objects and create lists of all the

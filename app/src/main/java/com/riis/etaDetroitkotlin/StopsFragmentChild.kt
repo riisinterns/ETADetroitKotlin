@@ -22,9 +22,9 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
@@ -35,6 +35,10 @@ import java.util.*
 private const val TAG = "StopsFragment"
 private const val DAY_KEY = "day_key"
 private const val DIRECTIONS_KEY = "directions_key"
+private const val DEFAULT_LATITUDE = 42.3482862
+private const val DEFAULT_LONGITUDE = -83.068969
+private const val DEFAULT_MARKER_TITLE = "Detroit"
+private const val ERROR_LOADING_STOPS = 0
 
 //This fragment is a child fragment that will be displayed within the StopsFragmentParent's ViewPager.
 //It contains a recycler view that displays a list of bus stops for the currently selected route and their associated timings
@@ -50,41 +54,25 @@ class StopsFragmentChild : Fragment() {
     private lateinit var noRoutesTextView: TextView
     private var stopsVisibility: HashMap<Int, Int> = hashMapOf()
     private var tripStopsPositions: HashMap<Int, Int> = hashMapOf()
-    private var day: Int? = 0
+    private var day: Int? = ERROR_LOADING_STOPS
     private var directions: List<Int>? = mutableListOf()
     private lateinit var routeStopsInfo: List<RouteStopInfo>
     private lateinit var mapFragment: SupportMapFragment
-    private var latitude = 42.3482862
-    private var longitude = -83.068969
-    private var markerTitle = "Detroit"
+    private var latitude = DEFAULT_LATITUDE
+    private var longitude = DEFAULT_LONGITUDE
+    private var markerTitle = DEFAULT_MARKER_TITLE
+    private lateinit var mMap: GoogleMap
+    private var mapReady = false
 
     //links the fragment to a viewModel shared with MainActivity and other fragments
     private val sharedViewModel: SharedViewModel by activityViewModels()
 
     private val callback = OnMapReadyCallback { googleMap ->
-        val isDarkThemeOn =
-            resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
-        var mapTheme = R.raw.light_mode_map
-        if (isDarkThemeOn) mapTheme = R.raw.dark_mode_map
-
-        try {
-            val success = googleMap.setMapStyle(
-                MapStyleOptions.loadRawResourceStyle(
-                    context,
-                    mapTheme
-                )
-            )
-            if (!success) {
-                Log.e(TAG, "Style parsing failed.")
-            }
-        } catch (e: Resources.NotFoundException) {
-            Log.e(TAG, "Can't find style. Error: ", e)
-        }
-
-        googleMap.clear()
+        mMap = googleMap
+        // INITIALIZE START POINT AND ORIENTATION OF Google Maps
         val point = LatLng(latitude, longitude)
-        googleMap.addMarker(MarkerOptions().position(point).title(markerTitle))
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point, 14F))
+        mMap.addMarker(MarkerOptions().position(point).title(markerTitle))
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point, 14F))
 
     }
 
@@ -99,7 +87,8 @@ class StopsFragmentChild : Fragment() {
 
         //sharedViewModel.direction represents the directionId that dictates the arrow direction of the directionFab FloatingActionButton.
         //It is initially set to zero and acts as the index for the directions list
-        sharedViewModel.direction = directions?.get(sharedViewModel.directionCount) ?: 0
+        sharedViewModel.direction =
+            directions?.get(sharedViewModel.directionCount) ?: ERROR_LOADING_STOPS
 
         //NOTE: In the case that there are no bus stops for the selected route, the parent fragment passes a value of zero for the dayId
         // ... and a directions list with a single value of zero. This results in day = 0 and sharedViewModel.direction = 0.
@@ -124,7 +113,6 @@ class StopsFragmentChild : Fragment() {
         setDirectionImage() //update directionFab UI
         setUpAppBar() //setup the AppBar UI
         setHasOptionsMenu(true) //allows this fragment to be able to add its own menu options to the Main Activity's app bar
-
         return view
     }
 
@@ -133,11 +121,16 @@ class StopsFragmentChild : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mapFragment =
-            (childFragmentManager.findFragmentById(R.id.stops_map) as SupportMapFragment?)!!
-        mapFragment.getMapAsync(callback)
+            (childFragmentManager.findFragmentById(R.id.stops_map) as SupportMapFragment)
 
         //if there exists at least one bus stop for the selected route:
-        if (day != 0 && sharedViewModel.direction != 0) {
+        if (day != ERROR_LOADING_STOPS && sharedViewModel.direction != ERROR_LOADING_STOPS) {
+
+            mapFragment.getMapAsync { googleMap ->
+                mMap = googleMap
+                mapReady = true
+                updateMap()
+            }
 
             //Retrieving an updated list of all of the RouteStopInfo objects that are associated with the currently selected route.
             //Each RouteStopInfo object holds information describing a bus stop including its name, location, days of operation, and direction
@@ -149,6 +142,8 @@ class StopsFragmentChild : Fragment() {
 
                     //filter the routeStopsInfo list to only keep RouteStopInfo objects whose directionId and dayId match their respective ids
                     // ... currently saved to the SharedViewModel. Then update the UI using the filtered list.
+                    updateMap()
+
                     updateUI(routeStopsInfo.filter {
                         it.directionId == sharedViewModel.direction && it.dayId == day
                     })
@@ -156,12 +151,33 @@ class StopsFragmentChild : Fragment() {
             )
         } else { //if there are no bus stops for the selected route:
 
+            mapFragment.getMapAsync { googleMap ->
+                mMap = googleMap
+                // INITIALIZE START POINT AND ORIENTATION OF Google Maps
+                val point = LatLng(latitude, longitude)
+                mMap.addMarker(MarkerOptions().position(point).title(markerTitle))
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point, 14F))
+
+            }
+
             //Hide the recycler view and floating action button
             stopsRecyclerView.visibility = View.GONE
             directionFab.visibility = View.GONE
 
             noRoutesTextView.visibility =
                 View.VISIBLE //display the text view that informs the user that the current route has no bus stops
+        }
+    }
+
+    private fun updateMap() {
+        if (mapReady) {
+            val defaultPostion = LatLng(DEFAULT_LATITUDE, DEFAULT_LONGITUDE)
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultPostion, 14F))
+
+            routeStopsInfo.forEach { routeStopInfo ->
+                val marker = LatLng(routeStopInfo.latitude, routeStopInfo.longitude)
+                mMap.addMarker(MarkerOptions().position(marker).title(routeStopInfo.name))
+            }
         }
     }
 
@@ -174,12 +190,12 @@ class StopsFragmentChild : Fragment() {
 
             //go to next direction in the directions list if the list hasn't been exhausted. Then save the directionId to the sharedViewModel
             sharedViewModel.direction = if (listExhausted) {
-                directions?.get(++sharedViewModel.directionCount) ?: 0
+                directions?.get(++sharedViewModel.directionCount) ?: ERROR_LOADING_STOPS
             } else {
                 //if the directions list has been exhausted, go back to first direction in the list and save its directionId to the sharedViewModel
                 sharedViewModel.directionCount =
                     0 //if list has been exhausted go back to first element
-                directions?.get(sharedViewModel.directionCount) ?: 0
+                directions?.get(sharedViewModel.directionCount) ?: ERROR_LOADING_STOPS
             }
             setDirectionImage() //update the directionFab floating action button UI
 
@@ -398,7 +414,10 @@ class StopsFragmentChild : Fragment() {
             latitude = routeStopInfoItem.latitude
             longitude = routeStopInfoItem.longitude
             markerTitle = routeStopInfoItem.name
-            mapFragment.getMapAsync(callback)
+            mapFragment.getMapAsync{
+                val clickedPosition = LatLng(latitude, longitude)
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(clickedPosition, 14F))
+            }
             //update the itemView's dynamicLinearLayout visibility record in the stopsVisibility hashmap
             stopsVisibility[routeStopInfoItem.stopId] = dynamicLinearLayout.visibility
         }
