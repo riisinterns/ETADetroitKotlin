@@ -54,8 +54,16 @@ class SharedViewModelTest : TestCase() {
 
     @Test
     fun testGetCompanyListLiveData() {
+        val company = Company(1, "SmartBus", "#BC0E29", "smart")
+        busDao.addCompany(company)
 
-        assertEquals(4, 2+2)
+        viewModel.companyListLiveData.observeForever { c ->
+            assertThat(c[0].id, `is`(1))
+            assertThat(c[0].name, `is`("SmartBus"))
+            assertThat(c[0].brandColor, `is`("#BC0E29"))
+            assertThat(c[0].busImgUrl, `is`("smart"))
+        }
+
         Thread.sleep(100)
     }
 
