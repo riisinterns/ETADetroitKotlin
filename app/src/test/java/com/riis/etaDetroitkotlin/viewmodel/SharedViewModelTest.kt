@@ -1,7 +1,6 @@
 package com.riis.etaDetroitkotlin.viewmodel
 
 import android.content.Context
-import androidx.lifecycle.LiveData
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -11,7 +10,6 @@ import com.riis.etaDetroitkotlin.database.BusDatabase
 import com.riis.etaDetroitkotlin.database.BusRepository
 import com.riis.etaDetroitkotlin.model.*
 import junit.framework.TestCase
-import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
@@ -20,7 +18,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
 import java.io.IOException
-import java.lang.Exception
 import java.util.*
 
 @RunWith(AndroidJUnit4::class)
@@ -63,7 +60,6 @@ class SharedViewModelTest : TestCase() {
             assertThat(c[0].brandColor, `is`("#BC0E29"))
             assertThat(c[0].busImgUrl, `is`("smart"))
         }
-
         Thread.sleep(100)
     }
 
@@ -85,8 +81,35 @@ class SharedViewModelTest : TestCase() {
         Thread.sleep(100)
     }
 
+    @Test
+    fun testGetRouteStopsInfoListLiveData() {
+        val company = Company(2, "DDOT", "#054839", "ddot_bus")
+        val route =
+            Routes(53, 1, company.id, "VERNOR", "Rosa Parks Transit Center to Michgan & Schaefer")
+        val stop = Stops(23, "Washington & Michigan", 42.331399, -83.051226)
+        val daysOfOperation = DaysOfOperation(1, "weekday")
+        val direction = Directions(3, "Westbound")
+        val routeStop = RouteStops(17646, route.id, stop.id, direction.id, daysOfOperation.id)
 
-    fun testGetRouteStopsInfoListLiveData() {}
+        busDao.addCompany(company)
+        busDao.addRoute(route)
+        busDao.addStop(stop)
+        busDao.addDaysOfOperation(daysOfOperation)
+        busDao.addDirection(direction)
+        busDao.addRouteStop(routeStop)
+
+        viewModel.routeStopsInfoListLiveData.observeForever { routesStopInfo ->
+            assertThat(routesStopInfo[0].routeId, `is`(route.id))
+            assertThat(routesStopInfo[0].stopId, `is`(stop.id))
+            assertThat(routesStopInfo[0].directionId, `is`(direction.id))
+            assertThat(routesStopInfo[0].dayId, `is`(daysOfOperation.id))
+            assertThat(routesStopInfo[0].day, `is`(daysOfOperation.day))
+            assertThat(routesStopInfo[0].name, `is`(stop.name))
+            assertThat(routesStopInfo[0].latitude, `is`(stop.latitude))
+            assertThat(routesStopInfo[0].longitude, `is`(stop.longitude))
+        }
+        Thread.sleep(100)
+    }
 
 
     @Test
@@ -111,12 +134,16 @@ class SharedViewModelTest : TestCase() {
         busDao.addTrips(trip)
         busDao.addTripStop(tripStop)
 
-        viewModel.getArrivalTimes(route.id, direction.id, daysOfOperation.id, stop.id).observeForever { tripStops ->
-            assertThat(tripStops[0].tripId, `is`(trip.id))
-            assertThat(tripStops[0].stopId, `is`(stop.id))
-            assertThat(tripStops[0].arrivalTime.toString(), `is`(fromString("04:19:11").toString()))
-            assertThat(tripStops[0].stopSequence, `is`(2))
-        }
+        viewModel.getArrivalTimes(route.id, direction.id, daysOfOperation.id, stop.id)
+            .observeForever { tripStops ->
+                assertThat(tripStops[0].tripId, `is`(trip.id))
+                assertThat(tripStops[0].stopId, `is`(stop.id))
+                assertThat(
+                    tripStops[0].arrivalTime.toString(),
+                    `is`(fromString("04:19:11").toString())
+                )
+                assertThat(tripStops[0].stopSequence, `is`(2))
+            }
         Thread.sleep(100)
     }
 
@@ -141,7 +168,10 @@ class SharedViewModelTest : TestCase() {
         assertThat(viewModel.currentRoute?.number, `is`(1))
         assertThat(viewModel.currentRoute?.companyId, `is`(2))
         assertThat(viewModel.currentRoute?.name, `is`("VERNOR"))
-        assertThat(viewModel.currentRoute?.description, `is`("Rosa Parks Transit Center to Michgan & Schaefer"))
+        assertThat(
+            viewModel.currentRoute?.description,
+            `is`("Rosa Parks Transit Center to Michgan & Schaefer")
+        )
         Thread.sleep(100)
     }
 

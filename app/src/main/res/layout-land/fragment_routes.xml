@@ -1,37 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/busRouteView"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/busRouteView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
 
     <ImageView
-        android:id="@+id/busImgView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:adjustViewBounds="true"
-        android:contentDescription="@string/transportation_desc"
-        android:maxHeight="144dp"
-        android:scaleType="fitStart"
-        android:transitionName="bus_transition"
-        android:background="@color/black"
-        android:padding="4dp"
-        app:layout_constraintBottom_toTopOf="@id/route_recycler_view"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:src="@drawable/smart" />
+            android:id="@+id/busImgView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/transportation_desc"
+            android:maxHeight="144dp"
+            android:scaleType="fitStart"
+            android:transitionName="bus_transition"
+            android:background="@color/black"
+            android:padding="4dp"
+            app:layout_constraintBottom_toTopOf="@id/route_recycler_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/smart" />
 
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/route_recycler_view"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:scrollbars="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/busImgView" />
+            android:id="@+id/route_recycler_view"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:scrollbars="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/busImgView" />
 </androidx.constraintlayout.widget.ConstraintLayout>

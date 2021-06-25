@@ -9,7 +9,6 @@ import com.riis.etaDetroitkotlin.model.Company
 import com.riis.etaDetroitkotlin.model.RouteStopInfo
 import com.riis.etaDetroitkotlin.model.Routes
 import com.riis.etaDetroitkotlin.model.TripStops
-import org.jetbrains.annotations.TestOnly
 
 class SharedViewModel : ViewModel() {
 
