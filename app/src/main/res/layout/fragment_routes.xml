@@ -3,6 +3,7 @@
         android:id="@+id/busRouteView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        xmlns:tools="http://schemas.android.com/tools"
         android:orientation="vertical">
 
     <FrameLayout
@@ -10,13 +11,14 @@
             android:layout_height="wrap_content">
 
         <ImageView
-                android:id="@+id/busImgView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:adjustViewBounds="true"
-                android:contentDescription="@string/transportation_desc"
-                android:scaleType="fitStart"
-                android:transitionName="bus_transition" />
+            android:id="@+id/busImgView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/transportation_desc"
+            android:scaleType="fitStart"
+            android:transitionName="bus_transition"
+            tools:src="@drawable/smart" />
 
     </FrameLayout>
 

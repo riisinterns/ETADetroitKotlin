@@ -13,6 +13,7 @@ import android.widget.Filterable
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
@@ -63,7 +64,7 @@ class StopsFragmentChild : Fragment() {
 
     private val callback = OnMapReadyCallback { googleMap ->
         val isDarkThemeOn =
-            resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK === Configuration.UI_MODE_NIGHT_YES
+            resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
         var mapTheme = R.raw.light_mode_map
         if (isDarkThemeOn) mapTheme = R.raw.dark_mode_map
 
@@ -84,7 +85,6 @@ class StopsFragmentChild : Fragment() {
         googleMap.clear()
         val point = LatLng(latitude, longitude)
         googleMap.addMarker(MarkerOptions().position(point).title(markerTitle))
-            .setIcon(BitmapDescriptorFactory.fromResource(R.drawable.map_stop_marker))
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point, 14F))
 
     }
@@ -224,23 +224,23 @@ class StopsFragmentChild : Fragment() {
     //Function to set the UI of the directionFab floating action button
     private fun setDirectionImage() {
         //getting the correct arrow image drawable based on the directionId currently saved to the shared view model
-        var drawable = when (sharedViewModel.direction) {
-            1 -> ContextCompat.getDrawable(requireContext(), R.drawable.ic_arrow_down)
-            2 -> ContextCompat.getDrawable(requireContext(), R.drawable.ic_arrow_up)
-            3 -> ContextCompat.getDrawable(requireContext(), R.drawable.ic_arrow_left)
-            4 -> ContextCompat.getDrawable(requireContext(), R.drawable.ic_arrow_right)
+        val drawable = when (sharedViewModel.direction) {
+            1 -> AppCompatResources.getDrawable(requireContext(), R.drawable.ic_arrow_south)
+            2 -> AppCompatResources.getDrawable(requireContext(), R.drawable.ic_arrow_north)
+            3 -> AppCompatResources.getDrawable(requireContext(), R.drawable.ic_arrow_west)
+            4 -> AppCompatResources.getDrawable(requireContext(), R.drawable.ic_arrow_east)
             else -> null
         }
 
         //If a drawable exist, use it to set the image drawable of directionFab
         if (drawable != null) {
-            drawable = DrawableCompat.wrap(drawable)
+            val wrappedDrawable = DrawableCompat.wrap(drawable)
             //tinting the arrow portion of the drawable with a white color
             DrawableCompat.setTint(
-                drawable,
-                ContextCompat.getColor(requireContext(), R.color.white)
+                wrappedDrawable,
+                ContextCompat.getColor(requireContext(), R.color.busTint)
             )
-            directionFab.setImageDrawable(drawable)
+            directionFab.setImageDrawable(wrappedDrawable)
         } else {
             directionFab.visibility = View.GONE
         }
