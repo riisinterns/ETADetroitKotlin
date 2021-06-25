@@ -95,4 +95,8 @@ dependencies {
     testImplementation 'org.mockito:mockito-inline:2.25.0'
 
     testImplementation "androidx.arch.core:core-testing:$archTestingVersion"
+
+    api("androidx.navigation:navigation-fragment-ktx:2.3.5")
+    api("androidx.navigation:navigation-ui-ktx:2.3.5")
+    api("androidx.navigation:navigation-dynamic-features-fragment:2.3.5")
 }

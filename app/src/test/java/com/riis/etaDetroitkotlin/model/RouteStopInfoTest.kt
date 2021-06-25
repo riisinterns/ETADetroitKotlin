@@ -1,4 +1,4 @@
-package com.riis.etaDetroitkotlin
+package com.riis.etaDetroitkotlin.model
 
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
@@ -8,7 +8,6 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.riis.etaDetroitkotlin.database.BusDao
 import com.riis.etaDetroitkotlin.database.BusDatabase
-import com.riis.etaDetroitkotlin.model.*
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
@@ -24,9 +23,6 @@ import java.io.IOException
 class RouteStopInfoTest {
     private lateinit var busDao: BusDao
     private lateinit var db: BusDatabase
-
-    @get:Rule
-    var instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @Before
     fun createDb() {
