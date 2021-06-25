@@ -68,4 +68,7 @@
     <string name="arrow_desc">Arrow pointing right</string>
     <string name="route_item_subtitle">ROUTE %s</string>
     <string name="transportation_desc">An image of your chosen transportation.</string>
+
+    <string name="no_stop_times_found">No Stop Times Found</string>
+    <string name="next_stop">Next Stop: %d Minutes</string>
 </resources>
