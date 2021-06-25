@@ -89,13 +89,14 @@ class StopsFragmentParent : Fragment() {
                 routeStops.map { it.directionId }.distinct() //gets a list of unique directionIds
             val dirArg: ArrayList<Int> =
                 ArrayList(directions) //converting the directions list to an ArrayList
-
+            val status = 1
             // setting up the tab layout and viewPager
             tabLayout.setSelectedTabIndicatorColor(Color.WHITE) //sets the color of the thin bar that indicates which tab is selected
             stopViewPageAdapter = StopViewPageAdapter(
                 this,
                 daysNumeric,
-                dirArg
+                dirArg,
+                status
             ) //creating an new instance of StopViewPageAdapter and initializing it
             //... with all the possible dayIds and directionIds belonging to the currently selected route
             viewPager.adapter = stopViewPageAdapter //setting the ViewPager adapter
@@ -113,12 +114,14 @@ class StopsFragmentParent : Fragment() {
             //the list of dayIds and directionIds both simply hold a single integer value of zero
             val days: List<Int> = listOf(0)
             val dirArg: ArrayList<Int> = ArrayList(listOf(0))
+            val status = -1
 
             tabLayout.setSelectedTabIndicatorColor(Color.parseColor(sharedViewModel.currentCompany?.brandColor)) //essentially hiding the SelectedTabIndicator
             stopViewPageAdapter = StopViewPageAdapter(
                 this,
                 days,
-                dirArg
+                dirArg,
+                status
             ) //creating a new instance of StopViewPageAdapter and initializing it
             //...with the list of dayIds and list of directionIds
             viewPager.adapter = stopViewPageAdapter //setting the ViewPager adapter
@@ -133,7 +136,8 @@ class StopsFragmentParent : Fragment() {
         //takes in a Fragment object, list of dayIds, and a list of directionIds
         fragment: Fragment,
         private var days: List<Int>,
-        private var directions: ArrayList<Int>
+        private var directions: ArrayList<Int>,
+        private var status: Int
     ) : FragmentStateAdapter(fragment) {
 
         override fun getItemCount() = days.size
@@ -141,7 +145,7 @@ class StopsFragmentParent : Fragment() {
         //creates a new StopsFragmentChild fragment using a single dayId (selected day of operation) and all of the directionIds for the current route
         //The StopViewPageAdapter will populate the ViewPager with child fragments, each with its own position.
         override fun createFragment(position: Int): Fragment {
-            return StopsFragmentChild.newInstance(days[position], directions)
+            return StopsFragmentChild.newInstance(days[position], directions, status)
         }
 
     }
