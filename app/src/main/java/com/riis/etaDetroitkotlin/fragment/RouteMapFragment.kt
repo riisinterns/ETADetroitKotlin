@@ -1,5 +1,6 @@
 package com.riis.etaDetroitkotlin.fragment
 
+import android.content.Context
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.os.Bundle
@@ -47,7 +48,7 @@ class RouteMapFragment : Fragment(), View.OnClickListener {
         try {
             val success = googleMap.setMapStyle(
                 MapStyleOptions.loadRawResourceStyle(
-                    context,
+                    context as Context,
                     mapTheme
                 )
             )

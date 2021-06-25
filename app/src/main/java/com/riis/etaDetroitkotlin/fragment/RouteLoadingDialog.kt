@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
+import com.riis.etaDetroitkotlin.R
 import com.riis.etaDetroitkotlin.databinding.LoadingDialogBinding
 
 class RouteLoadingDialog(val route: String) : DialogFragment() {
@@ -28,7 +29,7 @@ class RouteLoadingDialog(val route: String) : DialogFragment() {
         val dialog: Dialog = builder.create()
         dialog.setCanceledOnTouchOutside(false)
 
-        binding.textView.text = "Loading $route..."
+        binding.textView.text = getString(R.string.loading_route, route)
 
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 

@@ -1,5 +1,8 @@
 package com.riis.etaDetroitkotlin
 
+import android.content.Context
+import android.content.res.Configuration
+import android.content.res.Resources
 import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -26,6 +29,9 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MapStyleOptions
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.riis.etaDetroitkotlin.model.RouteStopInfo
 import java.util.*
@@ -409,11 +415,11 @@ class StopsFragmentChild : Fragment() {
                                 val minutes = seconds / 60
 
                                 //display the now formatted time difference in the itemView
-                                currentTime.text = "(${
+                                "(${
                                     sortedTripStops[i].arrivalTime.toString()
                                         .substring(11, 16)
-                                })"
-                                arrivalTimeLabel.text = "Next Stop: $minutes Minutes"
+                                })".also { currentTime.text = it }
+                                arrivalTimeLabel.text = getString(R.string.next_stop, minutes)
 
                                 /*NOTE: Each bus stop (itemView stopId) has an associated tripStop that contains the earliest bus arrival time for that stop.
                                         To keep a reference of this, we map the stopId of each bus stop to the index of its earliest tripStop from the sortedTripStops list
@@ -425,7 +431,7 @@ class StopsFragmentChild : Fragment() {
                         }
                     } else { //If the itemView's stopId produces a list of TripStops with one element or less:
                         currentTime.text = ""
-                        arrivalTimeLabel.text = "No Stop Times Found"
+                        arrivalTimeLabel.text = getString(R.string.no_stop_times_found)
                     }
                 }
 
@@ -486,7 +492,7 @@ class StopsFragmentChild : Fragment() {
                         allArrivalTimes.text =
                             tmp //display the bus times inside of the textView housed within the itemView's dynamicLinearLayout
                     } else {
-                        allArrivalTimes.text = "No Stop Times Found"
+                        allArrivalTimes.text = getString(R.string.no_stop_times_found)
                     }
                 }
             )

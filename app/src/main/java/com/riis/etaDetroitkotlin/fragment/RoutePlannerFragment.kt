@@ -12,7 +12,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.common.api.ApiException
@@ -29,8 +28,6 @@ import com.google.android.material.timepicker.TimeFormat
 import com.google.gson.GsonBuilder
 import com.riis.etaDetroitkotlin.R
 import com.riis.etaDetroitkotlin.RouteResultAdapter
-import com.riis.etaDetroitkotlin.SharedViewModel
-import com.riis.etaDetroitkotlin.model.Company
 import okhttp3.*
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -41,7 +38,6 @@ class DirectionResponse(val routes: List<GeneratedRoutes>, val status: String)
 class GeneratedRoutes(val copyrights: String, val fare: TextData? = null, val legs: List<Legs>)
 class Legs(
     val arrival_time: TextData,
-    val departure_time: TextData,
     val distance: TextData,
     val duration: TextData,
     val steps: List<Steps>
@@ -58,18 +54,15 @@ class Steps(
 class TransitDetails(
     val departure_time: TextData,
     val arrival_time: TextData,
-    val num_stops: String,
     val line: Line
 )
 
 class Line(val short_name: String, val agencies: List<Agency>)
-class Agency(val name: String, val phone: String, val url: String)
-class TextData(val text: String);
+class Agency(val name: String)
+class TextData(val text: String)
 
 class RoutePlannerFragment : Fragment() {
     var routesRecyclerView: RecyclerView? = null
-    private lateinit var listOfCompanies: List<Company>
-    private val sharedViewModel: SharedViewModel by activityViewModels()
     private lateinit var dateButton: Button
     private lateinit var timeButton: Button
     private lateinit var getRouteButton: Button
@@ -164,7 +157,7 @@ class RoutePlannerFragment : Fragment() {
         departureTime: String,
         key: String
     ): String {
-        var url =
+        val url =
             "https://maps.googleapis.com/maps/api/directions/json?origin=${origin}&destination=${destination}&departure_time=${departureTime}&mode=transit&alternatives=true&key=${key}"
 
         val client = OkHttpClient()
@@ -189,8 +182,7 @@ class RoutePlannerFragment : Fragment() {
                             directionResponse.routes[0].copyrights // required by Google to use their api
                         routesRecyclerView?.adapter = RouteResultAdapter(directionResponse)
                     } else {
-                        copyrightTextView.text =
-                            "Sorry, we could not generate any transit routes for the information given"
+                        copyrightTextView.text = getString(R.string.unable_to_generate_route)
                         copyrightTextView.setTextColor(Color.RED)
                     }
                 }
@@ -228,10 +220,10 @@ class RoutePlannerFragment : Fragment() {
                 .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
                 .build()
 
-        datePicker.show(childFragmentManager, "pick the day of departure");
+        datePicker.show(childFragmentManager, "pick the day of departure")
 
         datePicker.addOnPositiveButtonClickListener {
-            currentDate = "${datePicker.headerText}"
+            currentDate = datePicker.headerText
             Toast.makeText(context, currentDate, Toast.LENGTH_SHORT).show()
         }
     }
@@ -239,7 +231,7 @@ class RoutePlannerFragment : Fragment() {
     private fun autocompleteLocation(query: String, field: AutoCompleteTextView) {
 
         if (!Places.isInitialized()) {
-            context?.let { Places.initialize(it, apiKey) };
+            context?.let { Places.initialize(it, apiKey) }
         }
         val placesClient = context?.let { Places.createClient(it) }
         // Create a new token for the autocomplete session. Pass this to FindAutocompletePredictionsRequest,
@@ -266,11 +258,11 @@ class RoutePlannerFragment : Fragment() {
         placesClient?.findAutocompletePredictions(request)
             ?.addOnSuccessListener { response: FindAutocompletePredictionsResponse ->
 
-                var list: MutableMap<String, String> = mutableMapOf()
+                val list: MutableMap<String, String> = mutableMapOf()
 
                 for (prediction in response.autocompletePredictions) {
                     list["${prediction.getPrimaryText(null)} ${
-                        prediction.getSecondaryText(null).toString()
+                        prediction.getSecondaryText(null)
                     }"] = prediction.placeId
                 }
 

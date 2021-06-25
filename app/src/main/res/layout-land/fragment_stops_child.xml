@@ -1,61 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/stopsView"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/stopsView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
 
     <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/stops_map"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-        tools:context="com.example.polygons.PolyActivity" />
+            android:id="@+id/stops_map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0"
+            tools:context="com.example.polygons.PolyActivity" />
 
 
     <TextView
-        android:id="@+id/NoRouteLbl"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="@string/noRoute"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@color/ReflexBlue"
-        android:textSize="24sp"
-        android:textStyle="normal"
-        android:visibility="gone"
-        tools:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/stops_map" />
+            android:id="@+id/NoRouteLbl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/noRoute"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/ReflexBlue"
+            android:textSize="24sp"
+            android:textStyle="normal"
+            android:visibility="gone"
+            tools:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/stops_map" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/stops_recycler_view"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/stops_map" />
+            android:id="@+id/stops_recycler_view"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/stops_map" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="96dp"
-        android:layout_marginEnd="16dp"
-        android:contentDescription="@string/direction_fab_desc"
-        android:src="@drawable/ic_arrow_north"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="96dp"
+            android:layout_marginEnd="16dp"
+            android:contentDescription="@string/direction_fab_desc"
+            android:src="@drawable/ic_arrow_north"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

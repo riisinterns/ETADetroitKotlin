@@ -60,7 +60,7 @@
     <string name="nextBus">Next Bus Arriving</string>
     <string name="nextBusMessage">Bus Arriving At</string>
 
-    <string name="loadingRoutes">Loading Routes...</string>
+    <string name="loadingRoutes">Loading Routes…</string>
 
     <string name="noRoute">This Route is Not Currently Being Offered</string>
     <string name="route_number">Route Number</string>
@@ -69,4 +69,9 @@
     <string name="route_item_subtitle">ROUTE %s</string>
     <string name="transportation_desc">An image of your chosen transportation.</string>
     <string name="direction_fab_desc">Loads in the stops for the alternative direction the bus route travels in</string>
+
+    <string name="no_stop_times_found">No Stop Times Found</string>
+    <string name="next_stop">Next Stop: %d Minutes</string>
+    <string name="unable_to_generate_route">Sorry, we could not generate any transit routes for the information given</string>
+    <string name="loading_route">Loading %s…</string>
 </resources>
