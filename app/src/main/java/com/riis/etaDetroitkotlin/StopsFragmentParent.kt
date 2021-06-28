@@ -67,6 +67,8 @@ class StopsFragmentParent : Fragment() {
 
     }
 
+
+
     //FUNCTION TO UPDATE UI
     //---------------------
     private fun updateUI(routeStops: List<RouteStopInfo>) {
