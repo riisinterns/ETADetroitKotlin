@@ -18,6 +18,8 @@ class SharedViewModel : ViewModel() {
     var direction = 0
     var directionCount: Int = 0
 
+    var currentMarkerLatitude = 42.3482862
+    var currentMarkerLongitude = -83.068969
     //this variable can store a Company object and is wrapped in LiveData
     private val companyContainer = MutableLiveData<Company>()
     private val routeContainer = MutableLiveData<Routes>()
