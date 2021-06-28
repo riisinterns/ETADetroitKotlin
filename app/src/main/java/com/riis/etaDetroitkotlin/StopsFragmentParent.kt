@@ -17,6 +17,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import com.riis.etaDetroitkotlin.fragment.RouteLoadingDialog
 import com.riis.etaDetroitkotlin.model.RouteStopInfo
 
 
@@ -35,7 +36,7 @@ class StopsFragmentParent : Fragment() {
     private lateinit var appBarLayout: AppBarLayout
     private lateinit var stopViewPageAdapter: StopViewPageAdapter
     private lateinit var viewPager: ViewPager2
-    private lateinit var progressDialog: ProgressDialog
+    private lateinit var progressDialog: RouteLoadingDialog
 
     //links the fragment to a viewModel shared with MainActivity and other fragments
     private val sharedViewModel: SharedViewModel by activityViewModels()
@@ -49,8 +50,8 @@ class StopsFragmentParent : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        progressDialog = ProgressDialog(context)
-        progressDialog.show()
+        progressDialog = RouteLoadingDialog("Stops")
+        progressDialog.show(childFragmentManager, "Stops")
 
         //inflating the fragment_stops_parent layout as the fragment view
         val view = inflater.inflate(R.layout.fragment_stops_parent, container, false)
