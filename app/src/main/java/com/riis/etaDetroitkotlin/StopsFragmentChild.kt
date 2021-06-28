@@ -1,9 +1,5 @@
 package com.riis.etaDetroitkotlin
 
-import android.content.Context
-import android.content.res.Configuration
-import android.content.res.Resources
-import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -57,18 +53,24 @@ class StopsFragmentChild : Fragment() {
     private lateinit var adapter: StopAdapter
     private lateinit var directionFab: FloatingActionButton
     private lateinit var noRoutesTextView: TextView
+
     private var stopsVisibility: HashMap<Int, Int> = hashMapOf()
     private var tripStopsPositions: HashMap<Int, Int> = hashMapOf()
+
     private var day: Int? = ERROR_LOADING_ARGS
     private var directions: List<Int>? = mutableListOf()
     private var status: Int? = ERROR_LOADING_ARGS
+
     private lateinit var routeStopsInfo: List<RouteStopInfo>
+
+    private lateinit var gMap: GoogleMap
     private lateinit var mapFragment: SupportMapFragment
+    private var markerMap = hashMapOf<Pair<Double, Double>, Marker?>()
+    private var mapReady = false
+    private var isNewInstance = false
+
     private var latitude = DEFAULT_LATITUDE
     private var longitude = DEFAULT_LONGITUDE
-    private lateinit var gMap: GoogleMap
-    private var markers = mutableListOf<Marker?>()
-    private var mapReady = false
 
     //links the fragment to a viewModel shared with MainActivity and other fragments
     private val sharedViewModel: SharedViewModel by activityViewModels()
@@ -87,15 +89,19 @@ class StopsFragmentChild : Fragment() {
         gMap.uiSettings.isTiltGesturesEnabled = false
 
         if(status == EMPTY_STATUS) {
-            latitude = DEFAULT_LATITUDE
-            longitude = DEFAULT_LONGITUDE
-            moveMapToLocation(LatLng(latitude, longitude), true)
+            sharedViewModel.currentMarkerLatitude = DEFAULT_LATITUDE
+            sharedViewModel.currentMarkerLongitude = DEFAULT_LONGITUDE
+            moveMapToLocation(LatLng(sharedViewModel.currentMarkerLatitude, sharedViewModel.currentMarkerLongitude), false)
         } else {
             val routeStops = this.routeStopsInfo.filter { it.directionId == sharedViewModel.direction && it.dayId == day }
-            val routeStop = routeStops[0]
-            latitude = routeStop.latitude
-            longitude = routeStop.longitude
-            moveMapToLocation(LatLng(latitude, longitude), true)
+
+            if (isNewInstance) {
+                val routeStop = routeStops[0]
+                sharedViewModel.currentMarkerLatitude = routeStop.latitude
+                sharedViewModel.currentMarkerLongitude = routeStop.longitude
+                moveMapToLocation(LatLng(sharedViewModel.currentMarkerLatitude, sharedViewModel.currentMarkerLongitude), false)
+            }
+
             updateUI()
         }
 
@@ -114,11 +120,15 @@ class StopsFragmentChild : Fragment() {
 
         //sharedViewModel.direction represents the directionId that dictates the arrow direction of the directionFab FloatingActionButton.
         //It is initially set to zero and acts as the index for the directions list
-        sharedViewModel.direction =
-            directions?.get(sharedViewModel.directionCount) ?: ERROR_LOADING_ARGS
+        isNewInstance = savedInstanceState == null
+        if(isNewInstance) sharedViewModel.directionCount = 0
+        sharedViewModel.direction = directions?.get(sharedViewModel.directionCount) ?: ERROR_LOADING_ARGS
+
 
         //NOTE: In the case that there are no bus stops for the selected route, the parent fragment passes a value of zero for the dayId
         // ... and a directions list with a single value of zero. This results in day = 0 and sharedViewModel.direction = 0.
+
+
     }
 
     //CREATING THE FRAGMENT VIEW
@@ -136,6 +146,7 @@ class StopsFragmentChild : Fragment() {
         directionFab = view.findViewById(R.id.fab)
         noRoutesTextView = view.findViewById(R.id.NoRouteLbl)
         stopsRecyclerView.layoutManager = LinearLayoutManager(context)
+
         mapFragment = (childFragmentManager.findFragmentById(R.id.stops_map) as SupportMapFragment)
         mapFragment.getMapAsync(callback)
 
@@ -155,11 +166,11 @@ class StopsFragmentChild : Fragment() {
 
             //Retrieving an updated list of all of the RouteStopInfo objects that are associated with the currently selected route.
             //Each RouteStopInfo object holds information describing a bus stop including its name, location, days of operation, and direction
+
             sharedViewModel.routeStopsInfoListLiveData.observe(
                 viewLifecycleOwner,
                 { routeStopsInfo ->
-                    this.routeStopsInfo =
-                        routeStopsInfo //saving the list of RouteStopInfo objects to a class variable
+                    this.routeStopsInfo = routeStopsInfo //saving the list of RouteStopInfo objects to a class variable
 
                     //filter the routeStopsInfo list to only keep RouteStopInfo objects whose directionId and dayId match their respective ids
                     // ... currently saved to the SharedViewModel. Then update the UI using the filtered list.
@@ -173,8 +184,8 @@ class StopsFragmentChild : Fragment() {
             stopsRecyclerView.visibility = View.GONE
             directionFab.visibility = View.GONE
 
-            noRoutesTextView.visibility =
-                View.VISIBLE //display the text view that informs the user that the current route has no bus stops
+            //display the text view that informs the user that the current route has no bus stops
+            noRoutesTextView.visibility = View.VISIBLE
         }
     }
 
@@ -182,6 +193,9 @@ class StopsFragmentChild : Fragment() {
     //---------------------------------
     override fun onStart() {
         super.onStart()
+
+
+
         directionFab.setOnClickListener { //When the directionFab floating action button is clicked:
             val listExhausted = sharedViewModel.directionCount + 1 < (directions?.size ?: ERROR_LOADING_ARGS)
 
@@ -194,7 +208,9 @@ class StopsFragmentChild : Fragment() {
                     0 //if list has been exhausted go back to first element
                 directions?.get(sharedViewModel.directionCount) ?: ERROR_LOADING_ARGS
             }
-            setDirectionImage() //update the directionFab floating action button UI
+
+            //update the directionFab floating action button UI
+            setDirectionImage()
 
             //update the recycler view with the recently saved directionId as a filter
             updateUI()
@@ -235,7 +251,7 @@ class StopsFragmentChild : Fragment() {
 
     private fun moveMapToLocation(location: LatLng, zoom: Boolean) {
         when(zoom){
-            false -> gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 10f))
+            false -> gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 15f))
             true -> gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 15f))
         }
     }
@@ -271,7 +287,8 @@ class StopsFragmentChild : Fragment() {
             val routeStops = routeStopsInfo.filter { it.directionId == sharedViewModel.direction && it.dayId == day}
             gMap.clear()
             addMarkers(routeStops)
-            adapter = StopAdapter(routeStops, markers)
+            markerMap[Pair(sharedViewModel.currentMarkerLatitude, sharedViewModel.currentMarkerLongitude)]?.showInfoWindow()
+            adapter = StopAdapter(routeStops, markerMap)
             stopsRecyclerView.adapter = adapter
         }
     }
@@ -290,7 +307,7 @@ class StopsFragmentChild : Fragment() {
                 .title(routeStop.name)
                 .icon(getMarkerIcon(sharedViewModel.currentCompany?.brandColor))
         )
-        markers.add(marker)
+        markerMap[Pair(routeStop.latitude, routeStop.longitude)] = marker
     }
 
     private fun getMarkerIcon(brandColor: String?): BitmapDescriptor? {
@@ -449,9 +466,9 @@ class StopsFragmentChild : Fragment() {
                 dynamicLinearLayout.visibility = View.GONE
             }
 
-            latitude = routeStopInfoItem.latitude
-            longitude = routeStopInfoItem.longitude
-            val clickedPosition = LatLng(latitude, longitude)
+            sharedViewModel.currentMarkerLatitude = routeStopInfoItem.latitude
+            sharedViewModel.currentMarkerLongitude = routeStopInfoItem.longitude
+            val clickedPosition = LatLng(sharedViewModel.currentMarkerLatitude, sharedViewModel.currentMarkerLongitude)
             markerItem.showInfoWindow()
             moveMapToLocation(clickedPosition, true)
 
@@ -499,7 +516,7 @@ class StopsFragmentChild : Fragment() {
         }
     }
 
-    private inner class StopAdapter(var routeStopInfoList: List<RouteStopInfo>, var markerList: List<Marker?>)//accepts a list of RouteStops objects from model layer
+    private inner class StopAdapter(var routeStopInfoList: List<RouteStopInfo>, var markerMap: HashMap<Pair<Double,Double>,Marker?>)//accepts a list of RouteStops objects from model layer
         : RecyclerView.Adapter<StopsFragmentChild.StopHolder>(), Filterable {
 
         //This list will hold RouteStopInfo objects that have been filtered through a search query. It is initialized using ...
@@ -521,7 +538,7 @@ class StopsFragmentChild : Fragment() {
         //binds the viewHolder with a RouteStopInfo object from a given position in filteredRouteStopInfoList
         override fun onBindViewHolder(holder: StopsFragmentChild.StopHolder, position: Int) {
             val routeStop = filteredRouteStopInfoList[position]
-            val marker = markerList[position]
+            val marker = markerMap[Pair(routeStop.latitude, routeStop.longitude)]
             holder.bind(routeStop, marker)
         }
 
