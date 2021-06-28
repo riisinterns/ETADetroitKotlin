@@ -1,10 +1,15 @@
 package com.riis.etaDetroitkotlin
 
+import android.app.ProgressDialog
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.graphics.toColorInt
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -30,9 +35,11 @@ class StopsFragmentParent : Fragment() {
     private lateinit var appBarLayout: AppBarLayout
     private lateinit var stopViewPageAdapter: StopViewPageAdapter
     private lateinit var viewPager: ViewPager2
+    private lateinit var progressDialog: ProgressDialog
 
     //links the fragment to a viewModel shared with MainActivity and other fragments
     private val sharedViewModel: SharedViewModel by activityViewModels()
+
 
     //CREATING THE FRAGMENT VIEW
     //--------------------------
@@ -42,12 +49,17 @@ class StopsFragmentParent : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
+        progressDialog = ProgressDialog(context)
+        progressDialog.show()
+
         //inflating the fragment_stops_parent layout as the fragment view
         val view = inflater.inflate(R.layout.fragment_stops_parent, container, false)
 
         //referencing layout views using their resource ids
         tabLayout = view.findViewById(R.id.tab_layout)
         appBarLayout = view.findViewById(R.id.app_bar_layout)
+
+        setUpAppBar()
 
         return view
     }
@@ -131,7 +143,22 @@ class StopsFragmentParent : Fragment() {
         }
     }
 
-    //Class for creating the ViewPager adapter
+
+    //Function to update the app bar UI
+    private fun setUpAppBar() {
+        appBarLayout.setBackgroundColor(Color.parseColor(sharedViewModel.currentCompany?.brandColor))
+
+        //accessing MainActivity's app bar and setting its title to the name of the currently selected Route
+        (requireActivity() as AppCompatActivity).supportActionBar?.title =
+            "${sharedViewModel.currentRoute?.name}"
+
+        //accessing MainActivity's app bar and setting its color to the color of the currently selected Company
+        val appBarColor =
+            ColorDrawable(sharedViewModel.currentCompany?.brandColor?.toColorInt()!!) //converts hex string -> int -> ColorDrawable
+        (requireActivity() as AppCompatActivity).supportActionBar?.setBackgroundDrawable(appBarColor)
+    }
+
+        //Class for creating the ViewPager adapter
     private inner class StopViewPageAdapter(
         //takes in a Fragment object, list of dayIds, and a list of directionIds
         fragment: Fragment,
@@ -145,7 +172,14 @@ class StopsFragmentParent : Fragment() {
         //creates a new StopsFragmentChild fragment using a single dayId (selected day of operation) and all of the directionIds for the current route
         //The StopViewPageAdapter will populate the ViewPager with child fragments, each with its own position.
         override fun createFragment(position: Int): Fragment {
-            return StopsFragmentChild.newInstance(days[position], directions, status)
+            val tmp: StopsFragmentChild = StopsFragmentChild.newInstance(days[position], directions, status)
+
+            Handler().postDelayed({
+                progressDialog.dismiss()
+            }, 1000)
+
+
+            return tmp
         }
 
     }

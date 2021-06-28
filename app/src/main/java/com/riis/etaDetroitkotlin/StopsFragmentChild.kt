@@ -1,15 +1,13 @@
 package com.riis.etaDetroitkotlin
 
+import android.app.ProgressDialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.view.inputmethod.EditorInfo
-import android.widget.Filter
-import android.widget.Filterable
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.SearchView
@@ -17,7 +15,9 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.graphics.toColorInt
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.activityViewModels
+import androidx.loader.content.AsyncTaskLoader
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -44,7 +44,7 @@ private const val ERROR_LOADING_ARGS = 0
 //This fragment is a child fragment that will be displayed within the StopsFragmentParent's ViewPager.
 //It contains a recycler view that displays a list of bus stops for the currently selected route and their associated timings
 
-class StopsFragmentChild : Fragment() {
+class StopsFragmentChild : Fragment(){
 
     //CLASS VARIABLES
     //---------------
@@ -53,6 +53,7 @@ class StopsFragmentChild : Fragment() {
     private lateinit var adapter: StopAdapter
     private lateinit var directionFab: FloatingActionButton
     private lateinit var noRoutesTextView: TextView
+    private lateinit var mapFragmentContainer: FragmentContainerView
 
     private var stopsVisibility: HashMap<Int, Int> = hashMapOf()
     private var tripStopsPositions: HashMap<Int, Int> = hashMapOf()
@@ -147,11 +148,14 @@ class StopsFragmentChild : Fragment() {
         noRoutesTextView = view.findViewById(R.id.NoRouteLbl)
         stopsRecyclerView.layoutManager = LinearLayoutManager(context)
 
+        mapFragmentContainer = view.findViewById(R.id.stops_map)
         mapFragment = (childFragmentManager.findFragmentById(R.id.stops_map) as SupportMapFragment)
         mapFragment.getMapAsync(callback)
 
+
+
         setDirectionImage() //update directionFab UI
-        setUpAppBar() //setup the AppBar UI
+
         setHasOptionsMenu(true) //allows this fragment to be able to add its own menu options to the Main Activity's app bar
         return view
     }
@@ -187,13 +191,13 @@ class StopsFragmentChild : Fragment() {
             //display the text view that informs the user that the current route has no bus stops
             noRoutesTextView.visibility = View.VISIBLE
         }
+
     }
 
     //WHEN THE FRAGMENT BECOMES VISIBLE
     //---------------------------------
     override fun onStart() {
         super.onStart()
-
 
 
         directionFab.setOnClickListener { //When the directionFab floating action button is clicked:
@@ -215,6 +219,12 @@ class StopsFragmentChild : Fragment() {
             //update the recycler view with the recently saved directionId as a filter
             updateUI()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        //progressBar.visibility = View.GONE
+        mapFragmentContainer.visibility  = View.VISIBLE
     }
 
     //ADDING MENU OPTIONS TO THE APP BAR PROVIDED BY MAIN ACTIVITY
@@ -316,17 +326,7 @@ class StopsFragmentChild : Fragment() {
         return BitmapDescriptorFactory.defaultMarker(hsv[0])
     }
 
-    //Function to update the app bar UI
-    private fun setUpAppBar() {
-        //accessing MainActivity's app bar and setting its title to the name of the currently selected Route
-        (requireActivity() as AppCompatActivity).supportActionBar?.title =
-            "${sharedViewModel.currentRoute?.name}"
 
-        //accessing MainActivity's app bar and setting its color to the color of the currently selected Company
-        val appBarColor =
-            ColorDrawable(sharedViewModel.currentCompany?.brandColor?.toColorInt()!!) //converts hex string -> int -> ColorDrawable
-        (requireActivity() as AppCompatActivity).supportActionBar?.setBackgroundDrawable(appBarColor)
-    }
 
     //Function that can be accessed by other fragments to create a new instance of this fragment and initialize it with arguments
     companion object {
