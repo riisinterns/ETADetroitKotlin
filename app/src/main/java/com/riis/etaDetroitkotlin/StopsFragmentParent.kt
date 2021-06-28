@@ -159,7 +159,7 @@ class StopsFragmentParent : Fragment() {
         (requireActivity() as AppCompatActivity).supportActionBar?.setBackgroundDrawable(appBarColor)
     }
 
-        //Class for creating the ViewPager adapter
+    //Class for creating the ViewPager adapter
     private inner class StopViewPageAdapter(
         //takes in a Fragment object, list of dayIds, and a list of directionIds
         fragment: Fragment,
@@ -167,6 +167,12 @@ class StopsFragmentParent : Fragment() {
         private var directions: ArrayList<Int>,
         private var status: Int
     ) : FragmentStateAdapter(fragment) {
+
+        init {
+            Handler().postDelayed({
+                progressDialog.dismiss()
+            }, 300)
+        }
 
         override fun getItemCount() = days.size
 
@@ -184,4 +190,6 @@ class StopsFragmentParent : Fragment() {
         }
 
     }
+
+
 }
