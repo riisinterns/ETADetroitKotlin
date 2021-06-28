@@ -1,10 +1,12 @@
 package com.riis.etaDetroitkotlin
 
+import android.app.ProgressDialog
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -30,9 +32,16 @@ class StopsFragmentParent : Fragment() {
     private lateinit var appBarLayout: AppBarLayout
     private lateinit var stopViewPageAdapter: StopViewPageAdapter
     private lateinit var viewPager: ViewPager2
+    private lateinit var progressDialog: ProgressDialog
 
     //links the fragment to a viewModel shared with MainActivity and other fragments
     private val sharedViewModel: SharedViewModel by activityViewModels()
+
+    override fun onStart() {
+        super.onStart()
+        progressDialog = ProgressDialog(context)
+        progressDialog.show()
+    }
 
     //CREATING THE FRAGMENT VIEW
     //--------------------------
@@ -147,7 +156,9 @@ class StopsFragmentParent : Fragment() {
         //creates a new StopsFragmentChild fragment using a single dayId (selected day of operation) and all of the directionIds for the current route
         //The StopViewPageAdapter will populate the ViewPager with child fragments, each with its own position.
         override fun createFragment(position: Int): Fragment {
-            return StopsFragmentChild.newInstance(days[position], directions, status)
+            val tmp: StopsFragmentChild = StopsFragmentChild.newInstance(days[position], directions, status)
+            progressDialog.dismiss()
+            return tmp
         }
 
     }

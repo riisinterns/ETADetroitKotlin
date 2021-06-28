@@ -1,5 +1,6 @@
 package com.riis.etaDetroitkotlin
 
+import android.app.ProgressDialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -74,6 +75,7 @@ class StopsFragmentChild : Fragment() {
 
     //links the fragment to a viewModel shared with MainActivity and other fragments
     private val sharedViewModel: SharedViewModel by activityViewModels()
+
 
     private val callback = OnMapReadyCallback { googleMap ->
         mapReady = true
