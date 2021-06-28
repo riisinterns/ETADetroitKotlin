@@ -86,18 +86,6 @@ class RoutesFragment : Fragment() {
         )
     }
 
-    //WHEN THE FRAGMENT VIEW IS NOT VISIBLE ON THE SCREEN
-    //---------------------------------------------------
-    override fun onPause() {
-        super.onPause()
-        //When user leaves fragment, app bar color reverts back to its original color (green)
-        val appBarColor =
-            //creating a ColorDrawable from the home screen's color resource id
-            ColorDrawable(ContextCompat.getColor(requireActivity(), R.color.ETAHeader))
-        //using the ColorDrawable to change the app bar color in MainActivity
-        (requireActivity() as AppCompatActivity).supportActionBar?.setBackgroundDrawable(appBarColor)
-    }
-
     //when the list of Routes objects changes, update the recycler view
     private fun updateRoutesDisplayed(routes: List<Routes>) {
         adapter = RouteAdapter(routes)
