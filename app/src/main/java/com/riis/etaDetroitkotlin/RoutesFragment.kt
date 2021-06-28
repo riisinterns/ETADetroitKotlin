@@ -11,7 +11,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
@@ -81,21 +80,22 @@ class RoutesFragment : Fragment() {
         sharedViewModel.routeListLiveData.observe(
             viewLifecycleOwner,
             { routes ->
+
+                if(routes.size == 1){
+                    if(sharedViewModel.hasEntered){
+                        sharedViewModel.hasEntered = false // reset
+                        view.findNavController().navigate(R.id.home_dest) // go home
+                    }
+                    else {
+                        sharedViewModel.hasEntered = true
+                        sharedViewModel.saveRoute(routes[0])
+                        view.findNavController().navigate(R.id.stopsFragmentParent)
+                    }
+                }
+
                 updateRoutesDisplayed(routes)
             }
         )
-    }
-
-    //WHEN THE FRAGMENT VIEW IS NOT VISIBLE ON THE SCREEN
-    //---------------------------------------------------
-    override fun onPause() {
-        super.onPause()
-        //When user leaves fragment, app bar color reverts back to its original color (green)
-        val appBarColor =
-            //creating a ColorDrawable from the home screen's color resource id
-            ColorDrawable(ContextCompat.getColor(requireActivity(), R.color.ETAHeader))
-        //using the ColorDrawable to change the app bar color in MainActivity
-        (requireActivity() as AppCompatActivity).supportActionBar?.setBackgroundDrawable(appBarColor)
     }
 
     //when the list of Routes objects changes, update the recycler view

@@ -1,12 +1,15 @@
 package com.riis.etaDetroitkotlin
 
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
@@ -65,6 +68,15 @@ class HomeFragment : Fragment() {
         )
     }
 
+    override fun onStart() {
+        super.onStart()
+        //When user leaves fragment, app bar color reverts back to its original color (green)
+        val appBarColor =
+            //creating a ColorDrawable from the home screen's color resource id
+            ColorDrawable(ContextCompat.getColor(requireActivity(), R.color.ETAHeader))
+        //using the ColorDrawable to change the app bar color in MainActivity
+        (requireActivity() as AppCompatActivity).supportActionBar?.setBackgroundDrawable(appBarColor)
+    }
 
     //FUNCTION TO UPDATE UI
     //---------------------
