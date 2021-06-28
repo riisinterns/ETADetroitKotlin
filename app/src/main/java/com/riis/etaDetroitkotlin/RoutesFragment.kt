@@ -11,7 +11,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
@@ -81,6 +80,19 @@ class RoutesFragment : Fragment() {
         sharedViewModel.routeListLiveData.observe(
             viewLifecycleOwner,
             { routes ->
+
+                if(routes.size == 1){
+                    if(sharedViewModel.hasEntered){
+                        sharedViewModel.hasEntered = false // reset
+                        view.findNavController().navigate(R.id.home_dest) // go home
+                    }
+                    else {
+                        sharedViewModel.hasEntered = true
+                        sharedViewModel.saveRoute(routes[0])
+                        view.findNavController().navigate(R.id.stopsFragmentParent)
+                    }
+                }
+
                 updateRoutesDisplayed(routes)
             }
         )
