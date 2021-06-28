@@ -145,6 +145,9 @@ class StopsFragmentChild : Fragment(){
 
         //referencing layout views using their resource ids
         stopsRecyclerView = view.findViewById(R.id.stops_recycler_view)
+
+        stopsRecyclerView.setBackgroundColor(Color.parseColor(sharedViewModel.currentCompany?.brandColor))
+
         directionFab = view.findViewById(R.id.fab)
         noRoutesTextView = view.findViewById(R.id.NoRouteLbl)
         stopsRecyclerView.layoutManager = LinearLayoutManager(context)
