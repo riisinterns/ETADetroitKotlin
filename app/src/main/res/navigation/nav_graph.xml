@@ -23,7 +23,11 @@
         <action
                 android:id="@+id/moveToRoutePlanner"
                 app:destination="@id/routePlanner_dest"
-            />
+
+                app:enterAnim="@anim/nav_default_enter_anim"
+                app:exitAnim="@anim/nav_default_exit_anim"
+                app:popExitAnim="@anim/nav_default_exit_anim"
+                app:popEnterAnim="@anim/nav_default_enter_anim" />
 
     </fragment>
 
@@ -35,6 +39,10 @@
             tools:layout="@layout/fragment_routes">
 
         <action
+                app:enterAnim="@anim/nav_default_enter_anim"
+                app:exitAnim="@anim/nav_default_exit_anim"
+                app:popExitAnim="@anim/nav_default_exit_anim"
+                app:popEnterAnim="@anim/nav_default_enter_anim"
                 android:id="@+id/route_to_stops"
                 app:destination="@id/stopsFragmentParent" />
     </fragment>
