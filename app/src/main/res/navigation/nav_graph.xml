@@ -20,6 +20,11 @@
                 android:id="@+id/action_home_dest_to_routeMapFragment"
                 app:destination="@id/routeMap_dest" />
 
+        <action
+                android:id="@+id/moveToRoutePlanner"
+                app:destination="@id/routePlanner_dest"
+            />
+
     </fragment>
 
     <!-- ========================= RoutesFragment ============================= -->
