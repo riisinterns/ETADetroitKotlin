@@ -112,6 +112,7 @@ class StopsFragmentParent : Fragment() {
             ) //creating an new instance of StopViewPageAdapter and initializing it
             //... with all the possible dayIds and directionIds belonging to the currently selected route
             viewPager.adapter = stopViewPageAdapter //setting the ViewPager adapter
+            viewPager.isUserInputEnabled = false
 
             //Creating a mediator that links the selected tab in the tab layout with the position of its associated child fragments in the ViewPager.
             TabLayoutMediator(tabLayout, viewPager) { tab, position ->
