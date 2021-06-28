@@ -81,7 +81,7 @@ class RoutesFragment : Fragment() {
             viewLifecycleOwner,
             { routes ->
 
-                if(routes.size == 1){
+                if(currentCompany?.name.let { it == "QLine" || it == "People Mover" } ){ //Hard coded for now
                     if(sharedViewModel.hasEntered){
                         sharedViewModel.hasEntered = false // reset
                         view.findNavController().navigate(R.id.home_dest) // go home
