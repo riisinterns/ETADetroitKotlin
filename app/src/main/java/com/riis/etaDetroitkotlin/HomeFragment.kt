@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -30,6 +31,7 @@ class HomeFragment : Fragment() {
     //GLOBAL CLASS VARIABLES
     //----------------------
     private lateinit var companyRecyclerView: RecyclerView
+    private lateinit var planMyRouteButton: Button
 
     //links the fragment to a viewModel shared with MainActivity and other fragments
     private val sharedViewModel: SharedViewModel by activityViewModels()
@@ -49,6 +51,16 @@ class HomeFragment : Fragment() {
         companyRecyclerView = view.findViewById(R.id.company_recycler_view) as RecyclerView
         companyRecyclerView.layoutManager =
             GridLayoutManager(context, 2) //second parameter specifies number of columns in grid
+
+
+
+        planMyRouteButton = view.findViewById(R.id.plan_my_route_button)
+
+
+        planMyRouteButton.setOnClickListener {
+            findNavController().navigate(R.id.moveToRoutePlanner) //navigate to RouteMapFragment
+            planMyRouteButton.visibility = View.GONE
+        }
 
         return view
     }

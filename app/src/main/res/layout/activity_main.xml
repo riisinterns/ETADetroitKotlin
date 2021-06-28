@@ -32,16 +32,6 @@
 
         </androidx.fragment.app.FragmentContainerView>
 
-        <Button
-                android:layout_gravity="center"
-                android:layout_width="match_parent"
-                android:drawableStart="@drawable/ic_route_planner"
-                android:layout_height="wrap_content"
-                android:text="@string/planMyRoute"
-                android:layout_margin="5dp"
-                android:background="@color/ETAHeader"
-                android:textColor="@color/white"
-                />
 
     </LinearLayout>
 

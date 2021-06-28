@@ -1,7 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/company_recycler_view"
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-</androidx.recyclerview.widget.RecyclerView>
+    <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/company_recycler_view"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent" />
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        <Button
+                android:layout_gravity="bottom"
+                android:layout_width="match_parent"
+                android:drawableStart="@drawable/ic_route_planner"
+                android:layout_height="wrap_content"
+                android:text="@string/planMyRoute"
+                android:layout_margin="5dp"
+                android:background="@color/ETAHeader"
+                android:textColor="@color/white"
+                android:id="@+id/plan_my_route_button"
+                />
+    </LinearLayout>
+
+</LinearLayout>

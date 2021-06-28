@@ -3,6 +3,10 @@ package com.riis.etaDetroitkotlin
 
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
+import android.widget.Button
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -23,6 +27,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var navController: NavController
     private lateinit var drawerMenu: DrawerLayout
     private lateinit var listOfCompanies: List<Company>
+    private lateinit var planMyRouteButton: Button
 
     //links the activity to a viewModel shared with the all of the fragments
     private val sharedViewModel: SharedViewModel by viewModels()
@@ -60,6 +65,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             setOf(R.id.home_dest), //setting the top-level fragment destinations in nav graph
             drawerMenu //giving the app bar access to a drawerLayout
         )
+
 
         //enabling the app bar and side navigation view to work with the nav controller
         setActionBar(navController, appBarConfig)
