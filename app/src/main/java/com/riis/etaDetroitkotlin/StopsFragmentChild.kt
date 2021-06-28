@@ -459,19 +459,21 @@ class StopsFragmentChild : Fragment(){
         //when an item view is clicked on:
         override fun onClick(view: View) {
 
+            sharedViewModel.currentMarkerLatitude = routeStopInfoItem.latitude
+            sharedViewModel.currentMarkerLongitude = routeStopInfoItem.longitude
+            val clickedPosition = LatLng(sharedViewModel.currentMarkerLatitude, sharedViewModel.currentMarkerLongitude)
+
             //If its dynamicLinearLayout is invisible, make it visible and vice versa
             if (dynamicLinearLayout.visibility == View.GONE) {
                 dynamicLinearLayout.visibility = View.VISIBLE
                 setArrivalTimes()
+
+                moveMapToLocation(clickedPosition, true)
+                markerItem.showInfoWindow()
             } else {
                 dynamicLinearLayout.visibility = View.GONE
             }
 
-            sharedViewModel.currentMarkerLatitude = routeStopInfoItem.latitude
-            sharedViewModel.currentMarkerLongitude = routeStopInfoItem.longitude
-            val clickedPosition = LatLng(sharedViewModel.currentMarkerLatitude, sharedViewModel.currentMarkerLongitude)
-            markerItem.showInfoWindow()
-            moveMapToLocation(clickedPosition, true)
 
             //update the itemView's dynamicLinearLayout visibility record in the stopsVisibility hashmap
             stopsVisibility[routeStopInfoItem.stopId] = dynamicLinearLayout.visibility
