@@ -73,17 +73,24 @@
     <fragment
             android:id="@+id/stopsFragmentParent"
             android:name="com.riis.etaDetroitkotlin.fragment.StopsFragmentParent"
-             />
+            tools:layout="@layout/fragment_stops_parent"/>
+
+    <!-- ======================= StopsFragmentChild ========================== -->
+    <fragment
+        android:id="@+id/stopsFragmentChild"
+        android:name="com.riis.etaDetroitkotlin.fragment.StopsFragmentChild"
+        tools:layout="@layout/fragment_stops_child"/>
 
     <!-- ======================== RouteLoadingDialog ========================== -->
     <dialog
             android:id="@+id/routeLoading_dest"
             android:name="com.riis.etaDetroitkotlin.fragment.RouteLoadingDialog"
-            android:label="RouteLoadingDialog">
+            android:label="RouteLoadingDialog"
+            tools:layout="@layout/loading_dialog">
 
-        <argument
-                android:name="route"
-                app:argType="string" />
+            <argument
+                    android:name="route"
+                    app:argType="string" />
 
     </dialog>
 
