@@ -16,6 +16,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.common.api.ApiException
@@ -32,6 +33,7 @@ import com.google.android.material.timepicker.TimeFormat
 import com.google.gson.GsonBuilder
 import com.riis.etaDetroitkotlin.R
 import com.riis.etaDetroitkotlin.RouteResultAdapter
+import com.riis.etaDetroitkotlin.SharedViewModel
 import okhttp3.*
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -69,6 +71,9 @@ class Agency(val name: String)
 class TextData(val text: String)
 
 class RoutePlannerFragment : Fragment() {
+    //links the fragment to a viewModel shared with MainActivity and other fragments
+    private val sharedViewModel: SharedViewModel by activityViewModels()
+
     //important class variables
     var routesRecyclerView: RecyclerView? = null
     private lateinit var dateButton: Button
@@ -96,6 +101,16 @@ class RoutePlannerFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        //directionResponse = sharedViewModel.currentDirectionResponse!!
+
+        if (sharedViewModel.currentDirectionResponse == null){
+            Log.d(TAG, "is null")
+        }
+        else{
+            Log.d(TAG, "not null")
+        }
+
 
         //The following block of code deals with initializing the autocomplete feature (helps speed it up)
         if (!Places.isInitialized()) {
@@ -223,12 +238,27 @@ class RoutePlannerFragment : Fragment() {
                         copyrightTextView.text = getString(R.string.unable_to_generate_route)
                         copyrightTextView.setTextColor(Color.RED)
                     }
+                    sharedViewModel.saveDirectionResponse(directionResponse)
                 }
             }
 
         })
 
         return ""
+    }
+
+    private fun restoreDirectionResponse(){
+        if (sharedViewModel.currentDirectionResponse?.status == "OK") {
+
+            copyrightTextView.text = sharedViewModel.currentDirectionResponse!!.routes[0].copyrights // required by Google to use their api
+            routesRecyclerView?.adapter = RouteResultAdapter(sharedViewModel.currentDirectionResponse!!)
+
+        } else {
+            copyrightTextView.text = getString(R.string.unable_to_generate_route)
+            copyrightTextView.setTextColor(Color.RED)
+        }
+
+        Log.d(TAG, sharedViewModel.currentDirectionResponse.toString())
     }
 
     private fun openTimePicker() {
@@ -295,7 +325,7 @@ class RoutePlannerFragment : Fragment() {
                     ArrayAdapter(requireContext(), R.layout.list_item, ArrayList(list.keys))
                 (field as? AutoCompleteTextView)?.setAdapter(adapter)
 
-            }?.addOnFailureListener { exception: Exception? ->
+            }.addOnFailureListener { exception: Exception? ->
                 if (exception is ApiException) {
                     Log.e(TAG, "Place not found: " + exception.statusCode)
                 }
@@ -306,6 +336,14 @@ class RoutePlannerFragment : Fragment() {
     {
         val imm = context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(view.windowToken, 0)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (sharedViewModel.currentDirectionResponse != null){
+            restoreDirectionResponse()
+            Log.d(TAG, "restore")
+        }
     }
 
 
