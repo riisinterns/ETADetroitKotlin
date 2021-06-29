@@ -46,6 +46,8 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
+        sharedViewModel.clearDirectionResponse()
+
         //inflating the fragment_home layout as the fragment view
         val view = inflater.inflate(R.layout.fragment_home, container, false)
 

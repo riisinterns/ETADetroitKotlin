@@ -80,6 +80,11 @@ class RouteMapFragment : Fragment(), View.OnClickListener {
         }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        sharedViewModel.clearDirectionResponse()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

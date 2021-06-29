@@ -41,6 +41,11 @@ class StopsFragmentParent : Fragment() {
     //links the fragment to a viewModel shared with MainActivity and other fragments
     private val sharedViewModel: SharedViewModel by activityViewModels()
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        sharedViewModel.clearDirectionResponse()
+    }
+
 
     //CREATING THE FRAGMENT VIEW
     //--------------------------

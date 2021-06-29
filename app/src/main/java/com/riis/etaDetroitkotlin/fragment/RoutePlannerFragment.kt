@@ -213,7 +213,7 @@ class RoutePlannerFragment : Fragment() {
         val url =
             "https://maps.googleapis.com/maps/api/directions/json?origin=${origin}&destination=${destination}&departure_time=${departureTime}&mode=transit&alternatives=true&key=${key}"
 
-        Log.i(TAG, url)
+        //Log.i(TAG, url)
         val client = OkHttpClient()
 
         val request = Request.Builder().url(url).build()
@@ -250,7 +250,6 @@ class RoutePlannerFragment : Fragment() {
 
     private fun restoreDirectionResponse(){
         if (sharedViewModel.currentDirectionResponse?.status == "OK") {
-            Log.d(TAG, sharedViewModel.currentDirectionResponse!!.routes[0].copyrights)
             copyrightTextView.text = sharedViewModel.currentDirectionResponse!!.routes[0].copyrights // required by Google to use their api
             val apple = sharedViewModel.currentDirectionResponse
 
@@ -262,7 +261,6 @@ class RoutePlannerFragment : Fragment() {
             copyrightTextView.setTextColor(Color.RED)
         }
 
-        Log.d(TAG, sharedViewModel.currentDirectionResponse.toString())
     }
 
     private fun openTimePicker() {
@@ -351,17 +349,7 @@ class RoutePlannerFragment : Fragment() {
         }
     }
 
-    /*
-    override fun onPrimaryNavigationFragmentChanged(isPrimaryNavigationFragment: Boolean) {
-        super.onPrimaryNavigationFragmentChanged(isPrimaryNavigationFragment)
-        Log.d(TAG,"navigate to RoutePlanner: $isPrimaryNavigationFragment")
-        if (!isPrimaryNavigationFragment){
-            Log.d(TAG,"directionResponse cleared: $isPrimaryNavigationFragment")
-            sharedViewModel.clearDirectionResponse()
-        }
-    }
 
-     */
 
 
 

@@ -117,6 +117,8 @@ class StopsFragmentChild : Fragment(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        sharedViewModel.clearDirectionResponse()
+
         //retrieving the arguments from the bundle associated with the keys DAY_KEY and DIRECTIONS_KEY
         day = arguments?.getInt(DAY_KEY)
         directions = arguments?.getIntegerArrayList(DIRECTIONS_KEY)

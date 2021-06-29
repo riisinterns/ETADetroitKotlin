@@ -96,22 +96,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return findNavController(R.id.nav_host_fragment).navigateUp(appBarConfig)
     }
 
-    override fun getSupportFragmentManager(): FragmentManager {
-        super.getSupportFragmentManager().addFragmentOnAttachListener { fragmentManager, fragment ->
-
-            override fun onBackStackChanged(){
-                val currentEntry = supportFragmentManager.getBackStackEntryAt(supportFragmentManager.backStackEntryCount-1)
-                if (currentEntry != supportFragmentManager.findFragmentById(R.id.routePlanner_dest)){
-                    sharedViewModel.clearDirectionResponse()
-                    Log.d(TAG, "directionResponse cleared")
-                }
-                super.onBackStackChanged()
-            }
-        }
-
-
-    }
-
 
     //HANDLING NAVIGATION WHEN AN ITEM IS SELECTED FROM THE SIDE NAVIGATION MENU (drawer_menu.xml)
     //--------------------------------------------------------------------------------------------
