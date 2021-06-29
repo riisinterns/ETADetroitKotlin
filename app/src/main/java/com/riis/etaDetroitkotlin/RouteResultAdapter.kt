@@ -1,6 +1,7 @@
 package com.riis.etaDetroitkotlin
 
 import android.annotation.SuppressLint
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,9 +13,11 @@ import com.riis.etaDetroitkotlin.fragment.BottomSheetDialog
 import com.riis.etaDetroitkotlin.fragment.DirectionResponse
 import com.riis.etaDetroitkotlin.fragment.GeneratedRoutes
 
+private val TAG = "RouteResultAdapter"
 
 class RouteResultAdapter(private val directionResponse: DirectionResponse) :
     RecyclerView.Adapter<RouteResultAdapter.RouteResultViewHolder>() {
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RouteResultViewHolder {
 
@@ -30,6 +33,7 @@ class RouteResultAdapter(private val directionResponse: DirectionResponse) :
 
     override fun getItemCount(): Int {
         return directionResponse.routes.count()
+
     }
 
     inner class RouteResultViewHolder(v: View) : RecyclerView.ViewHolder(v), View.OnClickListener  {

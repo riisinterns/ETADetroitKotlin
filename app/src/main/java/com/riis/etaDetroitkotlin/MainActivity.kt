@@ -2,6 +2,7 @@ package com.riis.etaDetroitkotlin
 
 
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.view.View.GONE
@@ -11,6 +12,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
@@ -18,6 +20,7 @@ import androidx.navigation.ui.*
 import com.google.android.material.navigation.NavigationView
 import com.riis.etaDetroitkotlin.model.Company
 
+private val TAG = "MainActivity"
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -92,6 +95,23 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // tells the navController how to navigate based on the state of the app bar
         return findNavController(R.id.nav_host_fragment).navigateUp(appBarConfig)
     }
+
+    override fun getSupportFragmentManager(): FragmentManager {
+        super.getSupportFragmentManager().addFragmentOnAttachListener { fragmentManager, fragment ->
+
+            override fun onBackStackChanged(){
+                val currentEntry = supportFragmentManager.getBackStackEntryAt(supportFragmentManager.backStackEntryCount-1)
+                if (currentEntry != supportFragmentManager.findFragmentById(R.id.routePlanner_dest)){
+                    sharedViewModel.clearDirectionResponse()
+                    Log.d(TAG, "directionResponse cleared")
+                }
+                super.onBackStackChanged()
+            }
+        }
+
+
+    }
+
 
     //HANDLING NAVIGATION WHEN AN ITEM IS SELECTED FROM THE SIDE NAVIGATION MENU (drawer_menu.xml)
     //--------------------------------------------------------------------------------------------

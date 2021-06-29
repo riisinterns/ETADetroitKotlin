@@ -27,7 +27,7 @@ class SharedViewModel : ViewModel() {
     // ... to allow observers to listen to any changes to it
     private val companyContainer = MutableLiveData<Company>()
     private val routeContainer = MutableLiveData<Routes>()
-    private val directionResponseContainer = MutableLiveData<DirectionResponse>()
+    private val directionResponseContainer = MutableLiveData<DirectionResponse?>()
 
     var routeListLiveData: LiveData<List<Routes>> =
         //switches the Routes (observed in RoutesFragment) based of the company that gets saved
@@ -69,5 +69,9 @@ class SharedViewModel : ViewModel() {
 
     fun saveDirectionResponse(newDirectionResponse: DirectionResponse) {
         directionResponseContainer.value = newDirectionResponse
+    }
+
+    fun clearDirectionResponse() {
+        directionResponseContainer.value = null
     }
 }

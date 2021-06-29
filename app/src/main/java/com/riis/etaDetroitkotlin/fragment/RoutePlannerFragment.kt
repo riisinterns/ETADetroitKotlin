@@ -105,10 +105,10 @@ class RoutePlannerFragment : Fragment() {
         //directionResponse = sharedViewModel.currentDirectionResponse!!
 
         if (sharedViewModel.currentDirectionResponse == null){
-            Log.d(TAG, "is null")
+            Log.d(TAG, "directionResponse is null")
         }
         else{
-            Log.d(TAG, "not null")
+            Log.d(TAG, "directionResponse is not null")
         }
 
 
@@ -133,6 +133,7 @@ class RoutePlannerFragment : Fragment() {
         getRouteButton = view.findViewById(R.id.getRouteButton)
         copyrightTextView = view.findViewById(R.id.copyrightTextView)
         routesRecyclerView = view.findViewById<View>(R.id.routesRecyclerView) as RecyclerView
+        routesRecyclerView?.layoutManager = LinearLayoutManager(context)
 
         departureLocationQuery = view.findViewById(R.id.fromField)
         arrivalLocationQuery = view.findViewById(R.id.toField)
@@ -153,7 +154,7 @@ class RoutePlannerFragment : Fragment() {
                 milliseconds(time).toString(),
                 apiKey
             )
-            routesRecyclerView?.layoutManager = LinearLayoutManager(context)
+            //routesRecyclerView?.layoutManager = LinearLayoutManager(context)
 
             hideKeyboard(requireContext(), view)
         }
@@ -249,9 +250,12 @@ class RoutePlannerFragment : Fragment() {
 
     private fun restoreDirectionResponse(){
         if (sharedViewModel.currentDirectionResponse?.status == "OK") {
-
+            Log.d(TAG, sharedViewModel.currentDirectionResponse!!.routes[0].copyrights)
             copyrightTextView.text = sharedViewModel.currentDirectionResponse!!.routes[0].copyrights // required by Google to use their api
-            routesRecyclerView?.adapter = RouteResultAdapter(sharedViewModel.currentDirectionResponse!!)
+            val apple = sharedViewModel.currentDirectionResponse
+
+            routesRecyclerView?.adapter = apple?.let { RouteResultAdapter(it) }
+
 
         } else {
             copyrightTextView.text = getString(R.string.unable_to_generate_route)
@@ -340,11 +344,26 @@ class RoutePlannerFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+
         if (sharedViewModel.currentDirectionResponse != null){
+            Log.d(TAG, "restoring previous directionResponse")
             restoreDirectionResponse()
-            Log.d(TAG, "restore")
         }
     }
+
+    /*
+    override fun onPrimaryNavigationFragmentChanged(isPrimaryNavigationFragment: Boolean) {
+        super.onPrimaryNavigationFragmentChanged(isPrimaryNavigationFragment)
+        Log.d(TAG,"navigate to RoutePlanner: $isPrimaryNavigationFragment")
+        if (!isPrimaryNavigationFragment){
+            Log.d(TAG,"directionResponse cleared: $isPrimaryNavigationFragment")
+            sharedViewModel.clearDirectionResponse()
+        }
+    }
+
+     */
+
+
 
 
 }
