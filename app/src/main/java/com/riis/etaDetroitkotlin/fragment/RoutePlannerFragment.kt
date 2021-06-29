@@ -11,9 +11,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.core.content.ContextCompat
+import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
+import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.Places
@@ -28,11 +32,13 @@ import com.google.android.material.timepicker.TimeFormat
 import com.google.gson.GsonBuilder
 import com.riis.etaDetroitkotlin.R
 import com.riis.etaDetroitkotlin.RouteResultAdapter
+import com.riis.etaDetroitkotlin.SliderAdapter
 import okhttp3.*
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
+
 
 class DirectionResponse(val routes: List<GeneratedRoutes>, val status: String)
 class GeneratedRoutes(val copyrights: String, val fare: TextData? = null, val legs: List<Legs>)
@@ -54,7 +60,9 @@ class Steps(
 class TransitDetails(
     val departure_time: TextData,
     val arrival_time: TextData,
-    val line: Line
+    val line: Line,
+    val num_stops :String,
+    val headsign : String
 )
 
 class Line(val short_name: String, val agencies: List<Agency>)
@@ -95,13 +103,13 @@ class RoutePlannerFragment : Fragment() {
         arrivalLocationQuery = view.findViewById(R.id.toField)
 
         copyrightTextView.text = "Departure time set to now by default"
-        var time : String
+        var time: String
         dateButton.setOnClickListener { (openDatePicker()) }
         timeButton.setOnClickListener { (openTimePicker()) }
         getRouteButton.setOnClickListener {
-            time = if (currentDate == " " || currentTime == " "){
+            time = if (currentDate == " " || currentTime == " ") {
                 SimpleDateFormat("MMM dd, yyyy HH:mm", Locale.getDefault()).format(Date())
-            }else{
+            } else {
                 "$currentDate $currentTime"
             }
             getApiDirectionData(
@@ -139,6 +147,9 @@ class RoutePlannerFragment : Fragment() {
 
             override fun afterTextChanged(s: Editable?) {}
         })
+
+
+
 
     }
 
@@ -280,6 +291,8 @@ class RoutePlannerFragment : Fragment() {
                 }
             }
     }
+
+
 
 
 }

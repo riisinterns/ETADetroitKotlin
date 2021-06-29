@@ -99,4 +99,6 @@ dependencies {
     api("androidx.navigation:navigation-fragment-ktx:2.3.5")
     api("androidx.navigation:navigation-ui-ktx:2.3.5")
     api("androidx.navigation:navigation-dynamic-features-fragment:2.3.5")
+
+    implementation 'androidx.viewpager2:viewpager2:1.0.0-beta02'
 }
