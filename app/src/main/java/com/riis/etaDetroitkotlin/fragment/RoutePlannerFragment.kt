@@ -1,6 +1,8 @@
 package com.riis.etaDetroitkotlin.fragment
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
@@ -137,6 +139,8 @@ class RoutePlannerFragment : Fragment() {
                 apiKey
             )
             routesRecyclerView?.layoutManager = LinearLayoutManager(context)
+
+            hideKeyboard(requireContext(), view)
         }
 
         departureLocationQuery.addTextChangedListener(object : TextWatcher {
@@ -298,13 +302,11 @@ class RoutePlannerFragment : Fragment() {
             }
     }
 
-//    private fun closeKeyboard() {
-//        val view: View = context.getCurrentFocus()
-//        (getSystemService<Any>(context.INPUT_METHOD_SERVICE) as InputMethodManager?)?.hideSoftInputFromWindow(
-//            view.windowToken,
-//            0
-//        )
-//    }
+    private fun hideKeyboard(context : Context, view : View)
+    {
+        val imm = context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
+    }
 
 
 }
