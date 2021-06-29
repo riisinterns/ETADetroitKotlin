@@ -1,8 +1,10 @@
 package com.riis.etaDetroitkotlin.fragment
 
+import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,6 +36,7 @@ class HomeFragment : Fragment() {
     //----------------------
     private lateinit var companyRecyclerView: RecyclerView
     private lateinit var planMyRouteButton: Button
+    private var actionBarHeight = 0
 
     //links the fragment to a viewModel shared with MainActivity and other fragments
     private val sharedViewModel: SharedViewModel by activityViewModels()
@@ -56,11 +59,12 @@ class HomeFragment : Fragment() {
         companyRecyclerView.layoutManager =
             GridLayoutManager(context, 2) //second parameter specifies number of columns in grid
 
-
+        val tv = TypedValue()
+        if (requireActivity().theme.resolveAttribute(android.R.attr.actionBarSize, tv, true))
+            actionBarHeight =
+                TypedValue.complexToDimensionPixelSize(tv.data, resources.displayMetrics)
 
         planMyRouteButton = view.findViewById(R.id.plan_my_route_button)
-
-
         planMyRouteButton.setOnClickListener {
             findNavController().navigate(R.id.moveToRoutePlanner) //navigate to RouteMapFragment
             planMyRouteButton.visibility = View.GONE
@@ -103,6 +107,9 @@ class HomeFragment : Fragment() {
         view?.doOnPreDraw { startPostponedEnterTransition() }
         companyRecyclerView.adapter = CompanyAdapter(companies)
     }
+
+    val Int.px: Int
+        get() = (this * Resources.getSystem().displayMetrics.density).toInt()
 
     //VIEW HOLDER CLASS FOR RECYCLER VIEW
     //-----------------------------------
@@ -167,6 +174,12 @@ class HomeFragment : Fragment() {
                 : CompanyHolder {
             //inflates the list_item_transport layout and passes the resulting View to a new instance of CompanyHolder
             val itemView = layoutInflater.inflate(R.layout.list_item_transport, parent, false)
+            val height = (parent.height - actionBarHeight - 16.px) / 3
+
+            val params = itemView.layoutParams
+            params.height = height
+
+            itemView.layoutParams = params
             return CompanyHolder(itemView)
         }
 
