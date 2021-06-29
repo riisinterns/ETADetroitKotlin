@@ -1,4 +1,4 @@
-package com.riis.etaDetroitkotlin
+package com.riis.etaDetroitkotlin.fragment
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -17,6 +17,8 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.TransitionInflater
+import com.riis.etaDetroitkotlin.R
+import com.riis.etaDetroitkotlin.SharedViewModel
 import com.riis.etaDetroitkotlin.model.Company
 import com.riis.etaDetroitkotlin.model.Routes
 import java.util.*

@@ -1,4 +1,4 @@
-package com.riis.etaDetroitkotlin
+package com.riis.etaDetroitkotlin.fragment
 
 import android.app.ProgressDialog
 import android.graphics.Color
@@ -29,6 +29,8 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.riis.etaDetroitkotlin.R
+import com.riis.etaDetroitkotlin.SharedViewModel
 import com.riis.etaDetroitkotlin.model.RouteStopInfo
 import java.util.*
 

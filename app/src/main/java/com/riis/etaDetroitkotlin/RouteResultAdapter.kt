@@ -5,9 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
+import com.riis.etaDetroitkotlin.fragment.BottomSheetDialog
 import com.riis.etaDetroitkotlin.fragment.DirectionResponse
 import com.riis.etaDetroitkotlin.fragment.GeneratedRoutes
+
 
 class RouteResultAdapter(private val directionResponse: DirectionResponse) :
     RecyclerView.Adapter<RouteResultViewHolder>() {
@@ -29,7 +33,7 @@ class RouteResultAdapter(private val directionResponse: DirectionResponse) :
     }
 }
 
-class RouteResultViewHolder(v: View) : RecyclerView.ViewHolder(v) {
+class RouteResultViewHolder(v: View) : RecyclerView.ViewHolder(v), View.OnClickListener  {
     private lateinit var routeGen: GeneratedRoutes
     private val transitDetailsTextView: TextView =
         itemView.findViewById(R.id.transitDetailsTextView)
@@ -58,5 +62,14 @@ class RouteResultViewHolder(v: View) : RecyclerView.ViewHolder(v) {
             this.routeGen.fare?.text else fareTextView.text = "0.00"
         distanceTextView.text = this.routeGen.legs[0].distance.text
 
+    }
+
+    init {
+        itemView.setOnClickListener(this) //setting a click listener on each itemView
+    }
+
+    override fun onClick(v: View?) {
+        Toast.makeText(itemView.context, "Apple", Toast.LENGTH_SHORT).show()
+        BottomSheetDialog().show((itemView.context as AppCompatActivity).supportFragmentManager.beginTransaction(), "exampleBottomSheet")
     }
 }

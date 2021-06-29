@@ -71,7 +71,7 @@ class RoutePlannerFragment : Fragment() {
     private lateinit var copyrightTextView: TextView
     private var currentDate: String = " "
     private var currentTime: String = " "
-    private var apiKey: String = "AIzaSyBVQ6Je04mW9TapTvsJoGOn5xVrw2xaFAY"
+    private var apiKey: String = "AIzaSyDVcjsemMo8_pmo8m57kb8YE41cNzN_7Oo"
     private val TAG = "DEBUG"
 
     override fun onCreateView(

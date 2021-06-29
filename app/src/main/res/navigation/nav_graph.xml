@@ -8,7 +8,7 @@
     <!-- ========================== HomeFragment ============================== -->
     <fragment
             android:id="@+id/home_dest"
-            android:name="com.riis.etaDetroitkotlin.HomeFragment"
+            android:name="com.riis.etaDetroitkotlin.fragment.HomeFragment"
             android:label="@string/app_name"
             tools:layout="@layout/fragment_home">
 
@@ -34,7 +34,7 @@
     <!-- ========================= RoutesFragment ============================= -->
     <fragment
             android:id="@+id/routes_dest"
-            android:name="com.riis.etaDetroitkotlin.RoutesFragment"
+            android:name="com.riis.etaDetroitkotlin.fragment.RoutesFragment"
             android:label="@string/routes_label"
             tools:layout="@layout/fragment_routes">
 
@@ -72,7 +72,7 @@
     <!-- ======================= StopsFragmentParent ========================== -->
     <fragment
             android:id="@+id/stopsFragmentParent"
-            android:name="com.riis.etaDetroitkotlin.StopsFragmentParent"
+            android:name="com.riis.etaDetroitkotlin.fragment.StopsFragmentParent"
              />
 
     <!-- ======================== RouteLoadingDialog ========================== -->

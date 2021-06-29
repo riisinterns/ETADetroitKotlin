@@ -1,6 +1,5 @@
-package com.riis.etaDetroitkotlin
+package com.riis.etaDetroitkotlin.fragment
 
-import android.app.ProgressDialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -17,7 +16,8 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import com.riis.etaDetroitkotlin.fragment.RouteLoadingDialog
+import com.riis.etaDetroitkotlin.R
+import com.riis.etaDetroitkotlin.SharedViewModel
 import com.riis.etaDetroitkotlin.model.RouteStopInfo
 
 
@@ -180,7 +180,8 @@ class StopsFragmentParent : Fragment() {
         //creates a new StopsFragmentChild fragment using a single dayId (selected day of operation) and all of the directionIds for the current route
         //The StopViewPageAdapter will populate the ViewPager with child fragments, each with its own position.
         override fun createFragment(position: Int): Fragment {
-            val tmp: StopsFragmentChild = StopsFragmentChild.newInstance(days[position], directions, status)
+            val tmp: StopsFragmentChild =
+                StopsFragmentChild.newInstance(days[position], directions, status)
 
             Handler().postDelayed({
                 progressDialog.dismiss()
