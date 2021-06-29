@@ -94,11 +94,16 @@ class RoutePlannerFragment : Fragment() {
         departureLocationQuery = view.findViewById(R.id.fromField)
         arrivalLocationQuery = view.findViewById(R.id.toField)
 
+        copyrightTextView.text = "Departure time set to now by default"
+        var time : String
         dateButton.setOnClickListener { (openDatePicker()) }
         timeButton.setOnClickListener { (openTimePicker()) }
         getRouteButton.setOnClickListener {
-            val time = "$currentDate $currentTime"
-
+            time = if (currentDate == " " || currentTime == " "){
+                SimpleDateFormat("MMM dd, yyyy HH:mm", Locale.getDefault()).format(Date())
+            }else{
+                "$currentDate $currentTime"
+            }
             getApiDirectionData(
                 departureLocationQuery.text.toString(),
                 arrivalLocationQuery.text.toString(),
@@ -106,7 +111,6 @@ class RoutePlannerFragment : Fragment() {
                 apiKey
             )
             routesRecyclerView?.layoutManager = LinearLayoutManager(context)
-
         }
 
         departureLocationQuery.addTextChangedListener(object : TextWatcher {
