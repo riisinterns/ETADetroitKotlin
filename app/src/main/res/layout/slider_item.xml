@@ -22,25 +22,34 @@
 
     <TextView
         android:id="@+id/detailsTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="21dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="24dp"
+        android:ellipsize="none"
+        android:maxLines="6"
         android:text="9 min (10 stops) · Stop ID: 1256"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/detailsLabel"
         app:layout_constraintTop_toBottomOf="@+id/distanceModalTextView"
         tools:textStyle="bold" />
 
     <TextView
         android:id="@+id/instructionsTextView"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:maxLines="2"
+        android:layout_marginEnd="81dp"
+        android:drawableLeft="@drawable/baseline_directions_bus_black_36"
+        android:drawablePadding="5dp"
+        android:ellipsize="end"
+        android:maxLines="5"
         android:text="Bus towards Beaubien &amp; Jefferson"
         android:textSize="20sp"
         android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -74,6 +83,7 @@
         android:layout_marginTop="8dp"
         android:text="Details:"
         app:layout_constraintBottom_toBottomOf="@+id/detailsTextView"
+        app:layout_constraintEnd_toEndOf="@+id/distanceLabel"
         app:layout_constraintStart_toStartOf="@+id/distanceLabel"
         app:layout_constraintTop_toBottomOf="@+id/distanceModalTextView" />
 

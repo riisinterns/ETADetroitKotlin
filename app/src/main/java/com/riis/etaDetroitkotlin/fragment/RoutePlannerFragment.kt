@@ -10,29 +10,26 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
-import androidx.core.content.ContextCompat
-import androidx.core.text.HtmlCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.widget.ViewPager2
-import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken
 import com.google.android.libraries.places.api.model.RectangularBounds
-import com.google.android.libraries.places.api.model.TypeFilter
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse
+import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
 import com.google.gson.GsonBuilder
 import com.riis.etaDetroitkotlin.R
 import com.riis.etaDetroitkotlin.RouteResultAdapter
-import com.riis.etaDetroitkotlin.SliderAdapter
 import okhttp3.*
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -70,6 +67,7 @@ class Agency(val name: String)
 class TextData(val text: String)
 
 class RoutePlannerFragment : Fragment() {
+    //important class variables
     var routesRecyclerView: RecyclerView? = null
     private lateinit var dateButton: Button
     private lateinit var timeButton: Button
@@ -82,6 +80,10 @@ class RoutePlannerFragment : Fragment() {
     private var apiKey: String = "AIzaSyDVcjsemMo8_pmo8m57kb8YE41cNzN_7Oo"
     private val TAG = "DEBUG"
 
+    private lateinit var placesClient: PlacesClient
+    private lateinit var token: AutocompleteSessionToken
+    private lateinit var bounds: RectangularBounds
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -92,6 +94,22 @@ class RoutePlannerFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        //The following block of code deals with initializing the autocomplete feature (helps speed it up)
+        if (!Places.isInitialized()) {
+            context?.let { Places.initialize(it, apiKey) }
+        }
+        placesClient = context?.let { Places.createClient(it) }!!
+        // Create a new token for the autocomplete session. Pass this to FindAutocompletePredictionsRequest,
+        // and once again when the user makes a selection (for example when calling fetchPlace()).
+        token = AutocompleteSessionToken.newInstance()
+
+        // Create a RectangularBounds object.
+        bounds = RectangularBounds.newInstance(
+            LatLng(42.3482862, -83.068969),
+            LatLng(42.35, -83.1)
+        )
+        //end
 
         dateButton = view.findViewById(R.id.dateButton)
         timeButton = view.findViewById(R.id.timeButton)
@@ -175,6 +193,7 @@ class RoutePlannerFragment : Fragment() {
         val url =
             "https://maps.googleapis.com/maps/api/directions/json?origin=${origin}&destination=${destination}&departure_time=${departureTime}&mode=transit&alternatives=true&key=${key}"
 
+        Log.i(TAG, url)
         val client = OkHttpClient()
 
         val request = Request.Builder().url(url).build()
@@ -245,33 +264,20 @@ class RoutePlannerFragment : Fragment() {
 
     private fun autocompleteLocation(query: String, field: AutoCompleteTextView) {
 
-        if (!Places.isInitialized()) {
-            context?.let { Places.initialize(it, apiKey) }
-        }
-        val placesClient = context?.let { Places.createClient(it) }
-        // Create a new token for the autocomplete session. Pass this to FindAutocompletePredictionsRequest,
-        // and once again when the user makes a selection (for example when calling fetchPlace()).
-        val token = AutocompleteSessionToken.newInstance()
-
-        // Create a RectangularBounds object.
-        val bounds = RectangularBounds.newInstance(
-            LatLng(42.3482862, -83.068969),
-            LatLng(42.35, -83.1)
-        )
         // Use the builder to create a FindAutocompletePredictionsRequest.
         val request =
             FindAutocompletePredictionsRequest.builder()
                 // Call either setLocationBias() OR setLocationRestriction().
                 .setLocationBias(bounds)
-                //.setLocationRestriction(bounds)
+//                .setLocationRestriction(bounds)
                 .setOrigin(LatLng(42.3482862, -83.068969))
-                .setCountries("US", "CA")
-                .setTypeFilter(TypeFilter.ADDRESS)
+                .setCountries("US")
+//                .setTypeFilter(TypeFilter.ESTABLISHMENT)
                 .setSessionToken(token)
                 .setQuery(query)
                 .build()
-        placesClient?.findAutocompletePredictions(request)
-            ?.addOnSuccessListener { response: FindAutocompletePredictionsResponse ->
+        placesClient.findAutocompletePredictions(request)
+            .addOnSuccessListener { response: FindAutocompletePredictionsResponse ->
 
                 val list: MutableMap<String, String> = mutableMapOf()
 
@@ -292,7 +298,13 @@ class RoutePlannerFragment : Fragment() {
             }
     }
 
-
+//    private fun closeKeyboard() {
+//        val view: View = context.getCurrentFocus()
+//        (getSystemService<Any>(context.INPUT_METHOD_SERVICE) as InputMethodManager?)?.hideSoftInputFromWindow(
+//            view.windowToken,
+//            0
+//        )
+//    }
 
 
 }

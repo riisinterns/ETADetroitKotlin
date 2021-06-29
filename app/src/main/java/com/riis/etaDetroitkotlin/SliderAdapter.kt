@@ -48,9 +48,12 @@ class SliderAdapter(private val routeGen: GeneratedRoutes) :
             durationModalTextView.text = step.duration.text
 
             if (step.travel_mode == "WALKING") {
-                detailsTextView.text = "N/A"
+                detailsTextView.text = "Walk to given destination"
+                instructionsTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.round_directions_walk_black_36, 0, 0, 0)
             } else {
-                detailsTextView.text = "${step.transit_details?.headsign} departing ${step.transit_details?.departure_time?.text} (${step.transit_details?.num_stops} stops)"
+                instructionsTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.baseline_directions_bus_black_36, 0, 0, 0)
+                detailsTextView.text =
+                    "${step.transit_details?.headsign}\ndeparting ${step.transit_details?.departure_time?.text}\narriving ${step.transit_details?.arrival_time?.text}\n(${step.transit_details?.num_stops} stops)"
             }
         }
 
