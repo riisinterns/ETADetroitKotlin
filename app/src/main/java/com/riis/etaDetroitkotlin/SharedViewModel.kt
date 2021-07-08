@@ -1,6 +1,5 @@
 package com.riis.etaDetroitkotlin
 
-import android.util.Log
 import androidx.lifecycle.*
 import com.riis.etaDetroitkotlin.database.BusRepository
 import com.riis.etaDetroitkotlin.fragment.DirectionResponse
@@ -47,8 +46,8 @@ class SharedViewModel : ViewModel() {
         return busRepository.getArrivalTimes(routeId, directionId, dayId, stopId)
     }
 
-    fun getNewTripStops(stopId: Int, tripId: Int): LiveData<List<TripStops>> {
-        return busRepository.getNewTripStops(stopId, tripId)
+    fun getNewTripStops(stopId: Int): LiveData<List<TripStops>> {
+        return busRepository.getNewTripStops(stopId)
     }
 
     fun getTrips(routeId: Int, directionId: Int): LiveData<List<Trips>> {

@@ -25,7 +25,9 @@ import com.riis.etaDetroitkotlin.R
 import com.riis.etaDetroitkotlin.SharedViewModel
 import com.riis.etaDetroitkotlin.model.RouteStopInfo
 import com.riis.etaDetroitkotlin.model.TripDaysOfOperation
+import com.riis.etaDetroitkotlin.model.TripStops
 import java.util.*
+import kotlin.math.absoluteValue
 
 private const val TAG = "StopsFragment"
 private const val DAY_KEY = "day_key"
@@ -441,7 +443,12 @@ class StopsFragmentChild : Fragment() {
                                 }
                             }
 
-
+//                            Log.d(TAG, "test: $tmp")
+                            sharedViewModel.getNewTripStops(routeStopInfoItem.stopId).observeForever { tripStops ->
+                                if (tripStops.isNotEmpty()) {
+                                    val tripStopItem = tripStops[0]
+                                }
+                            }
 
 
                         }
@@ -451,6 +458,7 @@ class StopsFragmentChild : Fragment() {
             )
 
         }
+
 
         //when an item view is clicked on:
         override fun onClick(view: View) {
@@ -566,11 +574,9 @@ class StopsFragmentChild : Fragment() {
                 //If the user has typed text into the SearchView, that text becomes a constraint to filter results from the list of RouteStopInfo objects
                 override fun performFiltering(constraint: CharSequence?): FilterResults {
                     val search = constraint.toString()
-                    Log.d(TAG, search)
 
                     //if there is no search query, return all results from the unfiltered list of RouteStopInfo objects
                     if (search.isEmpty()) {
-                        Log.d(TAG, "query empty")
                         filteredRouteStopInfoList = routeStopInfoList
                     } else {
                         val resultList: MutableList<RouteStopInfo> =
@@ -582,7 +588,6 @@ class StopsFragmentChild : Fragment() {
                             if (stop.name.lowercase(Locale.ROOT)
                                     .contains(search.lowercase(Locale.ROOT))
                             ) {
-                                Log.d(TAG, "query match")
                                 resultList.add(stop)
                             }
                         }
