@@ -1,15 +1,9 @@
 package com.riis.etaDetroitkotlin
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import com.riis.etaDetroitkotlin.database.BusRepository
 import com.riis.etaDetroitkotlin.fragment.DirectionResponse
-import com.riis.etaDetroitkotlin.model.Company
-import com.riis.etaDetroitkotlin.model.RouteStopInfo
-import com.riis.etaDetroitkotlin.model.Routes
-import com.riis.etaDetroitkotlin.model.TripStops
+import com.riis.etaDetroitkotlin.model.*
 
 class SharedViewModel : ViewModel() {
 
@@ -45,9 +39,25 @@ class SharedViewModel : ViewModel() {
         routeId: Int,
         directionId: Int,
         dayId: Int,
-        stopId: Int
+        stopId: Int,
     ): LiveData<List<TripStops>> {
         return busRepository.getArrivalTimes(routeId, directionId, dayId, stopId)
+    }
+
+    fun getNewTripStops(stopId: Int, tripId: Int): LiveData<List<TripStops>> {
+        return busRepository.getNewTripStops(stopId, tripId)
+    }
+
+    fun getTrips(routeId: Int, directionId: Int): LiveData<List<Trips>> {
+        return busRepository.getTrips(routeId, directionId)
+    }
+
+    fun getTripDaysOfOperation(operationDayId: Int, tripId: Int): List<TripDaysOfOperation> {
+        var tmp = listOf<TripDaysOfOperation>()
+        busRepository.getTripDaysOfOperation(operationDayId, tripId).observeForever {
+            tmp = it
+        }
+        return tmp
     }
 
     val currentCompany: Company?

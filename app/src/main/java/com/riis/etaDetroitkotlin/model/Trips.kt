@@ -3,7 +3,6 @@ package com.riis.etaDetroitkotlin.model
 import androidx.room.*
 
 @Entity(
-//    indices = [Index(value = ["trip_id", "route_id"], unique = true)],
     foreignKeys = [ForeignKey(
         entity = Routes::class,
         parentColumns = arrayOf("id"),
