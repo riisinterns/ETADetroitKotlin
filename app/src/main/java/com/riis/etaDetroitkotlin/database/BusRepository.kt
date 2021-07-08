@@ -34,7 +34,7 @@ class BusRepository private constructor(context: Context) {
 
     fun getTrips(routeId: Int, directionId: Int): LiveData<List<Trips>> = busDao.getTrips(routeId, directionId)
 
-    fun getTripDaysOfOperation(operationDayId: Int, tripId: Int): LiveData<List<TripDaysOfOperation>> = busDao.getTripDaysOfOperation(operationDayId, tripId)
+    fun getTripDaysOfOperation(): LiveData<List<TripDaysOfOperation>> = busDao.getTripDaysOfOperation()
 
     companion object {
         private var INSTANCE: BusRepository? = null
