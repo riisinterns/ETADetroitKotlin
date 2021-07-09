@@ -1,6 +1,9 @@
 package com.riis.etaDetroitkotlin
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
+import androidx.lifecycle.ViewModel
 import com.riis.etaDetroitkotlin.database.BusRepository
 import com.riis.etaDetroitkotlin.fragment.DirectionResponse
 import com.riis.etaDetroitkotlin.model.*
@@ -35,18 +38,7 @@ class SharedViewModel : ViewModel() {
             busRepository.getStopsInfoOnRoute(route.id)
         }
 
-    var tripDaysOfOperationContainer = listOf<TripDaysOfOperation>()
-
-    fun getArrivalTimes(
-        routeId: Int,
-        directionId: Int,
-        dayId: Int,
-        stopId: Int,
-    ): LiveData<List<TripStops>> {
-        return busRepository.getArrivalTimes(routeId, directionId, dayId, stopId)
-    }
-
-    fun getNewTripStops(stopId: Int): LiveData<List<TripStops>> {
+    fun getTripStops(stopId: Int): LiveData<List<TripStops>> {
         return busRepository.getNewTripStops(stopId)
     }
 
@@ -57,7 +49,6 @@ class SharedViewModel : ViewModel() {
     fun getTripDaysOfOperation(): LiveData<List<TripDaysOfOperation>> {
         return busRepository.getTripDaysOfOperation()
     }
-
 
     val currentCompany: Company?
         get() = companyContainer.value

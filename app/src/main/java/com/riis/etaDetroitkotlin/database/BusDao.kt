@@ -5,6 +5,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import com.riis.etaDetroitkotlin.model.*
+import org.jetbrains.annotations.TestOnly
 
 @Dao
 interface BusDao {
@@ -35,27 +36,35 @@ interface BusDao {
     @Query("SELECT * FROM trips where route_id=(:routeId) and direction_id=(:directionId)")
     fun getTrips(routeId: Int, directionId: Int): LiveData<List<Trips>>
 
+    @TestOnly
     @Insert
     fun addRoute(route: Routes)
 
+    @TestOnly
     @Insert
     fun addTrips(trips: Trips)
 
+    @TestOnly
     @Insert
     fun addTripStop(tripStop: TripStops)
 
+    @TestOnly
     @Insert
     fun addCompany(company: Company)
 
+    @TestOnly
     @Insert
     fun addStop(stop: Stops)
 
+    @TestOnly
     @Insert
     fun addDirection(direction: Directions)
 
+    @TestOnly
     @Insert
     fun addDaysOfOperation(daysOfOperation: DaysOfOperation)
 
+    @TestOnly
     @Insert
     fun addRouteStop(routeStop: RouteStops)
 }

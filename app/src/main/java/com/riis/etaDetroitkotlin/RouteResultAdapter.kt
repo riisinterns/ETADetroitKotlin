@@ -1,12 +1,10 @@
 package com.riis.etaDetroitkotlin
 
 import android.annotation.SuppressLint
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.riis.etaDetroitkotlin.fragment.BottomSheetDialog
@@ -36,7 +34,7 @@ class RouteResultAdapter(private val directionResponse: DirectionResponse) :
 
     }
 
-    inner class RouteResultViewHolder(v: View) : RecyclerView.ViewHolder(v), View.OnClickListener  {
+    inner class RouteResultViewHolder(v: View) : RecyclerView.ViewHolder(v), View.OnClickListener {
         private lateinit var routeGen: GeneratedRoutes
         private val transitDetailsTextView: TextView =
             itemView.findViewById(R.id.transitDetailsTextView)
@@ -72,7 +70,10 @@ class RouteResultAdapter(private val directionResponse: DirectionResponse) :
         }
 
         override fun onClick(v: View?) {
-            BottomSheetDialog(routeGen).show((itemView.context as AppCompatActivity).supportFragmentManager.beginTransaction(), "exampleBottomSheet")
+            BottomSheetDialog(routeGen).show(
+                (itemView.context as AppCompatActivity).supportFragmentManager.beginTransaction(),
+                "exampleBottomSheet"
+            )
         }
     }
 }

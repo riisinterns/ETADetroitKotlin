@@ -111,9 +111,37 @@ class SharedViewModelTest : TestCase() {
         Thread.sleep(100)
     }
 
+    @Test
+    fun testGetTrips() {
+        val company = Company(2, "DDOT", "#054839", "ddot_bus")
+        val route =
+            Routes(53, 1, company.id, "VERNOR", "Rosa Parks Transit Center to Michgan & Schaefer")
+//        val stop = Stops(23, "Washington & Michigan", 42.331399, -83.051226)
+//        val daysOfOperation = DaysOfOperation(1, "weekday")
+        val direction = Directions(3, "Westbound")
+        val trip = Trips(2328, 158530010, route.id, direction.id)
+//        val routeStop = RouteStops(17646, route.id, stop.id, direction.id, daysOfOperation.id)
+
+        busDao.addCompany(company)
+        busDao.addRoute(route)
+//        busDao.addStop(stop)
+//        busDao.addDaysOfOperation(daysOfOperation)
+        busDao.addDirection(direction)
+        busDao.addTrips(trip)
+//        busDao.addRouteStop(routeStop)
+
+        viewModel.getTrips(route.id, direction.id).observeForever { trips ->
+            assertThat(trips[0].id, `is`(2328))
+            assertThat(trips[0].tripId, `is`(158530010))
+            assertThat(trips[0].routeId, `is`(route.id))
+            assertThat(trips[0].directionId, `is`(direction.id))
+        }
+
+        Thread.sleep(100)
+    }
 
     @Test
-    fun testGetArrivalTimes() {
+    fun testGetTripStops() {
 
         val company = Company(2, "DDOT", "#054839", "ddot_bus")
         val route =
@@ -134,7 +162,7 @@ class SharedViewModelTest : TestCase() {
         busDao.addTrips(trip)
         busDao.addTripStop(tripStop)
 
-        viewModel.getArrivalTimes(route.id, direction.id, daysOfOperation.id, stop.id)
+        viewModel.getTripStops(stop.id)
             .observeForever { tripStops ->
                 assertThat(tripStops[0].tripId, `is`(trip.id))
                 assertThat(tripStops[0].stopId, `is`(stop.id))

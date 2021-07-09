@@ -1,6 +1,5 @@
 package com.riis.etaDetroitkotlin.fragment
 
-import com.riis.etaDetroitkotlin.R
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -13,12 +12,13 @@ import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.riis.etaDetroitkotlin.R
 import com.riis.etaDetroitkotlin.SliderAdapter
 
 class BottomSheetDialog(private val routeGen: GeneratedRoutes) : BottomSheetDialogFragment() {
 
     private lateinit var imageContainer: ViewPager2
-    private lateinit var dots : MutableList<TextView>
+    private lateinit var dots: MutableList<TextView>
 
 
     private var layout: LinearLayout? = null
@@ -39,7 +39,7 @@ class BottomSheetDialog(private val routeGen: GeneratedRoutes) : BottomSheetDial
         layout = view.findViewById(R.id.dots_container)
 
         dots = mutableListOf()
-        for(step in this.routeGen.legs[0].steps) dots.add(TextView(context))
+        for (step in this.routeGen.legs[0].steps) dots.add(TextView(context))
 
         Log.i("DEBUG", dots.size.toString())
 

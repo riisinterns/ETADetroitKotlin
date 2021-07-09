@@ -51,46 +51,46 @@
 
 
             <TextView
-                android:id="@+id/arrival_time_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginBottom="8dp"
-                android:gravity="center"
-                android:text="Next Stop: Arrival Time"
-                android:textColor="@color/TexasGreen"
-                android:textStyle="normal"
-                app:layout_constraintBottom_toTopOf="@id/more_stop_time"
-                app:layout_constraintEnd_toStartOf="@id/current_time"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/stop_name" />
+                    android:id="@+id/arrival_time_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginBottom="8dp"
+                    android:gravity="center"
+                    android:text="Next Stop: Arrival Time"
+                    android:textColor="@color/TexasGreen"
+                    android:textStyle="normal"
+                    app:layout_constraintBottom_toTopOf="@id/more_stop_time"
+                    app:layout_constraintEnd_toStartOf="@id/current_time"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/stop_name" />
 
             <ImageView
-                android:id="@+id/ic_clock"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:src="@drawable/baseline_watch_later_white_24"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/more_stop_time"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/arrival_time_label" />
+                    android:id="@+id/ic_clock"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:src="@drawable/baseline_watch_later_white_24"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/more_stop_time"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/arrival_time_label" />
 
             <TextView
-                android:id="@+id/more_stop_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:gravity="center"
-                android:text="@string/stopTimeString"
-                android:textStyle="normal"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/ic_clock"
-                app:layout_constraintTop_toBottomOf="@id/current_time" />
+                    android:id="@+id/more_stop_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:gravity="center"
+                    android:text="@string/stopTimeString"
+                    android:textStyle="normal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/ic_clock"
+                    app:layout_constraintTop_toBottomOf="@id/current_time" />
 
             <TextView
                     android:id="@+id/current_time"

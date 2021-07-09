@@ -14,7 +14,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -62,8 +61,8 @@ class TransitDetails(
     val departure_time: TextData,
     val arrival_time: TextData,
     val line: Line,
-    val num_stops :String,
-    val headsign : String
+    val num_stops: String,
+    val headsign: String
 )
 
 class Line(val short_name: String, val agencies: List<Agency>)
@@ -104,10 +103,9 @@ class RoutePlannerFragment : Fragment() {
 
         //directionResponse = sharedViewModel.currentDirectionResponse!!
 
-        if (sharedViewModel.currentDirectionResponse == null){
+        if (sharedViewModel.currentDirectionResponse == null) {
             Log.d(TAG, "directionResponse is null")
-        }
-        else{
+        } else {
             Log.d(TAG, "directionResponse is not null")
         }
 
@@ -187,8 +185,6 @@ class RoutePlannerFragment : Fragment() {
         })
 
 
-
-
     }
 
     @SuppressLint("SimpleDateFormat")
@@ -248,9 +244,10 @@ class RoutePlannerFragment : Fragment() {
         return ""
     }
 
-    private fun restoreDirectionResponse(){
+    private fun restoreDirectionResponse() {
         if (sharedViewModel.currentDirectionResponse?.status == "OK") {
-            copyrightTextView.text = sharedViewModel.currentDirectionResponse!!.routes[0].copyrights // required by Google to use their api
+            copyrightTextView.text =
+                sharedViewModel.currentDirectionResponse!!.routes[0].copyrights // required by Google to use their api
             val apple = sharedViewModel.currentDirectionResponse
 
             routesRecyclerView?.adapter = apple?.let { RouteResultAdapter(it) }
@@ -334,8 +331,7 @@ class RoutePlannerFragment : Fragment() {
             }
     }
 
-    private fun hideKeyboard(context : Context, view : View)
-    {
+    private fun hideKeyboard(context: Context, view: View) {
         val imm = context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
@@ -343,15 +339,11 @@ class RoutePlannerFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        if (sharedViewModel.currentDirectionResponse != null){
+        if (sharedViewModel.currentDirectionResponse != null) {
             Log.d(TAG, "restoring previous directionResponse")
             restoreDirectionResponse()
         }
     }
-
-
-
-
 
 
 }

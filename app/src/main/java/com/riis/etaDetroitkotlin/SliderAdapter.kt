@@ -1,13 +1,10 @@
 package com.riis.etaDetroitkotlin
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.riis.etaDetroitkotlin.fragment.DirectionResponse
 import com.riis.etaDetroitkotlin.fragment.GeneratedRoutes
 import com.riis.etaDetroitkotlin.fragment.Steps
 
@@ -49,9 +46,19 @@ class SliderAdapter(private val routeGen: GeneratedRoutes) :
 
             if (step.travel_mode == "WALKING") {
                 detailsTextView.text = "Walk to given destination"
-                instructionsTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.round_directions_walk_black_36, 0, 0, 0)
+                instructionsTextView.setCompoundDrawablesWithIntrinsicBounds(
+                    R.drawable.round_directions_walk_black_36,
+                    0,
+                    0,
+                    0
+                )
             } else {
-                instructionsTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.baseline_directions_bus_black_36, 0, 0, 0)
+                instructionsTextView.setCompoundDrawablesWithIntrinsicBounds(
+                    R.drawable.baseline_directions_bus_black_36,
+                    0,
+                    0,
+                    0
+                )
                 detailsTextView.text =
                     "${step.transit_details?.headsign}\ndeparting ${step.transit_details?.departure_time?.text}\narriving ${step.transit_details?.arrival_time?.text}\n(${step.transit_details?.num_stops} stops)"
             }
