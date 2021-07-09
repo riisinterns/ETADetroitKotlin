@@ -127,6 +127,7 @@ class StopsFragmentChild : Fragment() {
 
         //retrieving the arguments from the bundle associated with the keys DAY_KEY and DIRECTIONS_KEY
         day = arguments?.getInt(DAY_KEY)
+        Log.d(TAG, day.toString())
         directions = arguments?.getIntegerArrayList(DIRECTIONS_KEY)
         status = arguments?.getInt(STATUS_KEY)
 
@@ -436,61 +437,64 @@ class StopsFragmentChild : Fragment() {
                         { tripDaysOfOperation ->
                             val tripDaysOfOperationList = mutableListOf<TripDaysOfOperation>()
                             for (i in trips) {
-                                val tmpList =
-                                    tripDaysOfOperation.filter { it.operationDayId == routeStopInfoItem.dayId && it.tripId == i.id }
-                                for (item in tmpList) {
-                                    tripDaysOfOperationList.add(item)
-                                }
+                                val tmpList = tripDaysOfOperation.filter { it.operationDayId == routeStopInfoItem.dayId && it.tripId == i.id }
+                                tripDaysOfOperationList.addAll(tmpList)
                             }
 
-                            sharedViewModel.getNewTripStops(routeStopInfoItem.stopId).observeForever { tripStops ->
-                                var sortedTripStops = mutableListOf<TripStops>()
-                                for (i in tripDaysOfOperationList.indices) {
-                                    val filteredList = tripStops.filter { it.tripId == tripDaysOfOperationList[i].tripId }
-                                    if (filteredList.isNotEmpty()){
-                                        sortedTripStops.add(filteredList[0])
-                                    }
-                                }
-
-                                sortedTripStops = sortedTripStops.sortedBy { it.arrivalTime } as MutableList<TripStops>
-
-                                //If the itemView's stopId produces a list of TripStops with more than one element (any less can't be considered a valid bus stop):
-                                if (sortedTripStops.size > 1) {
-                                    //iterate through each TripStops object and calculate the time difference between its arrivalTime and the user's current time
-                                    for (i in sortedTripStops.indices) {
-                                        val difference: Long =
-                                            sortedTripStops[i].arrivalTime?.time!! - Date(Calendar.getInstance().timeInMillis).time //result in milliseconds
-
-                                        /* While iterating through the sorted list of TripStops, we look for the one that has the smallest positive time difference.
-                                           This will contain the first available arrival time for the selected bus stop. Once the closest TripStop has been found,
-                                           ... stop iterating and record its position in the sorted list of TripStops using the tripStopsPositions hashmap.
-                                         */
-                                        if (difference > 0) {
-                                            //convert the time difference calculated above into minutes and seconds
-                                            val seconds = difference / 1000
-                                            val minutes = seconds / 60
-
-                                            //display the now formatted time difference in the itemView
-                                            "(${
-                                                sortedTripStops[i].arrivalTime.toString()
-                                                    .substring(11, 16)
-                                            })".also { currentTime.text = it }
-                                            arrivalTimeLabel.text = getString(R.string.next_stop, minutes)
-
-                                            /*NOTE: Each bus stop (itemView stopId) has an associated tripStop that contains the earliest bus arrival time for that stop.
-                                                    To keep a reference of this, we map the stopId of each bus stop to the index of its earliest tripStop from the sortedTripStops list
-                                            */
-                                            tripStopsPositions[routeStopInfoItem.stopId] = i
-                                            break
+                            sharedViewModel.getNewTripStops(routeStopInfoItem.stopId).observe(
+                                viewLifecycleOwner,
+                                { tripStops ->
+                                    var sortedTripStops = mutableListOf<TripStops>()
+                                    for (i in tripDaysOfOperationList.indices) {
+                                        val filteredList = tripStops.filter { it.tripId == tripDaysOfOperationList[i].tripId}
+                                        if (filteredList.isNotEmpty()){
+                                            sortedTripStops.addAll(filteredList)
                                         }
-
                                     }
-                                } else { //If the itemView's stopId produces a list of TripStops with one element or less:
-                                    currentTime.text = ""
-                                    arrivalTimeLabel.text = getString(R.string.no_stop_times_found)
+
+                                    sortedTripStops = sortedTripStops.sortedBy { it.arrivalTime } as MutableList<TripStops>
+                                    Log.d(TAG, "EARLY SIZE: ${sortedTripStops.size}")
+                                    //If the itemView's stopId produces a list of TripStops with more than one element (any less can't be considered a valid bus stop):
+                                    if (sortedTripStops.size > 1) {
+                                        //iterate through each TripStops object and calculate the time difference between its arrivalTime and the user's current time
+                                        for (index in sortedTripStops.indices) {
+                                            val difference: Long =
+                                                sortedTripStops[index].arrivalTime?.time!! - Date(Calendar.getInstance().timeInMillis).time //result in milliseconds
+
+                                            /* While iterating through the sorted list of TripStops, we look for the one that has the smallest positive time difference.
+                                               This will contain the first available arrival time for the selected bus stop. Once the closest TripStop has been found,
+                                               ... stop iterating and record its position in the sorted list of TripStops using the tripStopsPositions hashmap.
+                                             */
+                                            if (difference > 0) {
+                                                //convert the time difference calculated above into minutes and seconds
+                                                val seconds = difference / 1000
+                                                val minutes = seconds / 60
+
+                                                //display the now formatted time difference in the itemView
+                                                "(${
+                                                    sortedTripStops[index].arrivalTime.toString()
+                                                        .substring(11, 16)
+                                                })".also { currentTime.text = it }
+                                                arrivalTimeLabel.text = getString(R.string.next_stop, minutes)
+
+                                                /*NOTE: Each bus stop (itemView stopId) has an associated tripStop that contains the earliest bus arrival time for that stop.
+                                                        To keep a reference of this, we map the stopId of each bus stop to the index of its earliest tripStop from the sortedTripStops list
+                                                */
+                                                tripStopsPositions[routeStopInfoItem.stopId] = index
+                                                Log.d(TAG, "Index: ${tripStopsPositions[routeStopInfoItem.stopId]}")
+                                                break
+                                            }
+
+                                        }
+                                    } else { //If the itemView's stopId produces a list of TripStops with one element or less:
+                                        currentTime.text = ""
+                                        arrivalTimeLabel.text = getString(R.string.no_stop_times_found)
+                                    }
+
                                 }
-                            }
+                            )
                         }
+
                     )
                 }
             )
@@ -538,49 +542,47 @@ class StopsFragmentChild : Fragment() {
                         { tripDaysOfOperation ->
                             val tripDaysOfOperationList = mutableListOf<TripDaysOfOperation>()
                             for (i in trips) {
-                                val tmpList =
-                                    tripDaysOfOperation.filter { it.operationDayId == routeStopInfoItem.dayId && it.tripId == i.id }
-                                for (item in tmpList) {
-                                    tripDaysOfOperationList.add(item)
-                                }
+                                val tmpList = tripDaysOfOperation.filter { it.operationDayId == routeStopInfoItem.dayId && it.tripId == i.id }
+                                tripDaysOfOperationList.addAll(tmpList)
                             }
 
-                            sharedViewModel.getNewTripStops(routeStopInfoItem.stopId).observeForever { tripStops ->
-                                var sortedTripStops = mutableListOf<TripStops>()
-                                for (i in tripDaysOfOperationList.indices) {
-                                    val filteredList = tripStops.filter { it.tripId == tripDaysOfOperationList[i].tripId }
-                                    if (filteredList.isNotEmpty()){
-                                        sortedTripStops.add(filteredList[0])
+                            sharedViewModel.getNewTripStops(routeStopInfoItem.stopId).observe(
+                                viewLifecycleOwner,
+                                { tripStops ->
+                                    var sortedTripStops = mutableListOf<TripStops>()
+                                    for (i in tripDaysOfOperationList.indices) {
+                                        val filteredList = tripStops.filter { it.tripId == tripDaysOfOperationList[i].tripId}
+                                        if (filteredList.isNotEmpty()){
+                                            sortedTripStops.addAll(filteredList)
+                                        }
+                                    }
+
+                                    sortedTripStops = sortedTripStops.sortedBy { it.arrivalTime } as MutableList<TripStops>
+                                    Log.d(TAG, "LATER SIZE: ${sortedTripStops.size}")
+
+                                    if (sortedTripStops.size > 1) {
+                                        var tmp =
+                                            "" //temporary variable used to concatenate a list of arrival times to a single string
+
+                                        //getting the index position in sortedTripStops that is associated with the tripStop with the earliest arrival time
+                                        // ... for the current stop using the itemView's stopId
+                                        val tripStopsPosition = tripStopsPositions[routeStopInfoItem.stopId]
+
+                                        //Using the tripStopsPosition and the next 4 consecutive integers as indexes, get the names of the tripStops in the
+                                        // ..sortedTripStops list with those indexes and add them to the tmp variable
+                                        for (i in tripStopsPosition!!..(tripStopsPosition + 4)) {
+                                            val tmpTripStop = sortedTripStops[i % sortedTripStops.size]
+                                            tmp += "${
+                                                tmpTripStop.arrivalTime.toString().substring(11, 16)
+                                            }\n"
+                                        }
+                                        allArrivalTimes.text =
+                                            tmp //display the bus times inside of the textView housed within the itemView's dynamicLinearLayout
+                                    } else {
+                                        allArrivalTimes.text = getString(R.string.no_stop_times_found)
                                     }
                                 }
-
-                                if (tripStops.size > 1) {
-                                    var tmp =
-                                        "" //temporary variable used to concatenate a list of arrival times to a single string
-
-                                    //sorting the list of TripStops objects using their arrivalTime attribute (Date object), from earliest to latest
-                                    sortedTripStops = tripStops.sortedBy { it.arrivalTime } as MutableList<TripStops>
-
-                                    //getting the index position in sortedTripStops that is associated with the tripStop with the earliest arrival time
-                                    // ... for the current stop using the itemView's stopId
-                                    val tripStopsPosition = tripStopsPositions[routeStopInfoItem.stopId]
-
-                                    //Using the tripStopsPosition and the next 4 consecutive integers as indexes, get the names of the tripStops in the
-                                    // ..sortedTripStops list with those indexes and add them to the tmp variable
-                                    for (i in tripStopsPosition!!..(tripStopsPosition + 4)) {
-                                        val tmpTripStop = sortedTripStops[i % sortedTripStops.size]
-                                        tmp += "${
-                                            tmpTripStop.arrivalTime.toString().substring(11, 16)
-                                        }\n"
-                                    }
-                                    allArrivalTimes.text =
-                                        tmp //display the bus times inside of the textView housed within the itemView's dynamicLinearLayout
-                                } else {
-                                    allArrivalTimes.text = getString(R.string.no_stop_times_found)
-                                }
-
-
-                            }
+                            )
                         }
                     )
                 }
