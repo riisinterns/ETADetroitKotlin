@@ -91,7 +91,7 @@ class RoutesFragment : Fragment() {
                 if (currentCompany?.name.let { it == "QLine" || it == "People Mover" } && routes[0].name == currentCompany?.name) { //Hard coded for now
                     if (sharedViewModel.hasEntered) {
                         sharedViewModel.hasEntered = false // reset
-                        view.findNavController().navigate(R.id.home_dest) // go home
+                        view.findNavController().navigateUp() // go home
                     } else {
                         sharedViewModel.hasEntered = true
                         sharedViewModel.saveRoute(routes[0])
