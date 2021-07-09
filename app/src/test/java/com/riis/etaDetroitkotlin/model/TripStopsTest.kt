@@ -71,7 +71,7 @@ class TripStopsTest {
         busDao.addTripStop(tripStop)
 
         val tripsStopLiveData: LiveData<List<TripStops>> =
-            busDao.getTripStops(route.id, direction.id, daysOfOperation.id, stop.id)
+            busDao.getTripStops(stop.id)
         tripsStopLiveData.observeForever { tripStops ->
             assertThat(tripStops[0].tripId, `is`(trip.id))
             assertThat(tripStops[0].stopId, `is`(stop.id))

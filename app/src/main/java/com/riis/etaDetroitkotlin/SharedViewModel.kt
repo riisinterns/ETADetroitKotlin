@@ -39,7 +39,7 @@ class SharedViewModel : ViewModel() {
         }
 
     fun getTripStops(stopId: Int): LiveData<List<TripStops>> {
-        return busRepository.getNewTripStops(stopId)
+        return busRepository.getTripStops(stopId)
     }
 
     fun getTrips(routeId: Int, directionId: Int): LiveData<List<Trips>> {
