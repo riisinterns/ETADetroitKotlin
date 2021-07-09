@@ -227,7 +227,8 @@ class SharedViewModelTest : TestCase() {
     fun testSaveDirectionResponse() {
         val agencies = listOf(Agency("DDOT"))
         val line = Line("line", agencies)
-        val transitDetails = TransitDetails(TextData("11:49:00"), TextData("11:59:00"), line, "1", "northbound")
+        val transitDetails =
+            TransitDetails(TextData("11:49:00"), TextData("11:59:00"), line, "1", "northbound")
         val steps = listOf(Steps(TextData("1"), TextData("10"), "n/a", "bus", transitDetails))
         val legs = listOf(Legs(TextData("11:59:00"), steps[0].distance, steps[0].duration, steps))
         val generatedRoutes = listOf(GeneratedRoutes("n/a", TextData("1"), legs))
@@ -246,7 +247,8 @@ class SharedViewModelTest : TestCase() {
     fun testClearDirectionResponse() {
         val agencies = listOf(Agency("DDOT"))
         val line = Line("line", agencies)
-        val transitDetails = TransitDetails(TextData("11:49:00"), TextData("11:59:00"), line, "1", "northbound")
+        val transitDetails =
+            TransitDetails(TextData("11:49:00"), TextData("11:59:00"), line, "1", "northbound")
         val steps = listOf(Steps(TextData("1"), TextData("10"), "n/a", "bus", transitDetails))
         val legs = listOf(Legs(TextData("11:59:00"), steps[0].distance, steps[0].duration, steps))
         val generatedRoutes = listOf(GeneratedRoutes("n/a", TextData("1"), legs))
