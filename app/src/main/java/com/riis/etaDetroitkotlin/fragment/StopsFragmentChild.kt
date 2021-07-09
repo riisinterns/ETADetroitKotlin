@@ -570,7 +570,7 @@ class StopsFragmentChild : Fragment() {
 
                                         //Using the tripStopsPosition and the next 4 consecutive integers as indexes, get the names of the tripStops in the
                                         // ..sortedTripStops list with those indexes and add them to the tmp variable
-                                        for (i in tripStopsPosition!!..(tripStopsPosition + 4)) {
+                                        for (i in tripStopsPosition!! + 1..(tripStopsPosition + 5)) {
                                             val tmpTripStop = sortedTripStops[i % sortedTripStops.size]
                                             tmp += "${
                                                 tmpTripStop.arrivalTime.toString().substring(11, 16)
