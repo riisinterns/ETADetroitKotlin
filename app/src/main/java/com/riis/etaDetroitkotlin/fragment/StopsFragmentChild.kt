@@ -1,23 +1,18 @@
 package com.riis.etaDetroitkotlin.fragment
 
-import android.app.ProgressDialog
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.widget.*
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
-import androidx.core.graphics.toColorInt
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.activityViewModels
-import androidx.loader.content.AsyncTaskLoader
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -25,14 +20,14 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MapStyleOptions
-import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.riis.etaDetroitkotlin.R
 import com.riis.etaDetroitkotlin.SharedViewModel
 import com.riis.etaDetroitkotlin.model.RouteStopInfo
+import com.riis.etaDetroitkotlin.model.TripDaysOfOperation
+import com.riis.etaDetroitkotlin.model.TripStops
 import java.util.*
+import kotlin.math.absoluteValue
 
 private const val TAG = "StopsFragment"
 private const val DAY_KEY = "day_key"
@@ -46,7 +41,7 @@ private const val ERROR_LOADING_ARGS = 0
 //This fragment is a child fragment that will be displayed within the StopsFragmentParent's ViewPager.
 //It contains a recycler view that displays a list of bus stops for the currently selected route and their associated timings
 
-class StopsFragmentChild : Fragment(){
+class StopsFragmentChild : Fragment() {
 
     //CLASS VARIABLES
     //---------------
@@ -92,18 +87,29 @@ class StopsFragmentChild : Fragment(){
         gMap.uiSettings.isZoomGesturesEnabled = true
         gMap.uiSettings.isTiltGesturesEnabled = false
 
-        if(status == EMPTY_STATUS) {
+        if (status == EMPTY_STATUS) {
             sharedViewModel.currentMarkerLatitude = DEFAULT_LATITUDE
             sharedViewModel.currentMarkerLongitude = DEFAULT_LONGITUDE
-            moveMapToLocation(LatLng(sharedViewModel.currentMarkerLatitude, sharedViewModel.currentMarkerLongitude), false)
+            moveMapToLocation(
+                LatLng(
+                    sharedViewModel.currentMarkerLatitude,
+                    sharedViewModel.currentMarkerLongitude
+                ), false
+            )
         } else {
-            val routeStops = this.routeStopsInfo.filter { it.directionId == sharedViewModel.direction && it.dayId == day }
+            val routeStops =
+                this.routeStopsInfo.filter { it.directionId == sharedViewModel.direction && it.dayId == day }
 
             if (isNewInstance) {
                 val routeStop = routeStops[0]
                 sharedViewModel.currentMarkerLatitude = routeStop.latitude
                 sharedViewModel.currentMarkerLongitude = routeStop.longitude
-                moveMapToLocation(LatLng(sharedViewModel.currentMarkerLatitude, sharedViewModel.currentMarkerLongitude), false)
+                moveMapToLocation(
+                    LatLng(
+                        sharedViewModel.currentMarkerLatitude,
+                        sharedViewModel.currentMarkerLongitude
+                    ), false
+                )
             }
 
             updateUI()
@@ -121,14 +127,16 @@ class StopsFragmentChild : Fragment(){
 
         //retrieving the arguments from the bundle associated with the keys DAY_KEY and DIRECTIONS_KEY
         day = arguments?.getInt(DAY_KEY)
+        Log.d(TAG, day.toString())
         directions = arguments?.getIntegerArrayList(DIRECTIONS_KEY)
         status = arguments?.getInt(STATUS_KEY)
 
         //sharedViewModel.direction represents the directionId that dictates the arrow direction of the directionFab FloatingActionButton.
         //It is initially set to zero and acts as the index for the directions list
         isNewInstance = savedInstanceState == null
-        if(isNewInstance) sharedViewModel.directionCount = 0
-        sharedViewModel.direction = directions?.get(sharedViewModel.directionCount) ?: ERROR_LOADING_ARGS
+        if (isNewInstance) sharedViewModel.directionCount = 0
+        sharedViewModel.direction =
+            directions?.get(sharedViewModel.directionCount) ?: ERROR_LOADING_ARGS
 
 
         //NOTE: In the case that there are no bus stops for the selected route, the parent fragment passes a value of zero for the dayId
@@ -174,7 +182,7 @@ class StopsFragmentChild : Fragment(){
         super.onViewCreated(view, savedInstanceState)
 
         //if there exists at least one bus stop for the selected route:
-        if (status !=  EMPTY_STATUS) {
+        if (status != EMPTY_STATUS) {
 
             //Retrieving an updated list of all of the RouteStopInfo objects that are associated with the currently selected route.
             //Each RouteStopInfo object holds information describing a bus stop including its name, location, days of operation, and direction
@@ -182,7 +190,8 @@ class StopsFragmentChild : Fragment(){
             sharedViewModel.routeStopsInfoListLiveData.observe(
                 viewLifecycleOwner,
                 { routeStopsInfo ->
-                    this.routeStopsInfo = routeStopsInfo //saving the list of RouteStopInfo objects to a class variable
+                    this.routeStopsInfo =
+                        routeStopsInfo //saving the list of RouteStopInfo objects to a class variable
 
                     //filter the routeStopsInfo list to only keep RouteStopInfo objects whose directionId and dayId match their respective ids
                     // ... currently saved to the SharedViewModel. Then update the UI using the filtered list.
@@ -209,7 +218,8 @@ class StopsFragmentChild : Fragment(){
 
 
         directionFab.setOnClickListener { //When the directionFab floating action button is clicked:
-            val listExhausted = sharedViewModel.directionCount + 1 < (directions?.size ?: ERROR_LOADING_ARGS)
+            val listExhausted =
+                sharedViewModel.directionCount + 1 < (directions?.size ?: ERROR_LOADING_ARGS)
 
             //go to next direction in the directions list if the list hasn't been exhausted. Then save the directionId to the sharedViewModel
             sharedViewModel.direction = if (listExhausted) {
@@ -232,7 +242,7 @@ class StopsFragmentChild : Fragment(){
     override fun onResume() {
         super.onResume()
         //progressBar.visibility = View.GONE
-        mapFragmentContainer.visibility  = View.VISIBLE
+        mapFragmentContainer.visibility = View.VISIBLE
     }
 
     //ADDING MENU OPTIONS TO THE APP BAR PROVIDED BY MAIN ACTIVITY
@@ -268,7 +278,7 @@ class StopsFragmentChild : Fragment(){
     }
 
     private fun moveMapToLocation(location: LatLng, zoom: Boolean) {
-        when(zoom){
+        when (zoom) {
             false -> gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 15f))
             true -> gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 15f))
         }
@@ -302,10 +312,14 @@ class StopsFragmentChild : Fragment(){
     //Function to update the recycler view UI when the list of RouteStopInfo objects changes
     private fun updateUI() {
         if (mapReady) {
-            val routeStops = routeStopsInfo.filter { it.directionId == sharedViewModel.direction && it.dayId == day}
+            val routeStops =
+                routeStopsInfo.filter { it.directionId == sharedViewModel.direction && it.dayId == day }
             gMap.clear()
             addMarkers(routeStops)
-            markerMap[Pair(sharedViewModel.currentMarkerLatitude, sharedViewModel.currentMarkerLongitude)]?.showInfoWindow()
+            markerMap[Pair(
+                sharedViewModel.currentMarkerLatitude,
+                sharedViewModel.currentMarkerLongitude
+            )]?.showInfoWindow()
             adapter = StopAdapter(routeStops, markerMap)
             stopsRecyclerView.adapter = adapter
         }
@@ -333,7 +347,6 @@ class StopsFragmentChild : Fragment(){
         Color.colorToHSV(Color.parseColor(brandColor), hsv)
         return BitmapDescriptorFactory.defaultMarker(hsv[0])
     }
-
 
 
     //Function that can be accessed by other fragments to create a new instance of this fragment and initialize it with arguments
@@ -405,6 +418,7 @@ class StopsFragmentChild : Fragment(){
             dynamicLinearLayout.visibility = stopsVisibility[routeStopInfoItem.stopId]!!
 
             if (dynamicLinearLayout.visibility == View.VISIBLE) { //if the itemView is currently visible on screen, set and display its bus arrival times
+                //TODO implement this again
                 setArrivalTimes()
             }
 
@@ -412,67 +426,95 @@ class StopsFragmentChild : Fragment(){
 
             //Obtaining an updated list of TripStops objects from the database that are associated with the itemView's stopId, and update its UI accordingly.
             // A TripStop object stores an arrival time for a particular bus stop (stopId).
-            sharedViewModel.getArrivalTimes(
+            sharedViewModel.getTrips(
                 routeStopInfoItem.routeId,
                 routeStopInfoItem.directionId,
-                routeStopInfoItem.dayId,
-                routeStopInfoItem.stopId
             ).observe(
                 viewLifecycleOwner,
-                { tripStop ->
-                    //sorting the list of TripStops objects using their arrivalTime attribute (Date object), from earliest to latest
-                    val sortedTripStops = tripStop.sortedBy { it.arrivalTime }
-
-                    //If the itemView's stopId produces a list of TripStops with more than one element (any less can't be considered a valid bus stop):
-                    if (sortedTripStops.size > 1) {
-                        //iterate through each TripStops object and calculate the time difference between its arrivalTime and the user's current time
-                        for (i in sortedTripStops.indices) {
-                            val difference: Long =
-                                sortedTripStops[i].arrivalTime?.time!! - Date(Calendar.getInstance().timeInMillis).time //result in milliseconds
-
-                            /* While iterating through the sorted list of TripStops, we look for the one that has the smallest positive time difference.
-                               This will contain the first available arrival time for the selected bus stop. Once the closest TripStop has been found,
-                               ... stop iterating and record its position in the sorted list of TripStops using the tripStopsPositions hashmap.
-                             */
-                            if (difference > 0) {
-                                //convert the time difference calculated above into minutes and seconds
-                                val seconds = difference / 1000
-                                val minutes = seconds / 60
-
-                                //display the now formatted time difference in the itemView
-                                "(${
-                                    sortedTripStops[i].arrivalTime.toString()
-                                        .substring(11, 16)
-                                })".also { currentTime.text = it }
-                                arrivalTimeLabel.text = getString(R.string.next_stop, minutes)
-
-                                /*NOTE: Each bus stop (itemView stopId) has an associated tripStop that contains the earliest bus arrival time for that stop.
-                                        To keep a reference of this, we map the stopId of each bus stop to the index of its earliest tripStop from the sortedTripStops list
-                                */
-                                tripStopsPositions[routeStopInfoItem.stopId] = i
-                                break
+                { trips ->
+                    sharedViewModel.getTripDaysOfOperation().observe(
+                        viewLifecycleOwner,
+                        { tripDaysOfOperation ->
+                            val tripDaysOfOperationList = mutableListOf<TripDaysOfOperation>()
+                            for (i in trips) {
+                                val tmpList = tripDaysOfOperation.filter { it.operationDayId == routeStopInfoItem.dayId && it.tripId == i.id }
+                                tripDaysOfOperationList.addAll(tmpList)
                             }
 
-                        }
-                    } else { //If the itemView's stopId produces a list of TripStops with one element or less:
-                        currentTime.text = ""
-                        arrivalTimeLabel.text = getString(R.string.no_stop_times_found)
-                    }
-                }
+                            sharedViewModel.getNewTripStops(routeStopInfoItem.stopId).observe(
+                                viewLifecycleOwner,
+                                { tripStops ->
+                                    var sortedTripStops = mutableListOf<TripStops>()
+                                    for (i in tripDaysOfOperationList.indices) {
+                                        val filteredList = tripStops.filter { it.tripId == tripDaysOfOperationList[i].tripId}
+                                        if (filteredList.isNotEmpty()){
+                                            sortedTripStops.addAll(filteredList)
+                                        }
+                                    }
 
+                                    sortedTripStops = sortedTripStops.sortedBy { it.arrivalTime } as MutableList<TripStops>
+                                    Log.d(TAG, "EARLY SIZE: ${sortedTripStops.size}")
+                                    //If the itemView's stopId produces a list of TripStops with more than one element (any less can't be considered a valid bus stop):
+                                    if (sortedTripStops.size > 1) {
+                                        //iterate through each TripStops object and calculate the time difference between its arrivalTime and the user's current time
+                                        for (index in sortedTripStops.indices) {
+                                            val difference: Long =
+                                                sortedTripStops[index].arrivalTime?.time!! - Date(Calendar.getInstance().timeInMillis).time //result in milliseconds
+
+                                            /* While iterating through the sorted list of TripStops, we look for the one that has the smallest positive time difference.
+                                               This will contain the first available arrival time for the selected bus stop. Once the closest TripStop has been found,
+                                               ... stop iterating and record its position in the sorted list of TripStops using the tripStopsPositions hashmap.
+                                             */
+                                            if (difference > 0) {
+                                                //convert the time difference calculated above into minutes and seconds
+                                                val seconds = difference / 1000
+                                                val minutes = seconds / 60
+
+                                                //display the now formatted time difference in the itemView
+                                                "(${
+                                                    sortedTripStops[index].arrivalTime.toString()
+                                                        .substring(11, 16)
+                                                })".also { currentTime.text = it }
+                                                arrivalTimeLabel.text = getString(R.string.next_stop, minutes)
+
+                                                /*NOTE: Each bus stop (itemView stopId) has an associated tripStop that contains the earliest bus arrival time for that stop.
+                                                        To keep a reference of this, we map the stopId of each bus stop to the index of its earliest tripStop from the sortedTripStops list
+                                                */
+                                                tripStopsPositions[routeStopInfoItem.stopId] = index
+                                                Log.d(TAG, "Index: ${tripStopsPositions[routeStopInfoItem.stopId]}")
+                                                break
+                                            }
+
+                                        }
+                                    } else { //If the itemView's stopId produces a list of TripStops with one element or less:
+                                        currentTime.text = ""
+                                        arrivalTimeLabel.text = getString(R.string.no_stop_times_found)
+                                    }
+
+                                }
+                            )
+                        }
+
+                    )
+                }
             )
         }
+
 
         //when an item view is clicked on:
         override fun onClick(view: View) {
 
             sharedViewModel.currentMarkerLatitude = routeStopInfoItem.latitude
             sharedViewModel.currentMarkerLongitude = routeStopInfoItem.longitude
-            val clickedPosition = LatLng(sharedViewModel.currentMarkerLatitude, sharedViewModel.currentMarkerLongitude)
+            val clickedPosition = LatLng(
+                sharedViewModel.currentMarkerLatitude,
+                sharedViewModel.currentMarkerLongitude
+            )
 
             //If its dynamicLinearLayout is invisible, make it visible and vice versa
             if (dynamicLinearLayout.visibility == View.GONE) {
                 dynamicLinearLayout.visibility = View.VISIBLE
+                //TODO implement this again
                 setArrivalTimes()
 
                 moveMapToLocation(clickedPosition, true)
@@ -489,44 +531,69 @@ class StopsFragmentChild : Fragment(){
         //setting the bus arrival times that are displayed in an itemView's dynamicLinearLayout
         fun setArrivalTimes() {
             //Obtaining an updated list of TripStops objects from the database that are associated with the itemView's stopId
-            sharedViewModel.getArrivalTimes(
+            sharedViewModel.getTrips(
                 routeStopInfoItem.routeId,
                 routeStopInfoItem.directionId,
-                routeStopInfoItem.dayId,
-                routeStopInfoItem.stopId
             ).observe(
                 viewLifecycleOwner,
-                { tripStop ->
-                    if (tripStop.size > 1) {
-                        var tmp =
-                            "" //temporary variable used to concatenate a list of arrival times to a single string
+                { trips ->
+                    sharedViewModel.getTripDaysOfOperation().observe(
+                        viewLifecycleOwner,
+                        { tripDaysOfOperation ->
+                            val tripDaysOfOperationList = mutableListOf<TripDaysOfOperation>()
+                            for (i in trips) {
+                                val tmpList = tripDaysOfOperation.filter { it.operationDayId == routeStopInfoItem.dayId && it.tripId == i.id }
+                                tripDaysOfOperationList.addAll(tmpList)
+                            }
 
-                        //sorting the list of TripStops objects using their arrivalTime attribute (Date object), from earliest to latest
-                        val sortedTripStops = tripStop.sortedBy { it.arrivalTime }
+                            sharedViewModel.getNewTripStops(routeStopInfoItem.stopId).observe(
+                                viewLifecycleOwner,
+                                { tripStops ->
+                                    var sortedTripStops = mutableListOf<TripStops>()
+                                    for (i in tripDaysOfOperationList.indices) {
+                                        val filteredList = tripStops.filter { it.tripId == tripDaysOfOperationList[i].tripId}
+                                        if (filteredList.isNotEmpty()){
+                                            sortedTripStops.addAll(filteredList)
+                                        }
+                                    }
 
-                        //getting the index position in sortedTripStops that is associated with the tripStop with the earliest arrival time
-                        // ... for the current stop using the itemView's stopId
-                        val tripStopsPosition = tripStopsPositions[routeStopInfoItem.stopId]
+                                    sortedTripStops = sortedTripStops.sortedBy { it.arrivalTime } as MutableList<TripStops>
+                                    Log.d(TAG, "LATER SIZE: ${sortedTripStops.size}")
 
-                        //Using the tripStopsPosition and the next 4 consecutive integers as indexes, get the names of the tripStops in the
-                        // ..sortedTripStops list with those indexes and add them to the tmp variable
-                        for (i in tripStopsPosition!!..(tripStopsPosition + 4)) {
-                            val tmpTripStop = sortedTripStops[i % sortedTripStops.size]
-                            tmp += "${
-                                tmpTripStop.arrivalTime.toString().substring(11, 16)
-                            }\n"
+                                    if (sortedTripStops.size > 1) {
+                                        var tmp =
+                                            "" //temporary variable used to concatenate a list of arrival times to a single string
+
+                                        //getting the index position in sortedTripStops that is associated with the tripStop with the earliest arrival time
+                                        // ... for the current stop using the itemView's stopId
+                                        val tripStopsPosition = tripStopsPositions[routeStopInfoItem.stopId]
+
+                                        //Using the tripStopsPosition and the next 4 consecutive integers as indexes, get the names of the tripStops in the
+                                        // ..sortedTripStops list with those indexes and add them to the tmp variable
+                                        for (i in tripStopsPosition!! + 1..(tripStopsPosition + 5)) {
+                                            val tmpTripStop = sortedTripStops[i % sortedTripStops.size]
+                                            tmp += "${
+                                                tmpTripStop.arrivalTime.toString().substring(11, 16)
+                                            }\n"
+                                        }
+                                        allArrivalTimes.text =
+                                            tmp //display the bus times inside of the textView housed within the itemView's dynamicLinearLayout
+                                    } else {
+                                        allArrivalTimes.text = getString(R.string.no_stop_times_found)
+                                    }
+                                }
+                            )
                         }
-                        allArrivalTimes.text =
-                            tmp //display the bus times inside of the textView housed within the itemView's dynamicLinearLayout
-                    } else {
-                        allArrivalTimes.text = getString(R.string.no_stop_times_found)
-                    }
+                    )
                 }
             )
         }
     }
 
-    private inner class StopAdapter(var routeStopInfoList: List<RouteStopInfo>, var markerMap: HashMap<Pair<Double,Double>,Marker?>)//accepts a list of RouteStops objects from model layer
+    private inner class StopAdapter(
+        var routeStopInfoList: List<RouteStopInfo>,
+        var markerMap: HashMap<Pair<Double, Double>, Marker?>
+    )//accepts a list of RouteStops objects from model layer
         : RecyclerView.Adapter<StopsFragmentChild.StopHolder>(), Filterable {
 
         //This list will hold RouteStopInfo objects that have been filtered through a search query. It is initialized using ...
@@ -559,11 +626,9 @@ class StopsFragmentChild : Fragment(){
                 //If the user has typed text into the SearchView, that text becomes a constraint to filter results from the list of RouteStopInfo objects
                 override fun performFiltering(constraint: CharSequence?): FilterResults {
                     val search = constraint.toString()
-                    Log.d(TAG, search)
 
                     //if there is no search query, return all results from the unfiltered list of RouteStopInfo objects
                     if (search.isEmpty()) {
-                        Log.d(TAG, "query empty")
                         filteredRouteStopInfoList = routeStopInfoList
                     } else {
                         val resultList: MutableList<RouteStopInfo> =
@@ -575,7 +640,6 @@ class StopsFragmentChild : Fragment(){
                             if (stop.name.lowercase(Locale.ROOT)
                                     .contains(search.lowercase(Locale.ROOT))
                             ) {
-                                Log.d(TAG, "query match")
                                 resultList.add(stop)
                             }
                         }

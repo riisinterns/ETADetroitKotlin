@@ -23,8 +23,17 @@ interface BusDao {
         routeId: Int,
         directionId: Int,
         dayId: Int,
-        stopId: Int
+        stopId: Int,
     ): LiveData<List<TripStops>>
+
+    @Query("SELECT * FROM trip_stops WHERE stop_id=(:stopId)")
+    fun getNewTripStops(stopId: Int): LiveData<List<TripStops>>
+
+    @Query("SELECT * FROM trip_days_of_operation")
+    fun getTripDaysOfOperation(): LiveData<List<TripDaysOfOperation>>
+
+    @Query("SELECT * FROM trips where route_id=(:routeId) and direction_id=(:directionId)")
+    fun getTrips(routeId: Int, directionId: Int): LiveData<List<Trips>>
 
     @Insert
     fun addRoute(route: Routes)
