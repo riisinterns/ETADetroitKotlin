@@ -8,6 +8,7 @@ import com.riis.etaDetroitkotlin.SharedViewModel
 import com.riis.etaDetroitkotlin.database.BusDao
 import com.riis.etaDetroitkotlin.database.BusDatabase
 import com.riis.etaDetroitkotlin.database.BusRepository
+import com.riis.etaDetroitkotlin.fragment.*
 import com.riis.etaDetroitkotlin.model.*
 import junit.framework.TestCase
 import org.hamcrest.CoreMatchers.`is`
@@ -222,6 +223,42 @@ class SharedViewModelTest : TestCase() {
         Thread.sleep(100)
     }
 
+    @Test
+    fun testSaveDirectionResponse() {
+        val agencies = listOf(Agency("DDOT"))
+        val line = Line("line", agencies)
+        val transitDetails = TransitDetails(TextData("11:49:00"), TextData("11:59:00"), line, "1", "northbound")
+        val steps = listOf(Steps(TextData("1"), TextData("10"), "n/a", "bus", transitDetails))
+        val legs = listOf(Legs(TextData("11:59:00"), steps[0].distance, steps[0].duration, steps))
+        val generatedRoutes = listOf(GeneratedRoutes("n/a", TextData("1"), legs))
+        val directionResponse = DirectionResponse(generatedRoutes, "n/a")
+
+        viewModel.saveDirectionResponse(directionResponse)
+
+
+        assertThat(viewModel.currentDirectionResponse?.routes, `is`(generatedRoutes))
+        assertThat(viewModel.currentDirectionResponse?.status, `is`("n/a"))
+
+        Thread.sleep(100)
+    }
+
+    @Test
+    fun testClearDirectionResponse() {
+        val agencies = listOf(Agency("DDOT"))
+        val line = Line("line", agencies)
+        val transitDetails = TransitDetails(TextData("11:49:00"), TextData("11:59:00"), line, "1", "northbound")
+        val steps = listOf(Steps(TextData("1"), TextData("10"), "n/a", "bus", transitDetails))
+        val legs = listOf(Legs(TextData("11:59:00"), steps[0].distance, steps[0].duration, steps))
+        val generatedRoutes = listOf(GeneratedRoutes("n/a", TextData("1"), legs))
+        val directionResponse = DirectionResponse(generatedRoutes, "n/a")
+
+        viewModel.saveDirectionResponse(directionResponse)
+        viewModel.clearDirectionResponse()
+
+        assertNull(viewModel.currentDirectionResponse)
+
+        Thread.sleep(100)
+    }
 
     private fun fromString(string: String?): Date {
         val dt = Date()
