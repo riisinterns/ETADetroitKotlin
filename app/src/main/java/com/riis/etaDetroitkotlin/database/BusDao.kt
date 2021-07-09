@@ -67,4 +67,8 @@ interface BusDao {
     @TestOnly
     @Insert
     fun addRouteStop(routeStop: RouteStops)
+
+    @TestOnly
+    @Insert
+    fun addTripDaysOfOperation(tripDaysOfOperation: TripDaysOfOperation)
 }

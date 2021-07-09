@@ -116,25 +116,44 @@ class SharedViewModelTest : TestCase() {
         val company = Company(2, "DDOT", "#054839", "ddot_bus")
         val route =
             Routes(53, 1, company.id, "VERNOR", "Rosa Parks Transit Center to Michgan & Schaefer")
-//        val stop = Stops(23, "Washington & Michigan", 42.331399, -83.051226)
-//        val daysOfOperation = DaysOfOperation(1, "weekday")
         val direction = Directions(3, "Westbound")
         val trip = Trips(2328, 158530010, route.id, direction.id)
-//        val routeStop = RouteStops(17646, route.id, stop.id, direction.id, daysOfOperation.id)
 
         busDao.addCompany(company)
         busDao.addRoute(route)
-//        busDao.addStop(stop)
-//        busDao.addDaysOfOperation(daysOfOperation)
         busDao.addDirection(direction)
         busDao.addTrips(trip)
-//        busDao.addRouteStop(routeStop)
 
         viewModel.getTrips(route.id, direction.id).observeForever { trips ->
             assertThat(trips[0].id, `is`(2328))
             assertThat(trips[0].tripId, `is`(158530010))
             assertThat(trips[0].routeId, `is`(route.id))
             assertThat(trips[0].directionId, `is`(direction.id))
+        }
+
+        Thread.sleep(100)
+    }
+
+    @Test
+    fun testGetTripDaysOfOperation() {
+        val company = Company(2, "DDOT", "#054839", "ddot_bus")
+        val route =
+            Routes(53, 1, company.id, "VERNOR", "Rosa Parks Transit Center to Michgan & Schaefer")
+        val direction = Directions(3, "Westbound")
+        val trip = Trips(2328, 158530010, route.id, direction.id)
+        val tripDaysOfOperation = TripDaysOfOperation(4, trip.id)
+        val daysOfOperation = DaysOfOperation(4, "sunday")
+
+        busDao.addCompany(company)
+        busDao.addRoute(route)
+        busDao.addDirection(direction)
+        busDao.addTrips(trip)
+        busDao.addDaysOfOperation(daysOfOperation)
+        busDao.addTripDaysOfOperation(tripDaysOfOperation)
+
+        viewModel.getTripDaysOfOperation().observeForever { tripDaysOfOperationList ->
+            assertThat(tripDaysOfOperationList[0].operationDayId, `is`(4))
+            assertThat(tripDaysOfOperationList[0].tripId, `is`(trip.id))
         }
 
         Thread.sleep(100)
