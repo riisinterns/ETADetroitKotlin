@@ -8,6 +8,7 @@ import com.riis.etaDetroitkotlin.SharedViewModel
 import com.riis.etaDetroitkotlin.database.BusDao
 import com.riis.etaDetroitkotlin.database.BusDatabase
 import com.riis.etaDetroitkotlin.database.BusRepository
+import com.riis.etaDetroitkotlin.fragment.*
 import com.riis.etaDetroitkotlin.model.*
 import junit.framework.TestCase
 import org.hamcrest.CoreMatchers.`is`
@@ -111,9 +112,56 @@ class SharedViewModelTest : TestCase() {
         Thread.sleep(100)
     }
 
+    @Test
+    fun testGetTrips() {
+        val company = Company(2, "DDOT", "#054839", "ddot_bus")
+        val route =
+            Routes(53, 1, company.id, "VERNOR", "Rosa Parks Transit Center to Michgan & Schaefer")
+        val direction = Directions(3, "Westbound")
+        val trip = Trips(2328, 158530010, route.id, direction.id)
+
+        busDao.addCompany(company)
+        busDao.addRoute(route)
+        busDao.addDirection(direction)
+        busDao.addTrips(trip)
+
+        viewModel.getTrips(route.id, direction.id).observeForever { trips ->
+            assertThat(trips[0].id, `is`(2328))
+            assertThat(trips[0].tripId, `is`(158530010))
+            assertThat(trips[0].routeId, `is`(route.id))
+            assertThat(trips[0].directionId, `is`(direction.id))
+        }
+
+        Thread.sleep(100)
+    }
 
     @Test
-    fun testGetArrivalTimes() {
+    fun testGetTripDaysOfOperation() {
+        val company = Company(2, "DDOT", "#054839", "ddot_bus")
+        val route =
+            Routes(53, 1, company.id, "VERNOR", "Rosa Parks Transit Center to Michgan & Schaefer")
+        val direction = Directions(3, "Westbound")
+        val trip = Trips(2328, 158530010, route.id, direction.id)
+        val tripDaysOfOperation = TripDaysOfOperation(4, trip.id)
+        val daysOfOperation = DaysOfOperation(4, "sunday")
+
+        busDao.addCompany(company)
+        busDao.addRoute(route)
+        busDao.addDirection(direction)
+        busDao.addTrips(trip)
+        busDao.addDaysOfOperation(daysOfOperation)
+        busDao.addTripDaysOfOperation(tripDaysOfOperation)
+
+        viewModel.getTripDaysOfOperation().observeForever { tripDaysOfOperationList ->
+            assertThat(tripDaysOfOperationList[0].operationDayId, `is`(4))
+            assertThat(tripDaysOfOperationList[0].tripId, `is`(trip.id))
+        }
+
+        Thread.sleep(100)
+    }
+
+    @Test
+    fun testGetTripStops() {
 
         val company = Company(2, "DDOT", "#054839", "ddot_bus")
         val route =
@@ -134,7 +182,7 @@ class SharedViewModelTest : TestCase() {
         busDao.addTrips(trip)
         busDao.addTripStop(tripStop)
 
-        viewModel.getArrivalTimes(route.id, direction.id, daysOfOperation.id, stop.id)
+        viewModel.getTripStops(stop.id)
             .observeForever { tripStops ->
                 assertThat(tripStops[0].tripId, `is`(trip.id))
                 assertThat(tripStops[0].stopId, `is`(stop.id))
@@ -175,6 +223,44 @@ class SharedViewModelTest : TestCase() {
         Thread.sleep(100)
     }
 
+    @Test
+    fun testSaveDirectionResponse() {
+        val agencies = listOf(Agency("DDOT"))
+        val line = Line("line", agencies)
+        val transitDetails =
+            TransitDetails(TextData("11:49:00"), TextData("11:59:00"), line, "1", "northbound")
+        val steps = listOf(Steps(TextData("1"), TextData("10"), "n/a", "bus", transitDetails))
+        val legs = listOf(Legs(TextData("11:59:00"), steps[0].distance, steps[0].duration, steps))
+        val generatedRoutes = listOf(GeneratedRoutes("n/a", TextData("1"), legs))
+        val directionResponse = DirectionResponse(generatedRoutes, "n/a")
+
+        viewModel.saveDirectionResponse(directionResponse)
+
+
+        assertThat(viewModel.currentDirectionResponse?.routes, `is`(generatedRoutes))
+        assertThat(viewModel.currentDirectionResponse?.status, `is`("n/a"))
+
+        Thread.sleep(100)
+    }
+
+    @Test
+    fun testClearDirectionResponse() {
+        val agencies = listOf(Agency("DDOT"))
+        val line = Line("line", agencies)
+        val transitDetails =
+            TransitDetails(TextData("11:49:00"), TextData("11:59:00"), line, "1", "northbound")
+        val steps = listOf(Steps(TextData("1"), TextData("10"), "n/a", "bus", transitDetails))
+        val legs = listOf(Legs(TextData("11:59:00"), steps[0].distance, steps[0].duration, steps))
+        val generatedRoutes = listOf(GeneratedRoutes("n/a", TextData("1"), legs))
+        val directionResponse = DirectionResponse(generatedRoutes, "n/a")
+
+        viewModel.saveDirectionResponse(directionResponse)
+        viewModel.clearDirectionResponse()
+
+        assertNull(viewModel.currentDirectionResponse)
+
+        Thread.sleep(100)
+    }
 
     private fun fromString(string: String?): Date {
         val dt = Date()

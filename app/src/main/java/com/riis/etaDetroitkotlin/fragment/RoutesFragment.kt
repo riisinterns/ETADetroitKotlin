@@ -88,12 +88,11 @@ class RoutesFragment : Fragment() {
             viewLifecycleOwner,
             { routes ->
 
-                if(currentCompany?.name.let { it == "QLine" || it == "People Mover" } && routes[0].name == currentCompany?.name){ //Hard coded for now
-                    if(sharedViewModel.hasEntered){
+                if (currentCompany?.name.let { it == "QLine" || it == "People Mover" } && routes[0].name == currentCompany?.name) { //Hard coded for now
+                    if (sharedViewModel.hasEntered) {
                         sharedViewModel.hasEntered = false // reset
                         view.findNavController().navigateUp() // go home
-                    }
-                    else {
+                    } else {
                         sharedViewModel.hasEntered = true
                         sharedViewModel.saveRoute(routes[0])
                         view.findNavController().navigate(R.id.stopsFragmentParent)
