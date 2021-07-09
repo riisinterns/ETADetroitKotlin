@@ -67,9 +67,6 @@ class StopsFragmentChild : Fragment() {
     private var mapReady = false
     private var isNewInstance = false
 
-    private var latitude = DEFAULT_LATITUDE
-    private var longitude = DEFAULT_LONGITUDE
-
     //links the fragment to a viewModel shared with MainActivity and other fragments
     private val sharedViewModel: SharedViewModel by activityViewModels()
 
