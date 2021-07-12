@@ -40,7 +40,7 @@ class QLineRouteTest {
         onView(
             allOf(
                 withId(R.id.stop_name),
-                withText("Congress Station")
+                withText("Grand Station")
             )
         )
             .check(matches(isDisplayed()))
@@ -49,7 +49,7 @@ class QLineRouteTest {
         onView(
             allOf(
                 withId(R.id.stop_name),
-                withText("Campus Martius Station")
+                withText("Amtrak Station")
             )
         )
             .check(matches(isDisplayed()))
@@ -58,7 +58,7 @@ class QLineRouteTest {
         onView(
             allOf(
                 withId(R.id.stop_name),
-                withText("Grand Circus Station")
+                withText("Amsterdam Station")
             )
         )
             .check(matches(isDisplayed()))

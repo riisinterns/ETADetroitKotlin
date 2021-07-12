@@ -31,13 +31,13 @@ class PeopleMoverRouteTest {
         onView(allOf(withId(R.id.company_name), withText("People Mover"), isDisplayed()))
             .perform(click())
 
-        onView(allOf(withId(R.id.stop_name), withText("Times Square")))
+        onView(allOf(withId(R.id.stop_name), withText("Michigan Ave")))
             .check(matches(isDisplayed()))
 
-        onView(allOf(withId(R.id.stop_name), withText("Grand Circus")))
+        onView(allOf(withId(R.id.stop_name), withText("Fort/Cass")))
             .check(matches(isDisplayed()))
 
-        onView(allOf(withId(R.id.stop_name), withText("Broadway")))
+        onView(allOf(withId(R.id.stop_name), withText("Cobo Center")))
             .check(matches(isDisplayed()))
 
         onView(allOf(withContentDescription("Google Map"), isDisplayed()))
